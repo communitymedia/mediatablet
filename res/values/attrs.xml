@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- TODO: remember to update values-v11 at the same time -->
+    
+    <!-- icons -->
+    <dimen name="homestead_icon_total_size">100dp</dimen> <!-- including all person icons -->
+    <dimen name="homestead_icon_size">70dp</dimen> <!-- of the actual homestead icon -->
+
+    <item name="homestead_icon_person_maximum_diameter_factor" format="float" type="attr">0.4</item> <!-- of the overlaid person icons -->
+    <item name="homestead_icon_person_minimum_diameter_factor" format="float" type="attr">0.1</item> <!-- as factor of total_size -->
+
+    <dimen name="person_icon_container_width">204dp</dimen> <!-- always square -->
+    <dimen name="person_icon_width">196dp</dimen> <!-- usually person_icon_container_width - 8 -->
+    <dimen name="person_icon_height">@dimen/person_icon_width</dimen> <!-- deprecated; now same as width -->
+    <dimen name="person_icon_progress_padding">82dp</dimen> <!-- container_width - 40 / 2 -->
+    <dimen name="media_icon_container_width">102dp</dimen> <!-- always square -->
+    <dimen name="media_icon_width">94dp</dimen> <!-- usually media_icon_container_width - 8 -->
+    <dimen name="media_icon_height">@dimen/media_icon_width</dimen> <!-- deprecated; now same as width -->
+    <dimen name="media_icon_progress_padding">31dp</dimen> <!-- container_width - 40 / 2 -->
+    <item name="media_icon_person_size_factor" format="float" type="attr">0.3</item> <!-- of the overlaid person icons as a factor of icon_width -->
+
+
+    <!-- icons in layouts -->
+    <dimen name="media_owner_icon_width">75dp</dimen>
+    <dimen name="media_owner_icon_height">@dimen/media_owner_icon_width</dimen>
+
+    <!-- icon shared properties -->
+    <dimen name="icon_grid_spacing">20dp</dimen>
+    <dimen name="icon_maximum_text_size">50dp</dimen>
+    <dimen name="icon_border_width">2dp</dimen>
+    <dimen name="icon_text_padding">4dp</dimen>
+
+    <item name="icon_main_svg_scale_factor" format="float" type="attr">0.9</item>
+    <item name="icon_overlay_svg_scale_factor" format="float" type="attr">0.22</item>
+    <item name="icon_overlay_spacing_factor" format="float" type="attr">0.02</item>
+    <item name="icon_text_corner_radius" format="float" type="attr">0.165</item>
+
+    <dimen name="icon_maximum_text_height_with_image">80dp</dimen>
+
+    <integer name="icon_maximum_text_characters_per_line">26</integer>
+
+    <!-- import related -->
+    <integer name="frame_narrative_sequence_increment">10</integer>
+
+    <!-- playback and export settings TODO: combine both versions (mediaphone and mediatablet) -->
+    <dimen name="playback_text">32sp</dimen>
+    <dimen name="playback_text_corner_radius">4dp</dimen>
+    <dimen name="playback_text_padding">@dimen/icon_text_padding</dimen>
+    <dimen name="playback_maximum_text_height_with_image">@dimen/icon_maximum_text_height_with_image</dimen>
+    <integer name="export_smil_width">640</integer>
+    <integer name="export_smil_height">640</integer>
+    <integer name="export_smil_player_bar_adjustment">16</integer>
+    <integer name="export_maximum_text_characters_per_line">@integer/icon_maximum_text_characters_per_line</integer>
+
+    <dimen name="export_icon_text_padding">@dimen/icon_text_padding</dimen>
+    <dimen name="export_maximum_text_size">@dimen/icon_maximum_text_size</dimen>
+    <dimen name="export_maximum_text_height_with_image">@dimen/icon_maximum_text_height_with_image</dimen>
+
+    <item name="export_icon_text_corner_radius" format="float" type="attr">0.165</item>
+
+    <!-- intent extras -->
+    <string name="extra_internal_id">internal_id</string>
+    <string name="extra_parent_id">parent_id</string>
+    <string name="extra_edit_mode">edit_mode</string>
+    <string name="extra_media_visibility">media_visibility</string>
+    <string name="extra_selected_items">selected_items</string>
+    <string name="extra_finish_activity">finish_activity</string> <!-- FLAG_ACTIVITY_CLEAR_TOP is so *slow* -->
+    <string name="extra_finish_parent_activities">finish_parent_activities</string>
+    <string name="extra_playback_position">playback_position</string>
+    <string name="extra_playback_offset">playback_offset</string>
+    <string name="extra_playback_non_audio_offset">playback_non_audio_offset</string>
+
+    <!-- preference related -->
+    <bool name="default_watch_for_files">true</bool>
+
+    <string name="default_bluetooth_directory">/mnt/sdcard/downloads/bluetooth</string>
+    <string name="default_bluetooth_directory_alternative">/mnt/sdcard/bluetooth</string>
+
+    <!-- percentage of the add user profile picture button's height, so the image doesn't overlap the edge of the button -->
+    <item name="image_button_fill_percentage" format="float" type="attr">0.7</item>
+
+    <!-- layout related -->
+    <dimen name="button_padding">5dp</dimen>
+    <dimen name="navigation_button_height">60dp</dimen>
+    <dimen name="media_controller_height">100dp</dimen>
+
+    <!-- preference keys -->
+    <string name="key_watch_for_files">watch_for_files</string>
+    <string name="key_bluetooth_directory">bluetooth_directory</string>
+    <string name="key_panorama_width">panorama_width</string>
+    <string name="key_panorama_height">panorama_height</string>
+    <string name="key_panorama_position">panorama_position</string>
+    <string name="key_panorama_file">panorama_file</string>
+    <string name="key_administrator_password">administrator_password</string>
+
+</resources>

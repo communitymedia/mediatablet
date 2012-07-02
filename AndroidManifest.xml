@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="ac.robinson.mediatablet"
+    android:installLocation="preferExternal"
+    android:versionCode="1"
+    android:versionName="1.0" >
+
+    <uses-sdk
+        android:minSdkVersion="9"
+        android:targetSdkVersion="11" />
+
+    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
+    <uses-permission android:name="android.permission.BLUETOOTH" />
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_INTERNAL_STORAGE" />
+
+    <uses-feature
+        android:name="android.hardware.camera"
+        android:required="true" />
+    <uses-feature
+        android:name="android.hardware.camera.front"
+        android:required="false" />
+    <uses-feature
+        android:name="android.hardware.camera.autofocus"
+        android:required="false" />
+
+    <application
+        android:name=".MediaTabletApplication"
+        android:icon="@drawable/ic_launcher"
+        android:label="@string/app_name"
+        android:theme="@style/default_dark_theme" >
+        <activity
+            android:name=".activity.HomesteadBrowserActivity"
+            android:label="@string/app_name"
+            android:screenOrientation="sensorLandscape" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".activity.PeopleBrowserActivity"
+            android:label="@string/title_people_browser"
+            android:screenOrientation="sensorLandscape" />
+        <activity
+            android:name=".activity.MediaBrowserActivity"
+            android:label="@string/title_media_browser"
+            android:screenOrientation="sensorLandscape" />
+        <activity
+            android:name=".activity.ImageViewerActivity"
+            android:label="@string/title_playback"
+            android:screenOrientation="sensorLandscape" />
+        <activity
+            android:name=".activity.AudioVideoViewerActivity"
+            android:label="@string/title_playback"
+            android:screenOrientation="sensorLandscape" />
+        <activity
+            android:name=".activity.TextViewerActivity"
+            android:label="@string/title_playback"
+            android:screenOrientation="sensorLandscape" />
+        <activity
+            android:name=".activity.NarrativeViewerActivity"
+            android:label="@string/title_playback"
+            android:screenOrientation="sensorLandscape" />
+        <activity
+            android:name=".activity.AddUserActivity"
+            android:label="@string/title_add_user"
+            android:screenOrientation="sensorLandscape"
+            android:theme="@style/default_light_theme"
+            android:windowSoftInputMode="stateVisible|adjustResize" />
+        <!-- TODO: softInputMode breaks image layout, but is better for interaction -->
+        <activity
+            android:name="ac.robinson.cropimage.CropImage"
+            android:configChanges="orientation|keyboardHidden"
+            android:label="@string/title_crop_image"
+            android:screenOrientation="sensorLandscape"
+            android:theme="@style/default_light_theme" />
+        <activity
+            android:name="group.pals.android.lib.ui.lockpattern.LockPatternActivity"
+            android:configChanges="orientation|keyboardHidden"
+            android:screenOrientation="sensorLandscape"
+            android:theme="@android:style/Theme.Dialog" />
+        <activity
+            android:name=".activity.PreferencesActivity"
+            android:label="@string/title_preferences"
+            android:screenOrientation="sensorLandscape" />
+        <activity
+            android:name="ac.robinson.mediautilities.SelectDirectoryActivity"
+            android:label="@string/title_select_panorama_directory"
+            android:screenOrientation="sensorLandscape" />
+
+        <provider
+            android:name=".provider.MediaTabletProvider"
+            android:authorities="mediatablet" /> <!-- authorities *must* be the same as MediaTablet.APPLICATION_NAME -->
+
+        <service android:name="ac.robinson.service.ImportingService" />
+    </application>
+
+</manifest>

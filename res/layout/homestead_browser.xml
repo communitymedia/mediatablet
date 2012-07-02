@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+
+    <ac.robinson.mediatablet.view.HomesteadSurfaceView
+        android:id="@+id/surface_homesteads"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center" />
+
+    <RelativeLayout
+        android:id="@+id/panel_homesteads_browse"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@id/surface_homesteads" >
+
+        <Button
+            android:id="@+id/button_homesteads_add_user"
+            style="@style/default_navigation_button"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"
+            android:drawableTop="@drawable/ic_menu_add_user" />
+
+        <Button
+            android:id="@+id/button_homesteads_view_public_media"
+            style="@style/default_navigation_button"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentTop="true"
+            android:drawableTop="@drawable/ic_menu_public_media" />
+
+        <Button
+            android:id="@+id/button_homesteads_save_new_homstead"
+            style="@style/default_navigation_button"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentRight="true"
+            android:drawableTop="@android:drawable/ic_menu_add" />
+    </RelativeLayout>
+
+    <LinearLayout
+        android:id="@+id/button_homesteads_scroll_left"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:background="@android:color/transparent"
+        android:gravity="left" >
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/button_homesteads_scroll_right"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:background="@android:color/transparent"
+        android:gravity="right" >
+    </LinearLayout>
+
+</RelativeLayout>

@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:util="http://util.robinson.ac/schema"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+
+    <LinearLayout
+        android:id="@+id/add_user_bottom_bar"
+        style="@style/default_horizontal_linear_layout"
+        android:layout_height="@dimen/navigation_button_height"
+        android:layout_alignParentTop="true" >
+
+        <EditText
+            android:id="@+id/text_add_user_name"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:hint="@string/add_user_name"
+            android:inputType="textPersonName"
+            android:textAppearance="?android:attr/textAppearanceLarge" />
+
+        <ac.robinson.view.CenteredImageTextButton
+            android:id="@+id/button_add_user_finish"
+            style="@style/default_coloured_button"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/navigation_button_height"
+            android:layout_weight="1"
+            android:drawableTop="@android:drawable/ic_menu_add" />
+    </LinearLayout>
+
+    <LinearLayout
+        style="@style/default_horizontal_linear_layout"
+        android:layout_below="@id/add_user_bottom_bar" >
+
+        <ac.robinson.view.CenteredImageTextButton
+            android:id="@+id/button_take_profile_picture"
+            style="@style/default_coloured_button"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:drawableTop="@drawable/ic_profile_picture"
+            util:filterColorDefault="@color/button_green_default"
+            util:filterColorTouched="@color/button_green_touched" />
+
+        <ac.robinson.view.CenteredImageTextButton
+            android:id="@+id/button_select_profile_homestead"
+            style="@style/default_coloured_button"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:drawableTop="@drawable/ic_homestead"
+            util:filterColorDefault="@color/button_blue_default"
+            util:filterColorTouched="@color/button_blue_touched" />
+    </LinearLayout>
+
+</RelativeLayout>

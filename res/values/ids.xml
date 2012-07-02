@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<resources>
+
+    <!-- intents -->
+    <item name="intent_preferences" type="id"/>
+    <item name="intent_homestead_selector" type="id"/>
+    <item name="intent_take_picture" type="id"/>
+    <item name="intent_crop_picture" type="id"/>
+    <item name="intent_lock_pattern" type="id"/>
+    <item name="intent_homestead_browser" type="id"/>
+    <item name="intent_people_browser" type="id"/>
+    <item name="intent_media_browser" type="id"/>
+    <item name="intent_media_item_viewer" type="id"/>
+    <item name="intent_add_user" type="id"/>
+    <item name="intent_directory_chooser" type="id"/>
+
+    <!-- uris -->
+    <item name="uri_homesteads" type="id"/>
+    <item name="uri_people" type="id"/>
+    <item name="uri_media" type="id"/>
+
+</resources>

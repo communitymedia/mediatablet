@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/panel_media_viewer"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content" >
+
+    <Button
+        android:id="@+id/button_media_view_share_media"
+        style="@style/default_navigation_button"
+        android:layout_alignParentLeft="true"
+        android:drawableTop="@android:drawable/ic_menu_share" />
+
+    <LinearLayout
+        style="@style/default_horizontal_linear_layout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true" >
+
+        <Button
+            android:id="@+id/button_media_view_view_homesteads"
+            style="@style/default_navigation_button"
+            android:drawableTop="@drawable/ic_menu_homesteads" />
+
+        <Button
+            android:id="@+id/button_media_view_view_people"
+            style="@style/default_navigation_button"
+            android:drawableTop="@drawable/ic_menu_people" />
+
+        <Button
+            android:id="@+id/button_media_view_view_media"
+            style="@style/default_navigation_button"
+            android:drawableTop="@drawable/ic_menu_media" />
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/button_media_view_view_public_media"
+        style="@style/default_navigation_button"
+        android:layout_alignParentRight="true"
+        android:drawableTop="@drawable/ic_menu_public_media" />
+
+    <Button
+        android:id="@+id/button_media_view_back"
+        style="@style/default_navigation_button"
+        android:layout_alignParentRight="true"
+        android:drawableTop="@android:drawable/ic_menu_revert"
+        android:visibility="gone" />
+
+</RelativeLayout>

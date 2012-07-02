@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
+
+    <PreferenceCategory android:title="@string/preferences_import" >
+        <CheckBoxPreference
+            android:defaultValue="@bool/default_watch_for_files"
+            android:disableDependentsState="false"
+            android:key="@string/key_watch_for_files"
+            android:summaryOff="@string/preferences_watch_for_files_summary_off"
+            android:summaryOn="@string/preferences_watch_for_files_summary_on"
+            android:title="@string/preferences_watch_for_files_title" />
+
+        <Preference
+            android:defaultValue="@string/default_bluetooth_directory"
+            android:dependency="@string/key_watch_for_files"
+            android:key="@string/key_bluetooth_directory"
+            android:summary="@string/preferences_bluetooth_directory_summary"
+            android:title="@string/preferences_bluetooth_directory_title" />
+    </PreferenceCategory>
+
+</PreferenceScreen>

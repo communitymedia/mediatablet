@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+
+    <LinearLayout style="@style/default_horizontal_linear_layout" >
+
+        <LinearLayout
+            style="@style/default_vertical_linear_layout"
+            android:layout_width="wrap_content"
+            android:background="@drawable/border_right" >
+
+            <RelativeLayout
+                android:id="@+id/panel_profile_picture"
+                android:layout_width="@dimen/media_owner_icon_width"
+                android:layout_height="@dimen/media_owner_icon_height" >
+
+                <!-- was android:background="@color/icon_person_border" but it doesn't look good with tab lines -->
+
+                <ImageView
+                    android:id="@+id/profile_picture_image"
+                    android:layout_width="@dimen/media_owner_icon_width"
+                    android:layout_height="@dimen/media_owner_icon_width"
+                    android:layout_marginRight="@dimen/icon_border_width"
+                    android:contentDescription="@string/profile_picture_description"
+                    android:gravity="center_horizontal"
+                    android:padding="0dp"
+                    android:scaleType="center"
+                    android:src="@null" />
+
+                <ImageView
+                    android:id="@+id/profile_picture_overlay"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentBottom="true"
+                    android:layout_alignParentRight="true"
+                    android:contentDescription="@string/profile_picture_overlay_description"
+                    android:src="@drawable/ic_lock" />
+
+                <ImageView
+                    android:id="@+id/profile_picture_overlay_filter"
+                    android:layout_width="@dimen/media_owner_icon_width"
+                    android:layout_height="@dimen/media_owner_icon_width"
+                    android:contentDescription="@null"
+                    android:onClick="handlePersonIconClick"
+                    android:src="@drawable/grid_item_filter" />
+            </RelativeLayout>
+
+            <LinearLayout
+                android:id="@+id/panel_filter_buttons"
+                style="@style/default_vertical_linear_layout"
+                android:layout_width="match_parent"
+                android:layout_marginRight="@dimen/icon_border_width"
+                android:background="@drawable/border_top"
+                android:padding="@dimen/icon_border_width" >
+
+                <ToggleButton
+                    android:id="@+id/button_media_filter_images"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/ic_filter_image"
+                    android:onClick="handleFilterClicks"
+                    android:textOff=""
+                    android:textOn="" />
+
+                <ToggleButton
+                    android:id="@+id/button_media_filter_videos"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/ic_filter_video"
+                    android:onClick="handleFilterClicks"
+                    android:textOff=""
+                    android:textOn="" />
+
+                <ToggleButton
+                    android:id="@+id/button_media_filter_audio"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/ic_filter_audio"
+                    android:onClick="handleFilterClicks"
+                    android:textOff=""
+                    android:textOn="" />
+
+                <ToggleButton
+                    android:id="@+id/button_media_filter_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/ic_filter_text"
+                    android:onClick="handleFilterClicks"
+                    android:textOff=""
+                    android:textOn="" />
+
+                <ToggleButton
+                    android:id="@+id/button_media_filter_narratives"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/ic_filter_narratives"
+                    android:onClick="handleFilterClicks"
+                    android:textOff=""
+                    android:textOn="" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <GridView
+            android:id="@+id/grid_media"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:columnWidth="@dimen/media_icon_container_width"
+            android:drawSelectorOnTop="false"
+            android:fadingEdge="vertical"
+            android:gravity="center_horizontal"
+            android:horizontalSpacing="@dimen/icon_grid_spacing"
+            android:listSelector="@drawable/grid_item_selector"
+            android:longClickable="false"
+            android:numColumns="auto_fit"
+            android:paddingLeft="@dimen/icon_border_width"
+            android:paddingTop="@dimen/icon_border_width"
+            android:scrollbarAlwaysDrawVerticalTrack="true"
+            android:scrollbars="vertical"
+            android:smoothScrollbar="true"
+            android:stretchMode="columnWidth"
+            android:textFilterEnabled="true"
+            android:verticalSpacing="@dimen/icon_grid_spacing" />
+    </LinearLayout>
+
+    <RelativeLayout
+        android:id="@+id/panel_media"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@id/grid_media" >
+
+        <LinearLayout
+            style="@style/default_horizontal_linear_layout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true" >
+
+            <Button
+                android:id="@+id/button_media_view_homesteads"
+                style="@style/default_navigation_button"
+                android:drawableTop="@drawable/ic_menu_homesteads" />
+
+            <Button
+                android:id="@+id/button_media_view_people"
+                style="@style/default_navigation_button"
+                android:drawableTop="@drawable/ic_menu_people" />
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/button_media_view_public_media"
+            style="@style/default_navigation_button"
+            android:layout_alignParentRight="true"
+            android:drawableTop="@drawable/ic_menu_public_media" />
+    </RelativeLayout>
+
+</RelativeLayout>

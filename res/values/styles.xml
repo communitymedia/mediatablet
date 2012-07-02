@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- TODO: remember to update values-v11 at the same time -->
+    <style name="default_light_theme" parent="@android:Theme.Black.NoTitleBar" /> <!-- style was .Fullscreen too -->
+
+    <style name="default_dark_theme" parent="@android:Theme.Black.NoTitleBar" />
+
+    <style name="default_vertical_linear_layout">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:orientation">vertical</item>
+    </style>
+
+    <style name="default_horizontal_linear_layout">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:orientation">horizontal</item>
+    </style>
+
+    <style name="default_coloured_button">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:paddingLeft">@dimen/button_padding</item>
+        <item name="android:paddingTop">@dimen/button_padding</item>
+        <item name="android:paddingBottom">@dimen/button_padding</item>
+        <item name="android:paddingRight">@dimen/button_padding</item>
+        <item name="android:onClick">handleButtonClicks</item>
+        <item name="android:singleLine">true</item>
+    </style>
+
+    <style name="default_navigation_button">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">@dimen/navigation_button_height</item>
+        <item name="android:onClick">handleButtonClicks</item>
+    </style>
+
+</resources>

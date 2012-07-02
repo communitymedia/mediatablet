@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">Com-Tablet</string>
+    <string name="html_feature_coming_soon">Coming soon — HTML import</string>
+    <string name="button_delete">Delete</string>
+
+    <!-- file errors -->
+    <string name="error_opening_media_content_sd">Error: unable to find media. Please check that the SD card is available</string>
+    <string name="error_opening_media_content">Error: unable to find media</string>
+    <string name="error_opening_public_content">Error: unable to find public media</string>
+    <string name="error_opening_cache_content">Error: unable to find temporary files</string>
+
+    <!-- first launch -->
+    <string name="panorama_name">panorama.jpg</string>
+    <string name="first_launch_prompt">First launch setup</string>
+    <string name="first_launch_hint">As this is the first time you\'ve used the %1$s, there\'s some setup to be done. First, please write down this password: %2$s - you will need it to delete any unwanted media that is uploaded.\n\nSecondly, please select the directory containing the panorama file you\'d like to use for the background.\n\nThis should be a standard image file named %3$s that is at least six times wider than it is tall. After this initial loading you may delete the panorama image if required.</string>
+    <string name="first_launch_select">Select panorama directory</string>
+    
+    <!-- add user -->
+    <string name="add_user_select_homestead">Please select your homestead, or double tap anywhere to add a new homestead</string>
+    <string name="error_loading_person_editor">Error: unable to edit person details – please try again</string>
+    <string name="error_taking_picture">Error: unable to save your picture – please try again</string>
+    <string name="hint_take_picture">Please take a picture of yourself before continuing</string>
+    <string name="hint_enter_name">Please enter your name before continuing</string>
+    <string name="hint_select_homestead">Please select your homestead before continuing</string>
+    <string name="cancel_add_confirmation">Cancel registration?</string>
+    <string name="cancel_add_hint">Your details will be deleted</string>
+    <string name="cancel_add_delete">Cancel and delete my details</string>
+    <string name="cancel_add_continue">Continue registration</string>
+    <string name="add_user_name">Your name</string>
+
+    <!-- person browser -->
+    <string name="icon_image_text_description">This person\'s profile picture and name</string>
+    <string name="message_colour_changed">Your new colour has been saved</string>
+    <string name="title_change_homestead_colour">Choose a colour, then tap the icon to confirm</string>
+
+    <!-- media browser -->
+    <string name="message_view_locked_person">Touch your face to enter your pattern and view all your media – currently showing shared media only</string>
+    <string name="message_unlocking_person_success">Pattern correct – now unlocking your media</string>
+    <string name="message_locking_person_success">Your media has now been locked</string>
+    <string name="message_unlocking_person_failed">Sorry, that pattern is incorrect</string>
+    <string name="profile_picture_description">This person\'s profile picture</string>
+    <string name="profile_picture_overlay_description">An icon representing whether or not this person is unlocked</string>
+    <string name="icon_image_description">This media item\'s icon</string>
+    <string name="delete_person_deleted">The person has been deleted</string>
+    <string name="delete_person_password_prompt">Please enter the password to delete this person</string>
+    <string name="delete_person_password_incorrect">Sorry, the password was incorrect - not deleting the person</string>
+
+    <!-- media viewer -->
+    <string name="error_loading_media">Error: unable to load this media item</string>
+    <string name="error_sending_media">Error: unable to send this media item</string>
+    <string name="send_media_title">Send this media item</string>
+    <string name="edit_media_title">Edit this media item</string>
+    <string name="share_media_title">Share this media item</string>
+    <string name="share_media_public">Share this file with everyone</string>
+    <string name="share_media_choose">Choose people to share with</string>
+    <string name="share_media_choose_completed_singular">The media has been sent to %1$d person</string>
+    <string name="share_media_choose_completed_plural">The media has been sent to %1$d people</string>
+    <string name="share_media_private">Keep this file private</string>
+    <string name="delete_media_deleted">The media item has been deleted</string>
+    <string name="delete_media_password_prompt">Please enter the password to delete this media item</string>
+    <string name="delete_media_confirmation">Delete this media item?</string>
+    <string name="delete_media_hint">This media item will be permanently deleted</string>
+    <string name="delete_media_password_incorrect">Sorry, the password was incorrect - not deleting the media</string>
+    <string name="media_icon_description">An image representing this media item</string>
+    <string name="frame_image_description">The image for this frame</string>
+    <string name="error_loading_narrative_player">Error: couldn\'t open the narrative — please try again</string>
+
+    <!-- activity titles (API v11+) -->
+    <string name="title_homestead_browser">My Community</string>
+    <string name="title_people_browser">People in this homestead</string>
+    <string name="title_people_browser_selection">People in this community</string>
+    <string name="title_people_browser_personalised">%1$s\'s homestead</string>
+    <string name="title_media_browser">This person\'s media</string>
+    <string name="title_media_browser_private_personalised">All of %1$s\'s media</string>
+    <string name="title_media_browser_public_personalised">%1$s\'s shared media</string>
+    <string name="title_media_browser_public">Public media</string>
+    <string name="title_playback">Media viewer</string>
+    <string name="title_add_user">Add user</string>
+    <string name="title_edit_user">Edit user</string>
+    <string name="title_crop_image">Crop this picture – select your face</string>
+    <string name="title_preferences">Preferences</string>
+    <string name="title_select_panorama_directory">Select the directory containing the panorama image</string>
+
+    <!-- preferences -->
+    <string name="preferences_import">Import</string>
+    <string name="preferences_watch_for_files_title">Scan for new media</string>
+    <string name="preferences_watch_for_files_summary_off">Media sent via Bluetooth will not be imported</string>
+    <string name="preferences_watch_for_files_summary_on">The Bluetooth directory will be monitored for incoming media</string>
+    <string name="preferences_bluetooth_directory_title">Bluetooth directory</string>
+    <string name="preferences_bluetooth_directory_summary">Set the directory to watch for incoming files</string>
+    <string name="preferences_bluetooth_directory_error">Error: unable to read directory; reverting to old location</string>
+
+    <!-- menu items -->
+    <string name="menu_add_user">Register</string>
+    <string name="menu_save">Save</string>
+    <string name="menu_update">Update</string>
+    <string name="menu_back">Back</string>
+    <string name="menu_delete_person">Delete this person</string>
+    <string name="menu_delete_media">Delete this media</string>
+    <string name="menu_send">Send</string>
+    <string name="menu_share">Share</string>
+    <string name="menu_view_public_media">Public media</string>
+    <string name="menu_people_change_colour">Change colour</string>
+    <string name="menu_preferences">Preferences</string>
+
+</resources>

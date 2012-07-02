@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+
+    <GridView
+        android:id="@+id/grid_people"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:columnWidth="@dimen/person_icon_container_width"
+        android:drawSelectorOnTop="false"
+        android:fadingEdge="vertical"
+        android:gravity="center_horizontal"
+        android:horizontalSpacing="@dimen/icon_grid_spacing"
+        android:listSelector="@drawable/grid_item_selector"
+        android:longClickable="false"
+        android:numColumns="auto_fit"
+        android:paddingLeft="@dimen/icon_border_width"
+        android:paddingTop="@dimen/icon_border_width"
+        android:scrollbarAlwaysDrawVerticalTrack="true"
+        android:scrollbars="vertical"
+        android:smoothScrollbar="true"
+        android:stretchMode="columnWidth"
+        android:textFilterEnabled="true"
+        android:verticalSpacing="@dimen/icon_grid_spacing" />
+
+    <RelativeLayout
+        android:id="@+id/panel_people"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@id/grid_people" >
+
+        <!-- todo: decide whether registration or colour changing is more common -->
+
+        <Button
+            android:id="@+id/button_people_add_user"
+            style="@style/default_navigation_button"
+            android:layout_alignParentLeft="true"
+            android:drawableTop="@drawable/ic_menu_add_user"
+            android:visibility="gone" />
+
+        <Button
+            android:id="@+id/button_people_change_colour"
+            style="@style/default_navigation_button"
+            android:layout_alignParentLeft="true"
+            android:drawableTop="@android:drawable/ic_menu_preferences" />
+
+        <Button
+            android:id="@+id/button_people_view_homesteads"
+            style="@style/default_navigation_button"
+            android:layout_centerHorizontal="true"
+            android:drawableTop="@drawable/ic_menu_homesteads" />
+
+        <Button
+            android:id="@+id/button_people_view_public_media"
+            style="@style/default_navigation_button"
+            android:layout_alignParentRight="true"
+            android:drawableTop="@drawable/ic_menu_public_media" />
+    </RelativeLayout>
+
+</RelativeLayout>

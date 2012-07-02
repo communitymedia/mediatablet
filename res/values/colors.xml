@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- icons -->
+    <color name="grid_item_text_background">#99000000</color>
+    <color name="icon_background">#ff000000</color>
+    <color name="icon_border">#ff767676</color>
+    <color name="icon_person_border">#ff6595f9</color>
+    <color name="icon_text_no_image">#ffffffff</color>
+    <color name="icon_text_with_image">#ff000000</color>
+    <color name="icon_text_background">#85ffffff</color>
+    <color name="icon_selected">#40a9a9a9</color>
+
+    <!-- coloured buttons -->
+    <color name="button_blue_default">#ff82d5fe</color>
+    <color name="button_blue_touched">#ff82d5fe</color>
+    <color name="button_green_default">#ffd3fe7c</color>
+    <color name="button_green_touched">#ffd3fe7c</color>
+
+</resources>
