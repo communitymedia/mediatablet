@@ -47,7 +47,6 @@ import android.media.MediaPlayer.OnErrorListener;
 import android.media.MediaPlayer.OnPreparedListener;
 import android.media.SoundPool;
 import android.os.Bundle;
-import android.os.PowerManager;
 import android.text.TextUtils;
 import android.util.Log;
 import android.util.TypedValue;
@@ -80,8 +79,6 @@ public class NarrativeViewerActivity extends MediaViewerActivity {
 	private int mNonAudioOffset;
 	private FrameMediaContainer mCurrentFrameContainer;
 	private PictureDrawable mAudioPictureDrawable = null;
-
-	private PowerManager.WakeLock mWakeLock = null;
 
 	@Override
 	protected void initialiseView(Bundle savedInstanceState) {
@@ -250,10 +247,10 @@ public class NarrativeViewerActivity extends MediaViewerActivity {
 		if (container.mImagePath != null && new File(container.mImagePath).exists()) {
 			Bitmap scaledBitmap = BitmapUtilities.loadAndCreateScaledBitmap(container.mImagePath,
 					photoDisplay.getWidth(), photoDisplay.getHeight(), BitmapUtilities.ScalingLogic.FIT, true);
-			
+
 			if (scaledBitmap != null) {
 				photoDisplay.setImageBitmap(scaledBitmap);
-	
+
 				// hack to align horizontally centred but vertically top when appropriate
 				Display display = ((WindowManager) getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay();
 				if (scaledBitmap.getWidth() > scaledBitmap.getHeight()) {
@@ -321,19 +318,8 @@ public class NarrativeViewerActivity extends MediaViewerActivity {
 		mFrameSounds.clear();
 	}
 
-	private void configureWakeLock(boolean maintain) {
-		if (!maintain) {
-			if (mWakeLock != null) {
-				mWakeLock.release();
-			}
-			mWakeLock = null;
-		} else if (mWakeLock == null || !mWakeLock.isHeld()) {
-			mWakeLock = UIUtilities.acquireWakeLock(NarrativeViewerActivity.this, DebugUtilities.getLogTag(this));
-		}
-	}
-
 	private void releasePlayer() {
-		configureWakeLock(false);
+		UIUtilities.releaseKeepScreenOn(getWindow());
 		if (mMediaPlayer != null) {
 			try {
 				mMediaPlayer.stop();
@@ -357,7 +343,7 @@ public class NarrativeViewerActivity extends MediaViewerActivity {
 	private CustomMediaController.MediaPlayerControl mMediaPlayerController = new CustomMediaController.MediaPlayerControl() {
 		@Override
 		public void start() {
-			configureWakeLock(true);
+			UIUtilities.acquireKeepScreenOn(getWindow());
 			// so we return to the start when playing from the end
 			if (mPlaybackPosition < 0) {
 				mPlaybackPosition = 0;
@@ -374,7 +360,7 @@ public class NarrativeViewerActivity extends MediaViewerActivity {
 
 		@Override
 		public void pause() {
-			configureWakeLock(false);
+			UIUtilities.releaseKeepScreenOn(getWindow());
 			mMediaPlayer.pause();
 			mSoundPool.autoPause();
 			// TODO: check this works
@@ -442,7 +428,7 @@ public class NarrativeViewerActivity extends MediaViewerActivity {
 	};
 
 	private void startPlayers() {
-		configureWakeLock(true);
+		UIUtilities.acquireKeepScreenOn(getWindow());
 
 		AudioManager mgr = (AudioManager) NarrativeViewerActivity.this.getSystemService(Context.AUDIO_SERVICE);
 		float streamVolumeCurrent = mgr.getStreamVolume(AudioManager.STREAM_MUSIC);
@@ -502,7 +488,7 @@ public class NarrativeViewerActivity extends MediaViewerActivity {
 				mMediaPlayerController.pause();
 				mMediaController.updatePausePlay();
 				mPlaybackPosition = -1; // so we start from the beginning
-				configureWakeLock(false);
+				UIUtilities.releaseKeepScreenOn(getWindow());
 			}
 		}
 	};

@@ -206,6 +206,11 @@ public class HomesteadSurfaceView extends SurfaceView implements SurfaceHolder.C
 		return mPanoramaLoaded;
 	}
 
+	public void requestLoadImages() {
+		// TODO: ignore repeat requests
+		loadImages();
+	}
+
 	private void loadImages() {
 		Context context = getContext();
 		SharedPreferences panoramaSettings = context.getSharedPreferences(MediaTablet.APPLICATION_NAME,

@@ -237,6 +237,11 @@ public abstract class MediaViewerActivity extends MediaTabletActivity {
 	}
 
 	private void sendMedia() {
+		// released this when pausing; important to keep awake to export because we only have one chance to display the
+		// export options after creating mp4 or smil file (will be cancelled on screen unlock; Android is weird)
+		// TODO: move to a better (e.g. notification bar) method of exporting?
+		UIUtilities.acquireKeepScreenOn(getWindow());
+
 		ArrayList<Uri> filesToSend;
 		String mimeType = "video/*";
 		MediaItem currentMediaItem = MediaManager.findMediaByInternalId(getContentResolver(), mMediaInternalId);
@@ -394,7 +399,7 @@ public abstract class MediaViewerActivity extends MediaTabletActivity {
 			builder.setNegativeButton(android.R.string.cancel, null);
 			builder.setItems(sendShareOptions, new DialogInterface.OnClickListener() {
 				public void onClick(DialogInterface dialog, int item) {
-					switch(item) {
+					switch (item) {
 						case 0:
 							sendMedia();
 							break;

@@ -45,12 +45,17 @@ import android.content.SharedPreferences;
 import android.graphics.BitmapFactory.Options;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
+import android.text.SpannableString;
+import android.text.method.LinkMovementMethod;
+import android.text.util.Linkify;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 public class HomesteadBrowserActivity extends MediaTabletActivity {
 
@@ -58,6 +63,7 @@ public class HomesteadBrowserActivity extends MediaTabletActivity {
 
 	private boolean mEditMode;
 	private HomesteadItem mTouchedHomestead;
+	private boolean mDialogShown;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -84,6 +90,7 @@ public class HomesteadBrowserActivity extends MediaTabletActivity {
 				R.drawable.ic_menu_homesteads, getString(R.string.title_homestead_browser), true) }, null);
 		setContentView(R.layout.homestead_browser);
 
+		mDialogShown = false;
 		initialiseHomesteadsView();
 	}
 
@@ -99,30 +106,62 @@ public class HomesteadBrowserActivity extends MediaTabletActivity {
 		if (hasFocus) {
 			// do this here so that we can create a dialog
 			if (!mHomesteadSurfaceView.imagesLoaded()) {
-				String passwordValue = Long.toHexString(Double.doubleToLongBits(Math.random())).substring(3, 10);
-				String passwordHash = StringUtilities.sha1Hash(passwordValue);
+
+				// so that they can press back to exit
+				if (mDialogShown) {
+					finish();
+					return;
+				}
+				mDialogShown = true;
 
 				SharedPreferences panoramaSettings = getSharedPreferences(MediaTablet.APPLICATION_NAME,
 						Context.MODE_PRIVATE);
-				SharedPreferences.Editor prefsEditor = panoramaSettings.edit();
-				prefsEditor.putString(getString(R.string.key_administrator_password), passwordHash);
-				prefsEditor.commit(); // apply is better, but only in API > 8
+				String existingPassword = panoramaSettings.getString(
+						getString(R.string.key_administrator_password_temp), null);
+				if (existingPassword == null) {
+					existingPassword = Long.toHexString(Double.doubleToLongBits(Math.random())).substring(3, 10);
+					String passwordHash = StringUtilities.sha1Hash(existingPassword);
+					SharedPreferences.Editor prefsEditor = panoramaSettings.edit();
+					prefsEditor.putString(getString(R.string.key_administrator_password), passwordHash);
+					prefsEditor.putString(getString(R.string.key_administrator_password_temp), existingPassword);
+					prefsEditor.commit(); // apply is better, but only in API > 8; plaintext will be deleted later
+				}
 
 				AlertDialog.Builder builder = new AlertDialog.Builder(HomesteadBrowserActivity.this);
 				builder.setTitle(R.string.first_launch_prompt);
-				builder.setMessage(String.format(getString(R.string.first_launch_hint), getString(R.string.app_name),
-						passwordValue, getString(R.string.panorama_name)));
+
+				// make sure the panorama is linked
+				final SpannableString message = new SpannableString(String.format(
+						getString(R.string.first_launch_hint), getString(R.string.app_name), existingPassword,
+						getString(R.string.panorama_name)));
+				Linkify.addLinks(message, Linkify.WEB_URLS);
+				builder.setMessage(message);
 				builder.setIcon(android.R.drawable.ic_dialog_info);
-				builder.setCancelable(false);
+				// builder.setCancelable(false);
 				builder.setPositiveButton(R.string.first_launch_select, new DialogInterface.OnClickListener() {
 					public void onClick(DialogInterface dialog, int whichButton) {
-						Intent intent = new Intent(getBaseContext(), SelectDirectoryActivity.class);
-						startActivityForResult(intent, R.id.intent_directory_chooser);
+						if (validatePanorama(
+								new File(
+										Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS),
+										getString(R.string.panorama_name)), false)) {
+							mHomesteadSurfaceView.requestLoadImages();
+						} else {
+							Intent intent = new Intent(getBaseContext(), SelectDirectoryActivity.class);
+							if (Environment.getExternalStorageDirectory().canRead()) {
+								intent.putExtra(SelectDirectoryActivity.START_PATH, Environment
+										.getExternalStorageDirectory().getAbsolutePath());
+							}
+							startActivityForResult(intent, R.id.intent_directory_chooser);
+						}
 						dialog.dismiss();
 					}
 				});
 				AlertDialog alert = builder.create();
 				alert.show();
+
+				// make the textview clickable (for the panorama link)
+				((TextView) alert.findViewById(android.R.id.message)).setMovementMethod(LinkMovementMethod
+						.getInstance());
 			}
 		}
 	}
@@ -254,6 +293,28 @@ public class HomesteadBrowserActivity extends MediaTabletActivity {
 		}
 	};
 
+	private boolean validatePanorama(File newPath, boolean showNotFound) {
+		if (newPath.canRead()) {
+			String panoramaPath = newPath.getAbsolutePath();
+			Options imageDimensions = BitmapUtilities.getImageDimensions(panoramaPath);
+			if (imageDimensions != null && imageDimensions.outWidth > imageDimensions.outHeight) {
+				SharedPreferences panoramaSettings = getSharedPreferences(MediaTablet.APPLICATION_NAME,
+						Context.MODE_PRIVATE);
+				SharedPreferences.Editor prefsEditor = panoramaSettings.edit();
+				prefsEditor.putString(getString(R.string.key_panorama_file), panoramaPath);
+				prefsEditor.putString(getString(R.string.key_administrator_password_temp), "");
+				prefsEditor.commit(); // apply is better, but only in API > 8
+				UIUtilities.showToast(HomesteadBrowserActivity.this, R.string.panorama_found);
+				return true;
+			}
+		}
+		if (showNotFound) {
+			UIUtilities.showFormattedToast(HomesteadBrowserActivity.this, R.string.panorama_not_found,
+					getString(R.string.panorama_name));
+		}
+		return false;
+	}
+
 	@Override
 	public void onActivityResult(int requestCode, int resultCode, Intent resultIntent) {
 		switch (requestCode) {
@@ -261,18 +322,7 @@ public class HomesteadBrowserActivity extends MediaTabletActivity {
 				if (resultCode == Activity.RESULT_OK && resultIntent != null) {
 					String resultPath = resultIntent.getStringExtra(SelectDirectoryActivity.RESULT_PATH);
 					if (resultPath != null) {
-						File newPath = new File(resultPath, getString(R.string.panorama_name));
-						if (newPath.canRead()) {
-							String panoramaPath = newPath.getAbsolutePath();
-							Options imageDimensions = BitmapUtilities.getImageDimensions(panoramaPath);
-							if (imageDimensions != null && imageDimensions.outWidth > imageDimensions.outHeight) {
-								SharedPreferences panoramaSettings = getSharedPreferences(MediaTablet.APPLICATION_NAME,
-										Context.MODE_PRIVATE);
-								SharedPreferences.Editor prefsEditor = panoramaSettings.edit();
-								prefsEditor.putString(getString(R.string.key_panorama_file), panoramaPath);
-								prefsEditor.commit(); // apply is better, but only in API > 8
-							}
-						}
+						validatePanorama(new File(resultPath, getString(R.string.panorama_name)), true);
 					}
 				}
 				break;

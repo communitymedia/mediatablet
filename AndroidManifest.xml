@@ -2,30 +2,30 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="ac.robinson.mediatablet"
     android:installLocation="preferExternal"
-    android:versionCode="1"
-    android:versionName="1.0" >
+    android:versionCode="2"
+    android:versionName="1.0.1" >
 
     <uses-sdk
         android:minSdkVersion="9"
         android:targetSdkVersion="11" />
 
-    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
     <uses-permission android:name="android.permission.BLUETOOTH" />
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
-    <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.WRITE_INTERNAL_STORAGE" />
 
     <uses-feature
+        android:name="android.hardware.bluetooth"
+        android:required="false" />
+    <uses-feature
         android:name="android.hardware.camera"
-        android:required="true" />
+        android:required="false" />
     <uses-feature
         android:name="android.hardware.camera.front"
         android:required="false" />
     <uses-feature
-        android:name="android.hardware.camera.autofocus"
-        android:required="false" />
+        android:name="android.hardware.touchscreen"
+        android:required="true" />
 
     <application
         android:name=".MediaTabletApplication"
@@ -90,12 +90,13 @@
             android:screenOrientation="sensorLandscape" />
         <activity
             android:name="ac.robinson.mediautilities.SelectDirectoryActivity"
-            android:label="@string/title_select_panorama_directory"
+            android:label="@string/title_select_directory"
             android:screenOrientation="sensorLandscape" />
 
         <provider
             android:name=".provider.MediaTabletProvider"
-            android:authorities="mediatablet" /> <!-- authorities *must* be the same as MediaTablet.APPLICATION_NAME -->
+            android:authorities="mediatablet"
+            android:exported="false" /> <!-- authorities *must* be the same as MediaTablet.APPLICATION_NAME -->
 
         <service android:name="ac.robinson.service.ImportingService" />
     </application>

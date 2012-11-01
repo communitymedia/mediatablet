@@ -27,7 +27,6 @@ import ac.robinson.mediatablet.MediaTablet;
 import ac.robinson.mediatablet.MediaViewerActivity;
 import ac.robinson.mediatablet.R;
 import ac.robinson.mediatablet.provider.MediaTabletProvider;
-import ac.robinson.util.DebugUtilities;
 import ac.robinson.util.IOUtilities;
 import ac.robinson.util.UIUtilities;
 import ac.robinson.view.CustomMediaController;
@@ -38,7 +37,6 @@ import android.media.MediaPlayer.OnCompletionListener;
 import android.media.MediaPlayer.OnPreparedListener;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.PowerManager;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
@@ -50,7 +48,6 @@ public class AudioVideoViewerActivity extends MediaViewerActivity {
 
 	private VideoView mVideoAudioPlayer;
 	private CustomMediaController mMediaController;
-	private PowerManager.WakeLock mWakeLock = null;
 	private boolean mControllerPrepared;
 	private boolean mMediaPrepared;
 
@@ -122,7 +119,7 @@ public class AudioVideoViewerActivity extends MediaViewerActivity {
 
 	@Override
 	protected void onDestroy() {
-		configureWakeLock(false);
+		UIUtilities.releaseKeepScreenOn(getWindow());
 		if (mMediaController != null) {
 			mMediaController.hide();
 			((RelativeLayout) findViewById(R.id.audio_video_view_parent)).removeView(mMediaController);
@@ -131,31 +128,20 @@ public class AudioVideoViewerActivity extends MediaViewerActivity {
 		super.onDestroy();
 	}
 
-	private void configureWakeLock(boolean maintain) {
-		if (!maintain) {
-			if (mWakeLock != null) {
-				mWakeLock.release();
-			}
-			mWakeLock = null;
-		} else if (mWakeLock == null || !mWakeLock.isHeld()) {
-			mWakeLock = UIUtilities.acquireWakeLock(AudioVideoViewerActivity.this, DebugUtilities.getLogTag(this));
-		}
-	}
-
 	private void startPlayer() {
 		if (mControllerPrepared && mMediaPrepared) {
-			configureWakeLock(true);
+			UIUtilities.acquireKeepScreenOn(getWindow());
 			mVideoAudioPlayer.start();
 			mMediaController.setMediaPlayer(new CustomMediaController.MediaPlayerControl() {
 				@Override
 				public void start() {
-					configureWakeLock(true);
+					UIUtilities.acquireKeepScreenOn(getWindow());
 					mVideoAudioPlayer.start();
 				}
 
 				@Override
 				public void pause() {
-					configureWakeLock(false);
+					UIUtilities.releaseKeepScreenOn(getWindow());
 					mVideoAudioPlayer.pause();
 				}
 

@@ -93,5 +93,6 @@
     <string name="key_panorama_position">panorama_position</string>
     <string name="key_panorama_file">panorama_file</string>
     <string name="key_administrator_password">administrator_password</string>
+    <string name="key_administrator_password_temp">administrator_password_temp</string>
 
 </resources>
