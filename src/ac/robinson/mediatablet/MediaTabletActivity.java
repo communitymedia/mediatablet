@@ -31,7 +31,7 @@ import ac.robinson.mediatablet.provider.MediaItem;
 import ac.robinson.mediatablet.provider.PersonItem;
 import ac.robinson.mediautilities.MediaUtilities;
 import ac.robinson.mediautilities.MediaUtilities.FrameMediaContainer;
-import ac.robinson.mediautilities.R;
+import ac.robinson.mediatablet.R;
 import ac.robinson.util.IOUtilities;
 import ac.robinson.util.UIUtilities;
 import android.app.Activity;

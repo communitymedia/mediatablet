@@ -28,7 +28,7 @@ import java.util.List;
 
 import ac.robinson.mediatablet.provider.PersonManager;
 import ac.robinson.mediautilities.MediaUtilities;
-import ac.robinson.mediautilities.R;
+import ac.robinson.mediatablet.R;
 import ac.robinson.service.ImportingService;
 import ac.robinson.util.IOUtilities;
 import android.app.Application;
