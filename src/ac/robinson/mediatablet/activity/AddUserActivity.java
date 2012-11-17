@@ -60,6 +60,7 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
@@ -157,8 +158,9 @@ public class AddUserActivity extends MediaTabletActivity {
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
-		getMenuInflater().inflate(R.menu.cancel, menu);
-		getMenuInflater().inflate(R.menu.save, menu);
+		MenuInflater inflater = getMenuInflater();
+		inflater.inflate(R.menu.cancel, menu);
+		inflater.inflate(R.menu.save, menu);
 		if (mEditMode) {
 			menu.findItem(R.id.menu_save).setTitle(R.string.menu_update);
 		}

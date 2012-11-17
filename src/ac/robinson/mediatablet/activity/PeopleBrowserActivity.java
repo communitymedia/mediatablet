@@ -49,6 +49,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
@@ -125,12 +126,13 @@ public class PeopleBrowserActivity extends MediaTabletActivity {
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
+		MenuInflater inflater = getMenuInflater();
 		if (mParentId == null) {
-			getMenuInflater().inflate(R.menu.cancel, menu);
-			getMenuInflater().inflate(R.menu.share, menu);
+			inflater.inflate(R.menu.cancel, menu);
+			inflater.inflate(R.menu.share, menu);
 		} else {
-			getMenuInflater().inflate(R.menu.public_media, menu);
-			getMenuInflater().inflate(R.menu.add_user, menu);
+			inflater.inflate(R.menu.public_media, menu);
+			inflater.inflate(R.menu.add_user, menu);
 			try {
 				Method setShowAsAction = MenuItem.class.getMethod("setShowAsAction", Integer.TYPE);
 				setShowAsAction.invoke(menu.findItem(R.id.menu_add_user),
@@ -138,7 +140,7 @@ public class PeopleBrowserActivity extends MediaTabletActivity {
 			} catch (Exception e) { // platform is probably < 11
 			}
 		}
-		getMenuInflater().inflate(R.menu.people_preferences, menu);
+		inflater.inflate(R.menu.people_preferences, menu);
 		return super.onCreateOptionsMenu(menu);
 	}
 

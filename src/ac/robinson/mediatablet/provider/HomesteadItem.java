@@ -45,7 +45,6 @@ import android.graphics.Rect;
 import android.graphics.Region;
 import android.net.Uri;
 import android.provider.BaseColumns;
-import android.util.FloatMath;
 import android.util.TypedValue;
 
 import com.larvalabs.svgandroid.SVG;
@@ -219,7 +218,7 @@ public class HomesteadItem implements BaseColumns {
 
 			// set up for drawing outlined person icons
 			int halfPersonIconSize = personIconSize / 2;
-			int halfStrokeWidth = (int) FloatMath.floor(strokeWidth / 2f);
+			int halfStrokeWidth = (int) Math.floor(strokeWidth / 2f);
 			Point centrePoint = new Point(Math.round(homesteadBitmap.getWidth() / 2f), Math.round(homesteadBitmap
 					.getHeight() / 2f));
 			Point startPoint = new Point(Math.round(homesteadBitmap.getWidth() - halfPersonIconSize - halfStrokeWidth),

@@ -24,6 +24,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Hashtable;
+import java.util.Locale;
 import java.util.Map;
 
 import ac.robinson.mediatablet.activity.HomesteadBrowserActivity;
@@ -57,6 +58,7 @@ import android.os.Bundle;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
@@ -168,16 +170,17 @@ public abstract class MediaViewerActivity extends MediaTabletActivity {
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
+		MenuInflater inflater = getMenuInflater();
 		if (mOwnerMode) {
-			getMenuInflater().inflate(R.menu.share, menu);
+			inflater.inflate(R.menu.share, menu);
 		}
 		if (canSendFiles()) {
-			getMenuInflater().inflate(R.menu.send, menu);
+			inflater.inflate(R.menu.send, menu);
 		}
 		if (mMediaParentId != null) {
-			getMenuInflater().inflate(R.menu.public_media, menu);
+			inflater.inflate(R.menu.public_media, menu);
 		}
-		getMenuInflater().inflate(R.menu.delete, menu);
+		inflater.inflate(R.menu.delete, menu);
 		menu.findItem(R.id.menu_delete).setTitle(getString(R.string.menu_delete_media));
 		return super.onCreateOptionsMenu(menu);
 	}
@@ -288,8 +291,8 @@ public abstract class MediaViewerActivity extends MediaTabletActivity {
 
 			// random name to counter repeat sending name issues
 			final String exportName = String.format("%s-%s",
-					getString(R.string.app_name).replaceAll("[^A-Za-z0-9]", "-").toLowerCase(), MediaTabletProvider
-							.getNewInternalId().substring(0, 8));
+					getString(R.string.app_name).replaceAll("[^a-zA-Z0-9]+", "-").toLowerCase(Locale.ENGLISH),
+					MediaTabletProvider.getNewInternalId().substring(0, 8));
 
 			final Map<Integer, Object> settings = new Hashtable<Integer, Object>();
 			settings.put(MediaUtilities.KEY_AUDIO_RESOURCE_ID, R.raw.ic_audio_playback);

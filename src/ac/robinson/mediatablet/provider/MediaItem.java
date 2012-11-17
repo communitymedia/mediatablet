@@ -24,6 +24,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.util.ArrayList;
+import java.util.Locale;
 
 import ac.robinson.mediatablet.MediaTablet;
 import ac.robinson.mediatablet.R;
@@ -129,7 +130,7 @@ public class MediaItem implements BaseColumns {
 	}
 
 	public void setFileExtension(String fileExtension) {
-		mFileExtension = (fileExtension != null ? fileExtension.toLowerCase() : null);
+		mFileExtension = (fileExtension != null ? fileExtension.toLowerCase(Locale.ENGLISH) : null);
 	}
 
 	public String getOriginalFileName() {
@@ -190,7 +191,7 @@ public class MediaItem implements BaseColumns {
 		if (fileName == null) {
 			return MediaTabletProvider.TYPE_UNKNOWN;
 		}
-		fileName = fileName.toLowerCase();
+		fileName = fileName.toLowerCase(Locale.ENGLISH);
 		if (fileName.endsWith(MediaUtilities.SYNC_FILE_EXTENSION)) { // note use of sync, rather than smil
 			return MediaTabletProvider.TYPE_NARRATIVE;
 		}

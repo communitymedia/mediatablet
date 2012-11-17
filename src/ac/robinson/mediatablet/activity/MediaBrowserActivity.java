@@ -61,6 +61,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.view.LayoutInflater;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
@@ -151,8 +152,9 @@ public class MediaBrowserActivity extends MediaTabletActivity {
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		if (mParentId != null) {
-			getMenuInflater().inflate(R.menu.public_media, menu);
-			getMenuInflater().inflate(R.menu.delete, menu);
+			MenuInflater inflater = getMenuInflater();
+			inflater.inflate(R.menu.public_media, menu);
+			inflater.inflate(R.menu.delete, menu);
 		} else {
 			getMenuInflater().inflate(R.menu.back, menu);
 		}

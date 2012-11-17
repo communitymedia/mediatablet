@@ -51,11 +51,13 @@ public class MediaTabletApplication extends Application {
 	// for communicating with the importing service
 	private Messenger mImportingService = null;
 	private boolean mImportingServiceIsBound;
-	private WeakReference<MediaTabletActivity> mCurrentActivity = null;
-	private List<MessageContainer> mSavedMessages = Collections.synchronizedList(new ArrayList<MessageContainer>());
+
+	private static WeakReference<MediaTabletActivity> mCurrentActivity = null;
+	private static List<MessageContainer> mSavedMessages = Collections
+			.synchronizedList(new ArrayList<MessageContainer>());
 
 	// because messages are reused we need to save their contents instead
-	private class MessageContainer {
+	private static class MessageContainer {
 		public int what;
 		public String data;
 	}
@@ -150,7 +152,7 @@ public class MediaTabletApplication extends Application {
 		}
 	}
 
-	private class ImportingServiceMessageHandler extends Handler {
+	private static class ImportingServiceMessageHandler extends Handler {
 
 		@Override
 		public void handleMessage(final Message msg) {

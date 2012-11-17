@@ -50,6 +50,7 @@ import android.text.SpannableString;
 import android.text.method.LinkMovementMethod;
 import android.text.util.Linkify;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
@@ -180,12 +181,13 @@ public class HomesteadBrowserActivity extends MediaTabletActivity {
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
+		MenuInflater inflater = getMenuInflater();
 		if (!mEditMode) {
-			getMenuInflater().inflate(R.menu.add_user, menu);
-			getMenuInflater().inflate(R.menu.public_media, menu);
+			inflater.inflate(R.menu.add_user, menu);
+			inflater.inflate(R.menu.public_media, menu);
 		} else {
-			getMenuInflater().inflate(R.menu.cancel, menu);
-			getMenuInflater().inflate(R.menu.save, menu);
+			inflater.inflate(R.menu.cancel, menu);
+			inflater.inflate(R.menu.save, menu);
 		}
 		return super.onCreateOptionsMenu(menu);
 	}
