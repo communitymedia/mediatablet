@@ -68,6 +68,7 @@ public class NarrativeViewerActivity extends MediaViewerActivity {
 	private int mNumExtraSounds;
 	private boolean mMediaPlayerPrepared;
 	private boolean mSoundPoolPrepared;
+	private AssetFileDescriptor mSilenceFileDescriptor = null;
 
 	private MediaPlayer mMediaPlayer;
 	private boolean mMediaPlayerError;
@@ -222,8 +223,11 @@ public class NarrativeViewerActivity extends MediaViewerActivity {
 			mMediaPlayer.reset();
 			mMediaPlayer.setLooping(false);
 			if (currentAudioItem == null || (!(new File(currentAudioItem).exists()))) {
-				AssetFileDescriptor afd = res.openRawResourceFd(R.raw.silence_100ms);
-				mMediaPlayer.setDataSource(afd.getFileDescriptor(), afd.getStartOffset(), afd.getDeclaredLength());
+				if (mSilenceFileDescriptor == null) {
+					mSilenceFileDescriptor = res.openRawResourceFd(R.raw.silence_100ms);
+				}
+				mMediaPlayer.setDataSource(mSilenceFileDescriptor.getFileDescriptor(),
+						mSilenceFileDescriptor.getStartOffset(), mSilenceFileDescriptor.getDeclaredLength());
 			} else {
 				// can't play from data directory (they're private; permissions don't work), must use an input stream
 				// mMediaPlayer.setDataSource(currentAudioItem);
@@ -320,6 +324,13 @@ public class NarrativeViewerActivity extends MediaViewerActivity {
 
 	private void releasePlayer() {
 		UIUtilities.releaseKeepScreenOn(getWindow());
+		// release controller first, so we don't play to a null player
+		if (mMediaController != null) {
+			mMediaController.hide();
+			((RelativeLayout) findViewById(R.id.narrative_playback_container)).removeView(mMediaController);
+			mMediaController.setMediaPlayer(null);
+			mMediaController = null;
+		}
 		if (mMediaPlayer != null) {
 			try {
 				mMediaPlayer.stop();
@@ -332,11 +343,6 @@ public class NarrativeViewerActivity extends MediaViewerActivity {
 			unloadSoundPool();
 			mSoundPool.release();
 			mSoundPool = null;
-		}
-		if (mMediaController != null) {
-			mMediaController.hide();
-			((RelativeLayout) findViewById(R.id.narrative_playback_container)).removeView(mMediaController);
-			mMediaController = null;
 		}
 	}
 
@@ -475,7 +481,7 @@ public class NarrativeViewerActivity extends MediaViewerActivity {
 		@Override
 		public void onCompletion(MediaPlayer mp) {
 			if (mMediaPlayerError) {
-				releasePlayer();
+				// releasePlayer(); // don't do this, as it means the player will be null; instead we resume from errors
 				return;
 			}
 			mInitialPlaybackOffset = 0;
@@ -497,7 +503,7 @@ public class NarrativeViewerActivity extends MediaViewerActivity {
 		@Override
 		public boolean onError(MediaPlayer mp, int what, int extra) {
 			mMediaPlayerError = true;
-			UIUtilities.showToast(NarrativeViewerActivity.this, R.string.error_loading_narrative_player);
+			// UIUtilities.showToast(NarrativeViewerActivity.this, R.string.error_loading_narrative_player);
 			if (MediaTablet.DEBUG)
 				Log.d(DebugUtilities.getLogTag(this), "Playback error Ð what: " + what + ", extra: " + extra);
 			return false; // not handled -> onCompletionListener will be called
