@@ -64,8 +64,8 @@ public class BluetoothObserver extends FileObserver {
 	 */
 	public BluetoothObserver(String path, int mask, Handler handler) {
 		// path *MUST* end with '/'
-		super((path.endsWith("/") ? path : path + "/"), FileObserver.CLOSE_WRITE);
-		mBluetoothDirectoryPath = (path.endsWith("/") ? path : path + "/");
+		super((path.endsWith(File.separator) ? path : path + File.separator), FileObserver.CLOSE_WRITE);
+		mBluetoothDirectoryPath = (path.endsWith(File.separator) ? path : path + File.separator);
 		mHandler = handler;
 	}
 
@@ -272,7 +272,7 @@ public class BluetoothObserver extends FileObserver {
 	public void startWatching() {
 		super.startWatching();
 		if (MediaTablet.DEBUG)
-			Log.d(DebugUtilities.getLogTag(this), "Initialising - watching " + mBluetoothDirectoryPath);
+			Log.d(DebugUtilities.getLogTag(this), "Initialising/refreshing - watching " + mBluetoothDirectoryPath);
 	}
 
 	@Override

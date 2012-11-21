@@ -28,7 +28,6 @@ import java.util.List;
 
 import ac.robinson.mediatablet.provider.PersonManager;
 import ac.robinson.mediautilities.MediaUtilities;
-import ac.robinson.mediatablet.R;
 import ac.robinson.service.ImportingService;
 import ac.robinson.util.IOUtilities;
 import android.app.Application;
@@ -44,6 +43,7 @@ import android.os.IBinder;
 import android.os.Message;
 import android.os.Messenger;
 import android.os.RemoteException;
+import android.os.StrictMode;
 import android.preference.PreferenceManager;
 
 public class MediaTabletApplication extends Application {
@@ -67,6 +67,10 @@ public class MediaTabletApplication extends Application {
 
 	@Override
 	public void onCreate() {
+		if (MediaTablet.DEBUG) {
+			StrictMode.setThreadPolicy(new StrictMode.ThreadPolicy.Builder().detectAll().penaltyLog().build());
+			StrictMode.setVmPolicy(new StrictMode.VmPolicy.Builder().detectAll().penaltyLog().penaltyDeath().build());
+		}
 		super.onCreate();
 		PersonManager.lockAllPeople(getContentResolver());
 		initialiseDirectories();
@@ -141,6 +145,7 @@ public class MediaTabletApplication extends Application {
 
 			activity.processIncomingFiles(clientMessage);
 		}
+		mSavedMessages.clear();
 	}
 
 	public void removeActivityHandle(MediaTabletActivity activity) {
