@@ -20,3 +20,5 @@ ant.properties
 build.sh
 
 build-deploy.sh
+
+deploy.sh

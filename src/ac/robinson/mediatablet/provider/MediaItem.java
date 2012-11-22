@@ -28,8 +28,8 @@ import java.util.Locale;
 
 import ac.robinson.mediatablet.MediaTablet;
 import ac.robinson.mediatablet.R;
+import ac.robinson.mediautilities.FrameMediaContainer;
 import ac.robinson.mediautilities.MediaUtilities;
-import ac.robinson.mediautilities.MediaUtilities.FrameMediaContainer;
 import ac.robinson.mediautilities.SMILUtilities;
 import ac.robinson.util.BitmapUtilities;
 import ac.robinson.util.BitmapUtilities.CacheTypeContainer;
