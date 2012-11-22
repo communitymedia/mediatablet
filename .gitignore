@@ -22,3 +22,5 @@ build.sh
 build-deploy.sh
 
 deploy.sh
+
+proguard-project.txt
