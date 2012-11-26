@@ -118,7 +118,7 @@ public class NarrativeViewerActivity extends MediaViewerActivity {
 
 	public boolean onOptionsItemSelected(MenuItem item) {
 		mMediaPlayerController.pause();
-		mMediaController.updatePausePlay();
+		mMediaController.show(0);
 		return super.onOptionsItemSelected(item);
 	}
 
@@ -413,6 +413,11 @@ public class NarrativeViewerActivity extends MediaViewerActivity {
 		}
 
 		@Override
+		public boolean isLoading() {
+			return mMediaPlayer.isPlaying();
+		}
+
+		@Override
 		public int getBufferPercentage() {
 			return 0;
 		}
@@ -436,22 +441,18 @@ public class NarrativeViewerActivity extends MediaViewerActivity {
 	private void startPlayers() {
 		UIUtilities.acquireKeepScreenOn(getWindow());
 
-		AudioManager mgr = (AudioManager) NarrativeViewerActivity.this.getSystemService(Context.AUDIO_SERVICE);
-		float streamVolumeCurrent = mgr.getStreamVolume(AudioManager.STREAM_MUSIC);
-		float streamVolumeMax = mgr.getStreamMaxVolume(AudioManager.STREAM_MUSIC);
-		float volume = streamVolumeCurrent / streamVolumeMax;
-
 		for (Integer soundId : mFrameSounds) {
-			mSoundPool.play(soundId, volume, volume, 1, 0, 1f);
+			mSoundPool.play(soundId, 1, 1, 1, 0, 1f); // volume is a percentage of *current*, rather than maximum
 			// TODO: seek to mInitialPlaybackOffset
 		}
 
-		mMediaPlayer.setVolume(volume, volume);
+		// volume is a percentage of *current*, rather than maximum, so this is unnecessary
+		// mMediaPlayer.setVolume(volume, volume);
 		mMediaPlayer.start();
 		mMediaPlayer.seekTo(mInitialPlaybackOffset);
 
 		mMediaController.setMediaPlayer(mMediaPlayerController);
-		mMediaController.show(0); // 0 for permanent visibility TODO: hide playback controls after short timeout?
+		mMediaController.show(0); // 0 for permanent visibility TODO: hide playback controls after short timeout
 	}
 
 	private SoundPool.OnLoadCompleteListener mSoundPoolLoadListener = new SoundPool.OnLoadCompleteListener() {
@@ -492,7 +493,7 @@ public class NarrativeViewerActivity extends MediaViewerActivity {
 				// move to just before the end (accounting for mNarrativeDuration errors)
 				mMediaPlayerController.seekTo(currentPosition - 2);
 				mMediaPlayerController.pause();
-				mMediaController.updatePausePlay();
+				mMediaController.show(0);
 				mPlaybackPosition = -1; // so we start from the beginning
 				UIUtilities.releaseKeepScreenOn(getWindow());
 			}

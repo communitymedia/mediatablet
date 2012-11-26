@@ -120,7 +120,8 @@ public class MediaManager {
 			c = contentResolver.query(MediaItem.CONTENT_URI, MediaItem.PROJECTION_ALL, clause, arguments, null);
 			if (c.getCount() > 0) {
 				if (c.moveToFirst()) {
-					return MediaItem.fromCursor(c);
+					final MediaItem media = MediaItem.fromCursor(c);
+					return media;
 				}
 			}
 		} finally {

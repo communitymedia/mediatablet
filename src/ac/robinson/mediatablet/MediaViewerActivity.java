@@ -240,7 +240,7 @@ public abstract class MediaViewerActivity extends MediaTabletActivity {
 
 	private void sendMedia() {
 		// released this when pausing; important to keep awake to export because we only have one chance to display the
-		// export options after creating mp4 or smil file (will be cancelled on screen unlock; Android is weird)
+		// export options after creating mov or smil file (will be cancelled on screen unlock; Android is weird)
 		// TODO: move to a better (e.g. notification bar) method of exporting?
 		UIUtilities.acquireKeepScreenOn(getWindow());
 

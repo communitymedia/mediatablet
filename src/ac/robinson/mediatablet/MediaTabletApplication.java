@@ -72,7 +72,10 @@ public class MediaTabletApplication extends Application {
 			StrictMode.setVmPolicy(new StrictMode.VmPolicy.Builder().detectAll().penaltyLog().penaltyDeath().build());
 		}
 		super.onCreate();
-		PersonManager.lockAllPeople(getContentResolver());
+		try {
+			PersonManager.lockAllPeople(getContentResolver());
+		} catch (Throwable t) {
+		}
 		initialiseDirectories();
 	}
 
@@ -127,6 +130,15 @@ public class MediaTabletApplication extends Application {
 		} else {
 			MediaTablet.DIRECTORY_TEMP = IOUtilities
 					.getNewCachePath(this, MediaTablet.APPLICATION_NAME + "_temp", true); // delete existing
+
+			// delete any leftovers
+			if (IOUtilities.externalStorageIsWritable()) {
+				File oldTempDirectory = new File(Environment.getExternalStorageDirectory(),
+						MediaTablet.APPLICATION_NAME + "_temp");
+				if (oldTempDirectory.exists()) {
+					oldTempDirectory.delete();
+				}
+			}
 		}
 	}
 

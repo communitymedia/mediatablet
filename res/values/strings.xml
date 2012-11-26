@@ -16,8 +16,8 @@
     <string name="panorama_found">Panorama image found – now loading&#8230;</string>
     <string name="panorama_not_found">Panorama image not found – please make sure it is present in the chosen directory, and named %1$s</string>
     <string name="first_launch_prompt">First launch setup</string>
-    <string name="first_launch_hint">As this is the first time you\'ve used %1$s, there\'s some setup to be done. First, please write down this password:\n\n%2$s\n\nYou\'ll need this password to delete any unwanted media that is uploaded, so it\'s important not to lose it.\n\nNext, you also need to select a panorama image file that you\'d like to use for the background of the media browser. This should be a standard JPEG image named %3$s that is at least six times wider than it is tall. (After this initial setup you can delete the image if you need to save space)\n\nIf you don\'t have a suitable image, or want to just experiment with the application, you can download one of ours from http://digitaleconomytoolkit.org/com-tablet/panorama – save this to your device, and then select your downloads folder on the next screen (we\'ll try to select it automatically if we can).</string>
-    <string name="first_launch_select">Select panorama directory</string>
+    <string name="first_launch_hint">As this is the first time you\'ve used %1$s, there\'s some setup to be done. First, please write down this password:\n\n%2$s\n\nAs the administrator of the media repository, you\'ll need this password to delete any unwanted media that is uploaded, so it\'s important not to lose it.\n\nNext, you also need to select a panorama image file that you\'d like to use for the background of the media browser. This should be a standard JPEG image file, named \'%3$s\' that is at least six times wider than it is tall.\n\nIf you don\'t have a suitable image, or want to just experiment with the application, you can download one of ours from http://digitaleconomytoolkit.org/com-tablet/panorama – save this to your device, and then select your downloads folder on the next screen (we\'ll try to select it automatically if we can).</string>
+    <string name="first_launch_select">Select panorama image</string>
 
     <!-- add user -->
     <string name="add_user_select_homestead">Please select your homestead, or double tap anywhere to add a new homestead</string>
@@ -100,7 +100,7 @@
     <string name="title_edit_user">Edit user</string>
     <string name="title_crop_image">Crop this picture – select your face</string>
     <string name="title_preferences">Preferences</string>
-    <string name="title_select_directory">Select a directory</string>
+    <string name="title_select_directory">Select the panorama image</string>
 
     <!-- preferences -->
     <string name="preferences_import">Import</string>

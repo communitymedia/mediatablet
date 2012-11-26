@@ -81,7 +81,7 @@ public class HomesteadBrowserActivity extends MediaTabletActivity {
 			}
 		}
 
-		// editing is a completely different appearance, for clarity (but must be done here before content is added)
+		// editing is a different theme, for clarity (but must be done here before content is added)
 		if (mEditMode) {
 			setTheme(R.style.default_light_theme);
 		}
@@ -153,6 +153,7 @@ public class HomesteadBrowserActivity extends MediaTabletActivity {
 										.getExternalStorageDirectory().getAbsolutePath());
 							}
 							startActivityForResult(intent, R.id.intent_directory_chooser);
+							mDialogShown = false;
 						}
 						dialog.dismiss();
 					}
@@ -163,6 +164,8 @@ public class HomesteadBrowserActivity extends MediaTabletActivity {
 				// make the textview clickable (for the panorama link)
 				((TextView) alert.findViewById(android.R.id.message)).setMovementMethod(LinkMovementMethod
 						.getInstance());
+			} else if (mEditMode) {
+				UIUtilities.showToast(HomesteadBrowserActivity.this, R.string.add_user_select_homestead);
 			}
 		}
 	}

@@ -79,7 +79,7 @@ public class AudioVideoViewerActivity extends MediaViewerActivity {
 			@Override
 			public void onCompletion(MediaPlayer mp) {
 				if (mControllerPrepared) {
-					mMediaController.updatePausePlay();
+					mMediaController.show(0);
 				}
 			}
 		});
@@ -166,6 +166,11 @@ public class AudioVideoViewerActivity extends MediaViewerActivity {
 				}
 
 				@Override
+				public boolean isLoading() {
+					return mVideoAudioPlayer.isPlaying();
+				}
+
+				@Override
 				public int getBufferPercentage() {
 					return 0;
 				}
@@ -185,7 +190,7 @@ public class AudioVideoViewerActivity extends MediaViewerActivity {
 					return true;
 				}
 			});
-			mMediaController.show(0); // 0 for permanent visibility TODO: hide playback controls after short timeout?
+			mMediaController.show(0); // 0 for permanent visibility TODO: hide playback controls after default timeout
 		}
 	}
 }

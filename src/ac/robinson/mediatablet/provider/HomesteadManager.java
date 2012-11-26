@@ -91,12 +91,12 @@ public class HomesteadManager {
 	public static void loadHomesteads(ContentResolver contentResolver, Vector<HomesteadItem> homesteadStore) {
 		homesteadStore.clear();
 		Cursor c = null;
-
 		try {
 			c = contentResolver.query(HomesteadItem.CONTENT_URI, HomesteadItem.PROJECTION_ALL, null, null, null);
 			if (c.getCount() > 0) {
 				while (c.moveToNext()) {
-					homesteadStore.add(HomesteadItem.fromCursor(c));
+					final HomesteadItem homestead = HomesteadItem.fromCursor(c);
+					homesteadStore.add(homestead);
 				}
 			}
 		} finally {
@@ -107,9 +107,7 @@ public class HomesteadManager {
 	}
 
 	public static HomesteadItem findHomesteadByInternalId(ContentResolver contentResolver, String internalId) {
-		HomesteadItem homestead = null;
 		Cursor c = null;
-
 		try {
 			final String[] arguments1 = mArguments1;
 			arguments1[0] = internalId;
@@ -117,7 +115,8 @@ public class HomesteadManager {
 					mHomesteadInternalIdSelection, arguments1, null);
 			if (c.getCount() > 0) { // TODO: this assumes there are no duplicates...
 				if (c.moveToFirst()) {
-					homestead = HomesteadItem.fromCursor(c);
+					final HomesteadItem homestead = HomesteadItem.fromCursor(c);
+					return homestead;
 				}
 			}
 		} finally {
@@ -125,7 +124,6 @@ public class HomesteadManager {
 				c.close();
 			}
 		}
-
-		return homestead;
+		return null;
 	}
 }

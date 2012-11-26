@@ -44,7 +44,6 @@ import ac.robinson.view.CenteredImageTextButton;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.ContentResolver;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -63,7 +62,6 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 
 public class AddUserActivity extends MediaTabletActivity {
@@ -170,10 +168,10 @@ public class AddUserActivity extends MediaTabletActivity {
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		// hide the keyboard so it doesn't show in front of the camera or homestead browser
-		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
-			InputMethodManager manager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-			manager.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0);
-		}
+		// if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+		// InputMethodManager manager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+		// manager.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0);
+		// }
 
 		switch (item.getItemId()) {
 			case android.R.id.home:
@@ -247,14 +245,14 @@ public class AddUserActivity extends MediaTabletActivity {
 			EditText textBox = (EditText) findViewById(R.id.text_add_user_name);
 			if (!TextUtils.isEmpty(personName)) {
 				textBox.setText(personName);
-			} else if (TextUtils.isEmpty(textBox.getText().toString())) {
-				// show the keyboard as a further hint (below Honeycomb it is automatic)
-				if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
-					InputMethodManager manager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-					manager.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
-				} else {
-					textBox.requestFocus();
-				}
+				// } else if (TextUtils.isEmpty(textBox.getText().toString())) {
+				// // show the keyboard as a further hint (below Honeycomb it is automatic)
+				// if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+				// InputMethodManager manager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+				// manager.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
+				// } else {
+				// textBox.requestFocus();
+				// }
 			}
 
 		} else {
@@ -308,10 +306,10 @@ public class AddUserActivity extends MediaTabletActivity {
 
 	public void handleButtonClicks(View currentButton) {
 		// hide the keyboard so it doesn't show in front of the camera or homestead browser
-		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
-			InputMethodManager manager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-			manager.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0);
-		}
+		// if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+		// InputMethodManager manager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+		// manager.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0);
+		// }
 
 		switch (currentButton.getId()) {
 			case R.id.button_take_profile_picture:

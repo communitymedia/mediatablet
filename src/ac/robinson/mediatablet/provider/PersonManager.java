@@ -131,7 +131,8 @@ public class PersonManager {
 			c = contentResolver.query(PersonItem.CONTENT_URI, PersonItem.PROJECTION_ALL, clause, arguments, null);
 			if (c.getCount() > 0) { // TODO: this assumes there are no duplicates...
 				if (c.moveToFirst()) {
-					return PersonItem.fromCursor(c);
+					final PersonItem person = PersonItem.fromCursor(c);
+					return person;
 				}
 			}
 		} finally {
@@ -145,14 +146,15 @@ public class PersonManager {
 	public static ArrayList<PersonItem> findPeopleByParentId(ContentResolver contentResolver, String parentId) {
 		final String[] arguments1 = mArguments1;
 		arguments1[0] = parentId;
-		ArrayList<PersonItem> people = new ArrayList<PersonItem>();
+		final ArrayList<PersonItem> people = new ArrayList<PersonItem>();
 		Cursor c = null;
 		try {
 			c = contentResolver.query(PersonItem.CONTENT_URI, PersonItem.PROJECTION_ALL, mPersonParentIdSelection,
 					arguments1, PersonItem.DEFAULT_SORT_ORDER);
 			if (c.getCount() > 0) {
 				while (c.moveToNext()) {
-					people.add(PersonItem.fromCursor(c));
+					final PersonItem person = PersonItem.fromCursor(c);
+					people.add(person);
 				}
 			}
 		} finally {
