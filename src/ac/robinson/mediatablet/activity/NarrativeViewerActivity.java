@@ -219,6 +219,7 @@ public class NarrativeViewerActivity extends MediaViewerActivity {
 			mSoundPoolPrepared = true;
 		}
 
+		FileInputStream playerInputStream = null;
 		try {
 			mMediaPlayer.reset();
 			mMediaPlayer.setLooping(false);
@@ -231,7 +232,7 @@ public class NarrativeViewerActivity extends MediaViewerActivity {
 			} else {
 				// can't play from data directory (they're private; permissions don't work), must use an input stream
 				// mMediaPlayer.setDataSource(currentAudioItem);
-				FileInputStream playerInputStream = new FileInputStream(new File(currentAudioItem));
+				playerInputStream = new FileInputStream(new File(currentAudioItem));
 				mMediaPlayer.setDataSource(playerInputStream.getFD());
 				IOUtilities.closeStream(playerInputStream);
 			}
@@ -244,6 +245,8 @@ public class NarrativeViewerActivity extends MediaViewerActivity {
 			UIUtilities.showToast(NarrativeViewerActivity.this, R.string.error_loading_narrative_player);
 			finish();
 			return;
+		} finally {
+			IOUtilities.closeStream(playerInputStream);
 		}
 
 		// load the image

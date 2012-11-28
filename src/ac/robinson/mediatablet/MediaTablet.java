@@ -27,7 +27,7 @@ import android.graphics.Bitmap;
 public class MediaTablet {
 
 	public static final String APPLICATION_NAME = "mediatablet"; // *must* match provider in AndroidManifest.xml
-	public static final boolean DEBUG = false;
+	public static final boolean DEBUG = false; // note: must add android.permission.INTERNET for ViewServer debugging
 
 	// storage, cache and temp directories
 	// TODO: check (ie. if (Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState())) {) each time we r/w

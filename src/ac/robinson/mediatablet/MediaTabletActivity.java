@@ -33,6 +33,7 @@ import ac.robinson.mediautilities.FrameMediaContainer;
 import ac.robinson.mediautilities.MediaUtilities;
 import ac.robinson.util.IOUtilities;
 import ac.robinson.util.UIUtilities;
+import ac.robinson.util.ViewServer;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -56,6 +57,9 @@ public abstract class MediaTabletActivity extends Activity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		if (MediaTablet.DEBUG) {
+			ViewServer.get(this).addWindow(this);
+		}
 		// for API < 11, buttons are in the main screen, so hide the title/action bar
 		if (Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB) {
 			requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -77,6 +81,9 @@ public abstract class MediaTabletActivity extends Activity {
 	@Override
 	protected void onResume() {
 		super.onResume();
+		if (MediaTablet.DEBUG) {
+			ViewServer.get(this).setFocusedWindow(this);
+		}
 		((MediaTabletApplication) this.getApplication()).registerActivityHandle(this);
 	}
 
@@ -84,6 +91,14 @@ public abstract class MediaTabletActivity extends Activity {
 	protected void onPause() {
 		super.onPause();
 		((MediaTabletApplication) this.getApplication()).removeActivityHandle(this);
+	}
+
+	@Override
+	protected void onDestroy() {
+		if (MediaTablet.DEBUG) {
+			ViewServer.get(this).removeWindow(this);
+		}
+		super.onDestroy();
 	}
 
 	@Override

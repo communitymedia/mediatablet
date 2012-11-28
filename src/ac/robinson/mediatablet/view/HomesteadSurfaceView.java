@@ -275,6 +275,7 @@ public class HomesteadSurfaceView extends SurfaceView implements SurfaceHolder.C
 				saveCachedImage(tiledBitmap, getBackgroundCacheFileName(i / panoramaHeight),
 						MediaTablet.ICON_CACHE_TYPE);
 			}
+			tiledBitmapCanvas = null;
 			if (tiledBitmap != null) {
 				tiledBitmap.recycle();
 			}

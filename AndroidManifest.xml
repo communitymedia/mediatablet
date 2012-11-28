@@ -9,8 +9,10 @@
         android:minSdkVersion="9"
         android:targetSdkVersion="11" /> <!-- TODO: bear in mind SVG hardware acceleration issue when updating -->
 
+
+    <!-- internet permission is for Hierarchy Viewer debugging only, and should be disabled for release -->
+    <!-- <uses-permission android:name="android.permission.INTERNET" /> -->
     <uses-permission android:name="android.permission.BLUETOOTH" />
-    <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
     <uses-feature
@@ -24,10 +26,13 @@
         android:required="false" />
     <uses-feature
         android:name="android.hardware.touchscreen"
-        android:required="false" />
-    <uses-feature
-        android:name="android.hardware.faketouch"
         android:required="true" />
+    <!--
+         uses-feature
+        android:name="android.hardware.faketouch"
+        android:required="true" /
+    -->
+    <!-- disabled because Google Play erroneously denies some devices which *are* touchscreens -->
     <uses-feature
         android:name="android.hardware.screen.landscape"
         android:required="true" />

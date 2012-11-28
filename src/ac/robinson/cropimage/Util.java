@@ -93,6 +93,7 @@ public class Util {
 			int dstY = (targetHeight - src.height()) / 2;
 			Rect dst = new Rect(dstX, dstY, targetWidth - dstX, targetHeight - dstY);
 			c.drawBitmap(source, src, dst, null);
+			c = null;
 			return b2;
 		}
 		float bitmapWidthF = source.getWidth();

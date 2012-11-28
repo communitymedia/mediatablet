@@ -259,6 +259,7 @@ public class CropImage extends MonitoredActivity {
 			Canvas canvas = new Canvas(croppedImage);
 			Rect dstRect = new Rect(0, 0, width, height);
 			canvas.drawBitmap(mBitmap, r, dstRect, null);
+			canvas = null;
 		}
 
 		if (mCircleCrop) {
@@ -272,6 +273,7 @@ public class CropImage extends MonitoredActivity {
 			p.addCircle(width / 2F, height / 2F, width / 2F, Path.Direction.CW);
 			c.clipPath(p, Region.Op.DIFFERENCE);
 			c.drawColor(0x00000000, PorterDuff.Mode.CLEAR);
+			c = null;
 		}
 
 		/* If the output is required to a specific size then scale or fill */
@@ -311,6 +313,7 @@ public class CropImage extends MonitoredActivity {
 				canvas.drawBitmap(mBitmap, srcRect, dstRect, null);
 
 				/* Set the cropped bitmap as the new bitmap */
+				canvas = null;
 				croppedImage.recycle();
 				croppedImage = b;
 			}
