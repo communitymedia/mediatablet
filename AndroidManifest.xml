@@ -2,8 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="ac.robinson.mediatablet"
     android:installLocation="preferExternal"
-    android:versionCode="4"
-    android:versionName="1.0.3" >
+    android:versionCode="5"
+    android:versionName="1.0.4" >
 
     <uses-sdk
         android:minSdkVersion="9"
@@ -14,6 +14,7 @@
     <uses-permission android:name="android.permission.BLUETOOTH" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
+    <uses-feature android:name="android.hardware.screen.landscape" />
     <uses-feature
         android:name="android.hardware.bluetooth"
         android:required="false" />
@@ -23,13 +24,10 @@
     <uses-feature
         android:name="android.hardware.camera.front"
         android:required="false" />
-    <uses-feature
-        android:name="android.hardware.screen.landscape"
-        android:required="true" />
-    <uses-feature
-        android:name="android.hardware.touchscreen"
-        android:required="true" />
-    <uses-feature android:name="android.hardware.faketouch" />
+    <!-- TODO: replace camera requirements with camera.any after Android 4.2 (but test unreliable store filtering) -->
+    <!-- <uses-feature android:name="android.hardware.camera.any"/> -->
+    <!-- faketouch simply does not do what the documentation claims at all (at least on the store) - disabled -->
+    <!-- <uses-feature android:name="android.hardware.faketouch" android:required="false" /> -->
 
     <supports-screens
         android:anyDensity="true"

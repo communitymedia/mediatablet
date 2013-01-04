@@ -21,17 +21,17 @@
         android:paddingRight="10dp" >
 
         <Button
-            android:id="@+id/button_crop_image_save"
-            android:layout_width="100dp"
-            android:layout_height="wrap_content"
-            android:text="@string/menu_save" />
-
-        <Button
             android:id="@+id/button_crop_image_discard"
             android:layout_width="100dp"
             android:layout_height="wrap_content"
             android:text="@android:string/cancel"
             android:visibility="gone" />
+
+        <Button
+            android:id="@+id/button_crop_image_save"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:text="@string/menu_save" />
     </LinearLayout>
 
 </RelativeLayout>
