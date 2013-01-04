@@ -2,10 +2,12 @@
 <resources>
 
     <!-- icons -->
+    <color name="default_highlight_blue">#ff33b5e5</color> <!-- @android:color/holo_blue_light -->
+
     <color name="grid_item_text_background">#99000000</color>
     <color name="icon_background">#ff000000</color>
     <color name="icon_border">#ff767676</color>
-    <color name="icon_person_border">#ff6595f9</color>
+    <color name="icon_person_border">@color/default_highlight_blue</color>
     <color name="icon_text_no_image">#ffffffff</color>
     <color name="icon_text_with_image">#ff000000</color>
     <color name="icon_text_background">#85ffffff</color>

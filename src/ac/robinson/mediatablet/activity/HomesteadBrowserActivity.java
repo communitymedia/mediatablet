@@ -54,8 +54,10 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewParent;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 public class HomesteadBrowserActivity extends MediaTabletActivity {
@@ -160,6 +162,15 @@ public class HomesteadBrowserActivity extends MediaTabletActivity {
 				});
 				AlertDialog alert = builder.create();
 				alert.show();
+
+				// try to make sure they notice that the view scrolls
+				View textView = alert.findViewById(android.R.id.message);
+				if (textView != null) {
+					ViewParent scrollView = textView.getParent();
+					if (scrollView != null && scrollView instanceof ScrollView) {
+						((ScrollView) scrollView).setScrollbarFadingEnabled(false);
+					}
+				}
 
 				// make the textview clickable (for the panorama link)
 				((TextView) alert.findViewById(android.R.id.message)).setMovementMethod(LinkMovementMethod

@@ -72,6 +72,7 @@ public class MediaTabletApplication extends Application {
 			StrictMode.setVmPolicy(new StrictMode.VmPolicy.Builder().detectAll().penaltyLog().penaltyDeath().build());
 		}
 		super.onCreate();
+		PreferenceManager.setDefaultValues(this, R.xml.preferences, true);
 		try {
 			PersonManager.lockAllPeople(getContentResolver());
 		} catch (Throwable t) {
@@ -227,6 +228,7 @@ public class MediaTabletApplication extends Application {
 			bindIntent.putExtra(MediaUtilities.KEY_OBSERVER_CLASS,
 					"ac.robinson.mediatablet.importing.BluetoothObserver");
 			bindIntent.putExtra(MediaUtilities.KEY_OBSERVER_PATH, MediaTablet.IMPORT_DIRECTORY);
+			bindIntent.putExtra(MediaUtilities.KEY_OBSERVER_REQUIRE_BT, true);
 			bindService(bindIntent, mConnection, Context.BIND_AUTO_CREATE);
 			mImportingServiceIsBound = true;
 		}

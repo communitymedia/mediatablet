@@ -35,11 +35,9 @@ import ac.robinson.util.IOUtilities;
 import ac.robinson.util.UIUtilities;
 import ac.robinson.view.AutoResizeTextView;
 import ac.robinson.view.CustomMediaController;
-import android.content.Context;
 import android.content.res.AssetFileDescriptor;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
-import android.graphics.drawable.PictureDrawable;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.media.MediaPlayer.OnCompletionListener;
@@ -50,10 +48,8 @@ import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
 import android.util.TypedValue;
-import android.view.Display;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.ImageView.ScaleType;
 import android.widget.RelativeLayout;
@@ -69,9 +65,13 @@ public class NarrativeViewerActivity extends MediaViewerActivity {
 	private boolean mMediaPlayerPrepared;
 	private boolean mSoundPoolPrepared;
 	private AssetFileDescriptor mSilenceFileDescriptor = null;
+	private boolean mSilenceFilePlaying;
+	private long mPlaybackStartTime;
 
 	private MediaPlayer mMediaPlayer;
 	private boolean mMediaPlayerError;
+	private boolean mHasPlayed;
+	private boolean mIsLoading;
 	private CustomMediaController mMediaController;
 	private ArrayList<FrameMediaContainer> mNarrativeContentList;
 	private int mNarrativeDuration;
@@ -79,15 +79,20 @@ public class NarrativeViewerActivity extends MediaViewerActivity {
 	private int mInitialPlaybackOffset;
 	private int mNonAudioOffset;
 	private FrameMediaContainer mCurrentFrameContainer;
-	private PictureDrawable mAudioPictureDrawable = null;
+	private Bitmap mAudioPictureBitmap = null;
 
 	@Override
 	protected void initialiseView(Bundle savedInstanceState) {
 		setContentView(R.layout.narrative_viewer);
 
+		mIsLoading = false;
+		mMediaPlayerError = false;
+
 		// load previous state on screen rotation
+		mHasPlayed = false; // will begin playing if not playing already; used to stop unplayable narratives
 		mPlaybackPosition = -1;
 		if (savedInstanceState != null) {
+			// mIsPlaying = savedInstanceState.getBoolean(getString(R.string.extra_is_playing));
 			mPlaybackPosition = savedInstanceState.getInt(getString(R.string.extra_playback_position));
 			mInitialPlaybackOffset = savedInstanceState.getInt(getString(R.string.extra_playback_offset));
 			mNonAudioOffset = savedInstanceState.getInt(getString(R.string.extra_playback_non_audio_offset));
@@ -96,8 +101,10 @@ public class NarrativeViewerActivity extends MediaViewerActivity {
 
 	@Override
 	public void onSaveInstanceState(Bundle savedInstanceState) {
+		// savedInstanceState.putBoolean(getString(R.string.extra_is_playing), mIsPlaying);
 		savedInstanceState.putInt(getString(R.string.extra_playback_position), mPlaybackPosition);
-		savedInstanceState.putInt(getString(R.string.extra_playback_offset), mInitialPlaybackOffset);
+		savedInstanceState.putInt(getString(R.string.extra_playback_offset),
+				mMediaPlayerController.getCurrentPosition() - mPlaybackPosition);
 		savedInstanceState.putInt(getString(R.string.extra_playback_non_audio_offset), mNonAudioOffset);
 		super.onSaveInstanceState(savedInstanceState);
 	}
@@ -105,8 +112,10 @@ public class NarrativeViewerActivity extends MediaViewerActivity {
 	@Override
 	public void onWindowFocusChanged(boolean hasFocus) {
 		super.onWindowFocusChanged(hasFocus);
-		if (hasFocus) {
+		if (hasFocus && !mHasPlayed) {
 			preparePlayback();
+		} else {
+			showMediaController(CustomMediaController.DEFAULT_VISIBILITY_TIMEOUT);
 		}
 	}
 
@@ -116,9 +125,9 @@ public class NarrativeViewerActivity extends MediaViewerActivity {
 		super.onDestroy();
 	}
 
+	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
-		mMediaPlayerController.pause();
-		mMediaController.show(0);
+		pauseMediaController();
 		return super.onOptionsItemSelected(item);
 	}
 
@@ -173,11 +182,54 @@ public class NarrativeViewerActivity extends MediaViewerActivity {
 		controllerLayout.setMargins(0, 0, 0, getResources().getDimensionPixelSize(R.dimen.button_padding));
 		parentLayout.addView(mMediaController, controllerLayout);
 		mMediaController.setAnchorView(findViewById(R.id.image_playback));
+		showMediaController(CustomMediaController.DEFAULT_VISIBILITY_TIMEOUT); // (can use 0 for permanent visibility)
 
+		mHasPlayed = true;
 		prepareMediaItems(mCurrentFrameContainer);
 	}
 
+	public void handleButtonClicks(View currentButton) {
+		pauseMediaController();
+		super.handleButtonClicks(currentButton);
+	}
+
+	public void handleNarrativeClicks(View currentButton) {
+		showMediaController(CustomMediaController.DEFAULT_VISIBILITY_TIMEOUT);
+	}
+
+	private void showMediaController(int timeout) {
+		if (mMediaController != null) {
+			// make sure the text view is visible above the playback bar
+			Resources res = getResources();
+			int mediaControllerHeight = res.getDimensionPixelSize(R.dimen.media_controller_height);
+			boolean hasImage = mCurrentFrameContainer.mImagePath != null;
+			AutoResizeTextView textView = (AutoResizeTextView) findViewById(R.id.text_playback);
+			if (textView.getVisibility() == View.VISIBLE) {
+				if (hasImage) {
+					RelativeLayout.LayoutParams textLayout = (RelativeLayout.LayoutParams) textView.getLayoutParams();
+					textLayout.setMargins(0, 0, 0, mediaControllerHeight);
+				} else {
+					int textPadding = res.getDimensionPixelSize(R.dimen.playback_text_padding);
+					textView.setPadding(textPadding, textPadding, textPadding, mediaControllerHeight);
+				}
+			}
+
+			if (!mMediaController.isShowing() || timeout <= 0) {
+				mMediaController.show(timeout);
+			} else {
+				mMediaController.refreshShowTimeout();
+			}
+		}
+	}
+
+	private void pauseMediaController() {
+		mMediaPlayerController.pause();
+		showMediaController(-1); // to keep on showing until done here
+		UIUtilities.releaseKeepScreenOn(getWindow());
+	}
+
 	private FrameMediaContainer getMediaContainer(int narrativePlaybackPosition, boolean updatePlaybackPosition) {
+		mIsLoading = true;
 		int currentPosition = 0;
 		for (FrameMediaContainer container : mNarrativeContentList) {
 			int newPosition = currentPosition + container.mFrameMaxDuration;
@@ -206,7 +258,7 @@ public class NarrativeViewerActivity extends MediaViewerActivity {
 		boolean soundPoolAllowed = !DebugUtilities.hasSoundPoolBug();
 		for (int i = 0, n = container.mAudioDurations.size(); i < n; i++) {
 			if (container.mAudioDurations.get(i).intValue() == container.mFrameMaxDuration) {
-				currentAudioItem = container.mAudioPaths.get(i); // TODO: choose by file size, rather than length?
+				currentAudioItem = container.mAudioPaths.get(i);
 			} else {
 				// playing *anything* in SoundPool at the same time as MediaPlayer crashes on Galaxy Tab
 				if (soundPoolAllowed) {
@@ -220,10 +272,12 @@ public class NarrativeViewerActivity extends MediaViewerActivity {
 		}
 
 		FileInputStream playerInputStream = null;
+		mSilenceFilePlaying = false;
 		try {
 			mMediaPlayer.reset();
 			mMediaPlayer.setLooping(false);
 			if (currentAudioItem == null || (!(new File(currentAudioItem).exists()))) {
+				mSilenceFilePlaying = true;
 				if (mSilenceFileDescriptor == null) {
 					mSilenceFileDescriptor = res.openRawResourceFd(R.raw.silence_100ms);
 				}
@@ -234,14 +288,13 @@ public class NarrativeViewerActivity extends MediaViewerActivity {
 				// mMediaPlayer.setDataSource(currentAudioItem);
 				playerInputStream = new FileInputStream(new File(currentAudioItem));
 				mMediaPlayer.setDataSource(playerInputStream.getFD());
-				IOUtilities.closeStream(playerInputStream);
 			}
 			mMediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
 			mMediaPlayer.setOnPreparedListener(mMediaPlayerPreparedListener);
-			mMediaPlayer.setOnCompletionListener(mMediaPlayerCompletionListener);
+			// mMediaPlayer.setOnCompletionListener(mMediaPlayerCompletionListener); // now done later - better pausing
 			mMediaPlayer.setOnErrorListener(mMediaPlayerErrorListener);
 			mMediaPlayer.prepareAsync();
-		} catch (Exception e) {
+		} catch (Throwable t) {
 			UIUtilities.showToast(NarrativeViewerActivity.this, R.string.error_loading_narrative_player);
 			finish();
 			return;
@@ -254,32 +307,17 @@ public class NarrativeViewerActivity extends MediaViewerActivity {
 		if (container.mImagePath != null && new File(container.mImagePath).exists()) {
 			Bitmap scaledBitmap = BitmapUtilities.loadAndCreateScaledBitmap(container.mImagePath,
 					photoDisplay.getWidth(), photoDisplay.getHeight(), BitmapUtilities.ScalingLogic.FIT, true);
-
-			if (scaledBitmap != null) {
-				photoDisplay.setImageBitmap(scaledBitmap);
-
-				// hack to align horizontally centred but vertically top when appropriate
-				Display display = ((WindowManager) getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay();
-				if (scaledBitmap.getWidth() > scaledBitmap.getHeight()) {
-					photoDisplay.setScaleType(ScaleType.CENTER);
-					int bottomPadding = 0;
-					if (display.getWidth() < display.getHeight()) {
-						bottomPadding = getResources().getDimensionPixelSize(R.dimen.navigation_button_height);
-					}
-					photoDisplay.setPadding(0, 0, 0, bottomPadding);
-				} else {
-					photoDisplay.setScaleType(ScaleType.FIT_START);
-					photoDisplay.setPadding((display.getWidth() - scaledBitmap.getWidth()) / 2, 0, 0, 0);
-				}
-			}
-
+			photoDisplay.setImageBitmap(scaledBitmap);
+			photoDisplay.setPadding(0, 0, 0, 0);
+			photoDisplay.setScaleType(ScaleType.CENTER_INSIDE);
 		} else if (TextUtils.isEmpty(container.mTextContent)) {
-			if (mAudioPictureDrawable == null) {
-				mAudioPictureDrawable = SVGParser.getSVGFromResource(res, R.raw.ic_audio_playback)
-						.createPictureDrawable();
+			if (mAudioPictureBitmap == null) {
+				mAudioPictureBitmap = SVGParser.getSVGFromResource(res, R.raw.ic_audio_playback).getBitmap(
+						photoDisplay.getWidth(), photoDisplay.getHeight());
 			}
-			photoDisplay.setImageDrawable(mAudioPictureDrawable);
-			photoDisplay.setPadding(0, 0, 0, res.getDimensionPixelSize(R.dimen.media_controller_height));
+			photoDisplay.setImageBitmap(mAudioPictureBitmap);
+			photoDisplay.setPadding(0, 0, 0,
+					(mMediaController.isShowing() ? res.getDimensionPixelSize(R.dimen.media_controller_height) : 0));
 			photoDisplay.setScaleType(ScaleType.FIT_CENTER);
 		} else {
 			photoDisplay.setImageDrawable(null);
@@ -305,11 +343,16 @@ public class NarrativeViewerActivity extends MediaViewerActivity {
 			} else {
 				textView.setMaxHeight(photoDisplay.getHeight()); // no way to clear, so set to parent height
 				textLayout.addRule(RelativeLayout.CENTER_VERTICAL);
-				textView.setPadding(textViewPadding, textViewPadding, textViewPadding, textViewHeight);
+				textView.setPadding(textViewPadding, textViewPadding, textViewPadding,
+						(mMediaController.isShowing() ? textViewHeight : textViewPadding));
 				textView.setBackgroundColor(res.getColor(android.R.color.transparent));
 				textView.setTextColor(res.getColor(R.color.icon_text_no_image));
 			}
-			textLayout.setMargins(0, 0, 0, textViewHeight);
+			if (mMediaController.isShowing()) {
+				textLayout.setMargins(0, 0, 0, textViewHeight);
+			} else {
+				textLayout.setMargins(0, 0, 0, textViewPadding);
+			}
 			textView.setLayoutParams(textLayout);
 			textView.setVisibility(View.VISIBLE);
 		} else {
@@ -352,7 +395,6 @@ public class NarrativeViewerActivity extends MediaViewerActivity {
 	private CustomMediaController.MediaPlayerControl mMediaPlayerController = new CustomMediaController.MediaPlayerControl() {
 		@Override
 		public void start() {
-			UIUtilities.acquireKeepScreenOn(getWindow());
 			// so we return to the start when playing from the end
 			if (mPlaybackPosition < 0) {
 				mPlaybackPosition = 0;
@@ -361,18 +403,22 @@ public class NarrativeViewerActivity extends MediaViewerActivity {
 				mCurrentFrameContainer = getMediaContainer(mPlaybackPosition, true);
 				prepareMediaItems(mCurrentFrameContainer);
 			} else {
+				mMediaPlayer.setOnCompletionListener(mMediaPlayerCompletionListener);
+				mPlaybackStartTime = System.currentTimeMillis() - mMediaPlayer.getCurrentPosition();
 				mMediaPlayer.start();
-				mSoundPool.autoResume();
-				// TODO: check this works
+				mSoundPool.autoResume(); // TODO: check this works
+				showMediaController(CustomMediaController.DEFAULT_VISIBILITY_TIMEOUT);
 			}
+			UIUtilities.acquireKeepScreenOn(getWindow());
 		}
 
 		@Override
 		public void pause() {
-			UIUtilities.releaseKeepScreenOn(getWindow());
+			mIsLoading = false;
+			mMediaPlayer.setOnCompletionListener(null); // make sure we don't continue accidentally
 			mMediaPlayer.pause();
-			mSoundPool.autoPause();
-			// TODO: check this works
+			mSoundPool.autoPause(); // TODO: check this works
+			UIUtilities.releaseKeepScreenOn(getWindow());
 		}
 
 		@Override
@@ -385,28 +431,56 @@ public class NarrativeViewerActivity extends MediaViewerActivity {
 			if (mPlaybackPosition < 0) {
 				return mNarrativeDuration;
 			} else {
-				mInitialPlaybackOffset = mMediaPlayer.getCurrentPosition();
-				return mPlaybackPosition + mNonAudioOffset + mInitialPlaybackOffset;
+				return mPlaybackPosition
+						+ mNonAudioOffset
+						+ (mSilenceFilePlaying ? (int) (System.currentTimeMillis() - mPlaybackStartTime) : mMediaPlayer
+								.getCurrentPosition());
 			}
 		}
 
 		@Override
 		public void seekTo(int pos) {
 			// TODO: seek others (is it even possible with soundpool?)
-			int actualPosition = pos - mPlaybackPosition;
-			if (actualPosition >= 0 && actualPosition < mCurrentFrameContainer.mFrameMaxDuration) {
-				if (actualPosition < mMediaPlayer.getDuration()) {
-					mMediaPlayer.seekTo(actualPosition);
+			int actualPos = pos - mPlaybackPosition;
+			if (mPlaybackPosition < 0) { // so we allow seeking from the end
+				mPlaybackPosition = mNarrativeDuration - mCurrentFrameContainer.mFrameMaxDuration;
+			}
+			if (actualPos >= 0 && actualPos < mCurrentFrameContainer.mFrameMaxDuration) {
+				if (mIsLoading
+						|| (actualPos < mMediaPlayer.getDuration() && mCurrentFrameContainer.mAudioPaths.size() > 0)) {
+					if (!mIsLoading) {
+						if (mMediaController.isDragging()) {
+							mMediaPlayer.setOnCompletionListener(mMediaPlayerCompletionListener);
+						}
+						mPlaybackStartTime = System.currentTimeMillis() - actualPos;
+						mMediaPlayer.seekTo(actualPos);
+						if (!mMediaPlayer.isPlaying()) { // we started from the end
+							mMediaPlayer.start();
+							UIUtilities.acquireKeepScreenOn(getWindow());
+						}
+					} else {
+						// still loading - come here so we don't reload the same item again
+					}
 				} else {
 					// for image- or text-only frames
-					mNonAudioOffset = actualPosition;
+					mNonAudioOffset = actualPos;
+					if (mMediaController.isDragging()) {
+						mMediaPlayer.setOnCompletionListener(mMediaPlayerCompletionListener);
+					}
+					mPlaybackStartTime = System.currentTimeMillis();
 					mMediaPlayer.seekTo(0);
 					mMediaPlayer.start();
-					mMediaController.setProgress(); // called far too often (every 100ms), but it doesn't really matter
+					mMediaController.setProgress();
 				}
 			} else if (pos >= 0 && pos < mNarrativeDuration) {
-				mCurrentFrameContainer = getMediaContainer(pos, true);
-				prepareMediaItems(mCurrentFrameContainer);
+				FrameMediaContainer newContainer = getMediaContainer(pos, true);
+				if (newContainer != mCurrentFrameContainer) {
+					mCurrentFrameContainer = newContainer;
+					prepareMediaItems(mCurrentFrameContainer);
+					mInitialPlaybackOffset = pos - mPlaybackPosition;
+				} else {
+					mIsLoading = false;
+				}
 			}
 		}
 
@@ -417,7 +491,7 @@ public class NarrativeViewerActivity extends MediaViewerActivity {
 
 		@Override
 		public boolean isLoading() {
-			return mMediaPlayer.isPlaying();
+			return mIsLoading;
 		}
 
 		@Override
@@ -442,20 +516,23 @@ public class NarrativeViewerActivity extends MediaViewerActivity {
 	};
 
 	private void startPlayers() {
-		UIUtilities.acquireKeepScreenOn(getWindow());
+		// so that we don't start playing after pause if we were loading
+		if (mIsLoading) {
+			for (Integer soundId : mFrameSounds) {
+				mSoundPool.play(soundId, 1, 1, 1, 0, 1f); // volume is % of *current*, rather than maximum
+				// TODO: seek to mInitialPlaybackOffset
+			}
 
-		for (Integer soundId : mFrameSounds) {
-			mSoundPool.play(soundId, 1, 1, 1, 0, 1f); // volume is a percentage of *current*, rather than maximum
-			// TODO: seek to mInitialPlaybackOffset
+			mMediaPlayer.setOnCompletionListener(mMediaPlayerCompletionListener);
+			mPlaybackStartTime = System.currentTimeMillis() - mInitialPlaybackOffset;
+			mMediaPlayer.seekTo(mInitialPlaybackOffset);
+			mMediaPlayer.start();
+
+			mIsLoading = false;
+			mMediaController.setMediaPlayer(mMediaPlayerController);
+
+			UIUtilities.acquireKeepScreenOn(getWindow());
 		}
-
-		// volume is a percentage of *current*, rather than maximum, so this is unnecessary
-		// mMediaPlayer.setVolume(volume, volume);
-		mMediaPlayer.start();
-		mMediaPlayer.seekTo(mInitialPlaybackOffset);
-
-		mMediaController.setMediaPlayer(mMediaPlayerController);
-		mMediaController.show(0); // 0 for permanent visibility TODO: hide playback controls after short timeout
 	}
 
 	private SoundPool.OnLoadCompleteListener mSoundPoolLoadListener = new SoundPool.OnLoadCompleteListener() {
@@ -486,19 +563,21 @@ public class NarrativeViewerActivity extends MediaViewerActivity {
 		public void onCompletion(MediaPlayer mp) {
 			if (mMediaPlayerError) {
 				// releasePlayer(); // don't do this, as it means the player will be null; instead we resume from errors
+				mCurrentFrameContainer = getMediaContainer(mPlaybackPosition, false);
+				prepareMediaItems(mCurrentFrameContainer);
+				mMediaPlayerError = false;
 				return;
 			}
 			mInitialPlaybackOffset = 0;
-			int currentPosition = mPlaybackPosition + mNonAudioOffset + mMediaPlayer.getDuration() + 1;
+			int currentPosition = mMediaPlayerController.getCurrentPosition()
+					+ (mMediaPlayer.getDuration() - mMediaPlayer.getCurrentPosition()) + 1;
 			if (currentPosition < mNarrativeDuration) {
 				mMediaPlayerController.seekTo(currentPosition);
-			} else {
+			} else if (!mMediaController.isDragging()) {
 				// move to just before the end (accounting for mNarrativeDuration errors)
 				mMediaPlayerController.seekTo(currentPosition - 2);
-				mMediaPlayerController.pause();
-				mMediaController.show(0);
+				pauseMediaController(); // will also show the controller if applicable
 				mPlaybackPosition = -1; // so we start from the beginning
-				UIUtilities.releaseKeepScreenOn(getWindow());
 			}
 		}
 	};

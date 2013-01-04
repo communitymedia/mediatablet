@@ -38,6 +38,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.Resources;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
@@ -141,11 +142,26 @@ public abstract class MediaTabletActivity extends Activity {
 	private void loadAllPreferences() {
 		SharedPreferences mediaTabletSettings = PreferenceManager.getDefaultSharedPreferences(MediaTabletActivity.this);
 
-		// file changes are handled in startWatchingBluetooth() - call to reset if necessary
-		((MediaTabletApplication) this.getApplication()).startWatchingBluetooth();
+		// bluetooth observer
+		configureBluetoothObserver(mediaTabletSettings, getResources());
 
 		// other activity-specific preferences
 		loadPreferences(mediaTabletSettings);
+	}
+
+	protected void configureBluetoothObserver(SharedPreferences mediaTabletSettings, Resources res) {
+		boolean watchForFiles = res.getBoolean(R.bool.default_watch_for_files);
+		try {
+			watchForFiles = mediaTabletSettings.getBoolean(getString(R.string.key_watch_for_files), watchForFiles);
+		} catch (Exception e) {
+			watchForFiles = res.getBoolean(R.bool.default_watch_for_files);
+		}
+		if (watchForFiles) {
+			// file changes are handled in startWatchingBluetooth();
+			((MediaTabletApplication) getApplication()).startWatchingBluetooth();
+		} else {
+			((MediaTabletApplication) getApplication()).stopWatchingBluetooth();
+		}
 	}
 
 	private void checkDirectoriesExist() {

@@ -6,7 +6,7 @@
             <solid android:color="@color/icon_person_border" />
         </shape>
     </item>
-    <item android:right="@dimen/icon_border_width">
+    <item android:right="@dimen/icon_border_right_width">
         <shape android:shape="rectangle" >
             <solid android:color="@android:color/black" />
         </shape>

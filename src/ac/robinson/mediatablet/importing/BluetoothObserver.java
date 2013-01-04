@@ -28,7 +28,6 @@ import java.io.LineNumberReader;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import ac.robinson.mediatablet.MediaTablet;
@@ -50,7 +49,7 @@ public class BluetoothObserver extends FileObserver {
 	// synchronized because onEvent() runs on a separate thread
 	private Map<String, Map<String, Boolean>> mSMILContents = Collections
 			.synchronizedMap(new HashMap<String, Map<String, Boolean>>());
-	private List<String> mIgnoredFiles = Collections.synchronizedList(new ArrayList<String>());
+	private String mPreviousExport = null; // for tracking duplicates
 
 	private final Handler mHandler;
 	private final String mBluetoothDirectoryPath;
@@ -129,6 +128,7 @@ public class BluetoothObserver extends FileObserver {
 		// send the message and reset
 		if (allContentsComplete) {
 			sendMessage(MediaUtilities.MSG_RECEIVED_SMIL_FILE, smilParent);
+			mPreviousExport = smilParent;
 			mSMILContents.remove(smilParent);
 			if (MediaTablet.DEBUG)
 				Log.d(DebugUtilities.getLogTag(this), "Sending SMIL");
@@ -177,13 +177,40 @@ public class BluetoothObserver extends FileObserver {
 						}
 					}
 
-				} else if (IOUtilities.fileExtensionIs(fileAbsolutePath, MediaUtilities.SYNC_FILE_EXTENSION)) {
+				} else if (IOUtilities.fileExtensionIs(fileAbsolutePath, MediaUtilities.SMIL_FILE_EXTENSION)
+						|| IOUtilities.fileExtensionIs(fileAbsolutePath, MediaUtilities.SYNC_FILE_EXTENSION)) {
+					// need to deal with some devices automatically deleting anything with a .smil extension - .sync.jpg
+					// is the same as the .smil contents, but with a .jpg file extension
+
+					if (MediaTablet.DEBUG)
+						Log.d(DebugUtilities.getLogTag(this), "Starting to parse SMIL: " + receivedFile.getName());
 
 					// don't add the same key twice - could confuse things a lot
 					if (!mSMILContents.containsKey(fileAbsolutePath)) {
 
+						// we've parsed the .smil and now have the .sync.jpg, or vice-versa - need to deal with this
+						String previousFile = null;
+						if (fileAbsolutePath.endsWith(MediaUtilities.SYNC_FILE_EXTENSION)) {
+							previousFile = fileAbsolutePath.replace(MediaUtilities.SYNC_FILE_EXTENSION,
+									MediaUtilities.SMIL_FILE_EXTENSION);
+						} else if (fileAbsolutePath.endsWith(MediaUtilities.SMIL_FILE_EXTENSION)) {
+							previousFile = fileAbsolutePath.replace(MediaUtilities.SMIL_FILE_EXTENSION,
+									MediaUtilities.SYNC_FILE_EXTENSION);
+						}
+						if (previousFile != null // the file could exist if we're still processing it from this import
+								&& (mSMILContents.containsKey(previousFile) || previousFile.equals(mPreviousExport))) {
+							mPreviousExport = null;
+							receivedFile.delete(); // because otherwise we'll miss it, regardless of deletion prefs
+							if (MediaTablet.DEBUG)
+								Log.d(DebugUtilities.getLogTag(this), "Found duplicate SMIL/sync file - deleting: "
+										+ receivedFile.getName());
+							break;
+						}
+
 						Map<String, Boolean> smilContents = Collections.synchronizedMap(new HashMap<String, Boolean>());
 
+						// TODO: we include non-media elements so we can delete them;
+						// but importing successfully is more important than deleting all files...
 						ArrayList<String> smilUnparsedContents = SMILUtilities
 								.getSimpleSMILFileList(receivedFile, true);
 
@@ -193,22 +220,21 @@ public class BluetoothObserver extends FileObserver {
 								String smilMediaPath = smilMediaFile.getAbsolutePath();
 
 								// in case the file has already been received
-								if (mIgnoredFiles.contains(smilMediaPath)) {
-									mIgnoredFiles.remove(smilMediaPath);
-									smilContents.put(smilMediaPath, true);
-									if (MediaTablet.DEBUG)
-										Log.d(DebugUtilities.getLogTag(this),
-												"SMIL component found (previously recorded): " + smilMediaPath);
-								} else if (smilMediaFile.exists()) {
+								if (smilMediaFile.exists()) {
 									smilContents.put(smilMediaPath, true);
 									if (MediaTablet.DEBUG)
 										Log.d(DebugUtilities.getLogTag(this), "SMIL component found (file exists): "
 												+ smilMediaPath);
 								} else {
-									smilContents.put(smilMediaPath, false);
-									if (MediaTablet.DEBUG)
-										Log.d(DebugUtilities.getLogTag(this), "SMIL component not yet sent: "
+									if (!smilMediaPath.endsWith(MediaUtilities.SYNC_FILE_EXTENSION)) {
+										smilContents.put(smilMediaPath, false);
+										if (MediaTablet.DEBUG)
+											Log.d(DebugUtilities.getLogTag(this), "SMIL component not yet sent: "
+													+ smilMediaPath);
+									} else {
+										Log.d(DebugUtilities.getLogTag(this), "SMIL sync component found (ignoring): "
 												+ smilMediaPath);
+									}
 								}
 							}
 
@@ -216,7 +242,7 @@ public class BluetoothObserver extends FileObserver {
 						} else {
 							// error - couldn't parse the smil file
 							if (MediaTablet.DEBUG)
-								Log.d(DebugUtilities.getLogTag(this), "SMIL parse error: " + fileAbsolutePath);
+								Log.d(DebugUtilities.getLogTag(this), "SMIL parse error: " + receivedFile.getName());
 						}
 
 						checkAndSendSMILContents(fileAbsolutePath, smilContents);
@@ -225,7 +251,8 @@ public class BluetoothObserver extends FileObserver {
 					} else {
 						// error - tried to import the same file twice; ignored
 						if (MediaTablet.DEBUG)
-							Log.d(DebugUtilities.getLogTag(this), "SMIL already sent - ignoring: " + fileAbsolutePath);
+							Log.d(DebugUtilities.getLogTag(this),
+									"SMIL already parsed - ignoring: " + receivedFile.getName());
 					}
 				}
 
@@ -246,13 +273,14 @@ public class BluetoothObserver extends FileObserver {
 					if (MediaTablet.DEBUG)
 						Log.d(DebugUtilities.getLogTag(this), "Importing non-SMIL component: " + fileAbsolutePath);
 
+					// note that importing files deletes them from the bluetooth directory (to preserve space), so to
+					// import SMIL narratives the SMIL or sync file must be sent before any media items
 					sendMessage(MediaUtilities.MSG_RECEIVED_IMPORT_FILE, fileAbsolutePath);
 				}
 
 				break;
 
 			case ACCESS:
-			case ALL_EVENTS:
 			case ATTRIB:
 			case CLOSE_NOWRITE:
 			case CREATE:
@@ -279,7 +307,6 @@ public class BluetoothObserver extends FileObserver {
 	public void stopWatching() {
 		super.stopWatching();
 		mSMILContents.clear();
-		mIgnoredFiles.clear();
 		if (MediaTablet.DEBUG)
 			Log.d(DebugUtilities.getLogTag(this), "Stopping - no longer watching " + mBluetoothDirectoryPath);
 	}

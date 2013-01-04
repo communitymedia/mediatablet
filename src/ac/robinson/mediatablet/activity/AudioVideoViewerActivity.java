@@ -30,19 +30,14 @@ import ac.robinson.mediatablet.provider.MediaTabletProvider;
 import ac.robinson.util.IOUtilities;
 import ac.robinson.util.UIUtilities;
 import ac.robinson.view.CustomMediaController;
-import android.content.res.Resources;
-import android.graphics.drawable.Drawable;
 import android.media.MediaPlayer;
 import android.media.MediaPlayer.OnCompletionListener;
 import android.media.MediaPlayer.OnPreparedListener;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.VideoView;
-
-import com.larvalabs.svgandroid.SVGParser;
 
 public class AudioVideoViewerActivity extends MediaViewerActivity {
 
@@ -101,14 +96,8 @@ public class AudioVideoViewerActivity extends MediaViewerActivity {
 		parentLayout.addView(mMediaController, controllerLayout);
 
 		if (getCurrentMediaType() == MediaTabletProvider.TYPE_AUDIO) {
-			Resources resources = getResources();
-			ImageView audioBackground = (ImageView) findViewById(R.id.media_audio_image);
-			Drawable audioPictureDrawable = SVGParser.getSVGFromResource(resources, R.raw.ic_audio_playback)
-					.createPictureDrawable();
-			audioBackground.setImageDrawable(audioPictureDrawable);
-			audioBackground.setPadding(0, 0, 0, resources.getDimensionPixelSize(R.dimen.media_controller_height));
+			View audioBackground = findViewById(R.id.media_audio_image);
 			audioBackground.setVisibility(View.VISIBLE);
-
 			mMediaController.setAnchorView(audioBackground);
 		} else {
 			mMediaController.setAnchorView(findViewById(R.id.media_audio_video));

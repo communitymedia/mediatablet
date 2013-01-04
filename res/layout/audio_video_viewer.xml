@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:util="http://schemas.android.com/apk/res-auto"
     android:id="@+id/audio_video_view_parent"
     android:layout_width="match_parent"
     android:layout_height="match_parent" >
@@ -16,13 +17,14 @@
         android:layout_centerVertical="true"
         android:padding="0dp" /> <!-- alignment is for fullscreen - see: http://stackoverflow.com/questions/3776254/ -->
 
-    <ImageView
+    <ac.robinson.view.SVGView
         android:id="@+id/media_audio_image"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:contentDescription="@string/media_icon_description"
-        android:src="@null"
-        android:visibility="gone" />
+        android:paddingBottom="@dimen/media_controller_height"
+        android:visibility="gone"
+        util:resource="@raw/ic_audio_playback" />
 
     <include
         android:layout_alignParentTop="true"

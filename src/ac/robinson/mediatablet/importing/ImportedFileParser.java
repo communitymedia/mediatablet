@@ -89,13 +89,16 @@ public class ImportedFileParser {
 		try {
 			// so we don't delete (sync file is a non-media item in getSMILFrameList)
 			IOUtilities.copyFile(smilFile, tempSMILFile);
-		} catch (IOException e1) {
+		} catch (IOException e) {
 			if (MediaTablet.DEBUG)
 				Log.e(DebugUtilities.getLogTag(smilFile), "Unable to copy SMIL file");
 		}
 
 		ArrayList<FrameMediaContainer> smilFrames = SMILUtilities.getSMILFrameList(smilFile, 1, true);
 		duplicateSMILElements(contentResolver, smilFrames, tempSMILFile, parentId, visibility, true);
+
+		new File(smilFile.getParent(), IOUtilities.removeExtension(smilFile.getName())
+				+ MediaUtilities.SMIL_FILE_EXTENSION).delete();
 		tempSMILFile.delete();
 	}
 

@@ -358,7 +358,6 @@ public class AddUserActivity extends MediaTabletActivity {
 		}
 		switch (requestCode) {
 			case R.id.intent_take_picture:
-				// TODO: use custom camera view from MediaPhone (far, far better usability)
 				File photoFile = new File(MediaTablet.DIRECTORY_TEMP, personItem.getInternalId() + ".jpg");
 				if (photoFile.exists() && photoFile.length() > 0) {
 					File newPictureFile = personItem.getProfilePictureFile();

@@ -500,7 +500,7 @@ public abstract class MediaViewerActivity extends MediaTabletActivity {
 				finish();
 				break;
 
-			case R.id.button_media_view_public_media:
+			case R.id.button_media_view_view_public_media:
 				viewPublicMedia();
 				break;
 		}
