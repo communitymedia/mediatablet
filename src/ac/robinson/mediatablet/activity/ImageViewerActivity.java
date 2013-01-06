@@ -31,13 +31,15 @@ import ac.robinson.mediatablet.provider.MediaTabletProvider;
 import ac.robinson.util.BitmapUtilities;
 import ac.robinson.util.ImageCacheUtilities;
 import ac.robinson.util.UIUtilities;
+import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory.Options;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Point;
 import android.os.Bundle;
-import android.view.Display;
+import android.view.WindowManager;
 
 import com.polites.android.GestureImageView;
 
@@ -46,10 +48,6 @@ public class ImageViewerActivity extends MediaViewerActivity {
 	@Override
 	protected void initialiseView(Bundle savedInstanceState) {
 		setContentView(R.layout.image_viewer);
-
-		Display display = getWindowManager().getDefaultDisplay();
-		int displayWidth = display.getWidth();
-		int displayHeight = display.getHeight();
 
 		String mediaPath = getCurrentMediaFile().getAbsolutePath(); // guaranteed to exist and not to be null
 		int imageWidth;
@@ -83,12 +81,13 @@ public class ImageViewerActivity extends MediaViewerActivity {
 		}
 
 		// TODO: need screen-sized bitmap due to bug in scale view - fix
+		Point screenSize = UIUtilities.getScreenSize((WindowManager) getSystemService(Context.WINDOW_SERVICE));
 		Bitmap backgroundBitmap;
-		if (imageWidth >= displayWidth || imageHeight >= displayHeight) {
-			backgroundBitmap = BitmapUtilities.loadAndCreateScaledBitmap(mediaPath, displayWidth, displayHeight,
+		if (imageWidth >= screenSize.x || imageHeight >= screenSize.y) {
+			backgroundBitmap = BitmapUtilities.loadAndCreateScaledBitmap(mediaPath, screenSize.x, screenSize.y,
 					BitmapUtilities.ScalingLogic.FIT, true);
 		} else {
-			backgroundBitmap = Bitmap.createBitmap(displayWidth, imageHeight,
+			backgroundBitmap = Bitmap.createBitmap(screenSize.y, imageHeight,
 					ImageCacheUtilities.mBitmapFactoryOptions.inPreferredConfig);
 			Canvas backgroundCanvas = new Canvas(backgroundBitmap);
 

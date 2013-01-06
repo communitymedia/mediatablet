@@ -24,6 +24,7 @@ import java.util.concurrent.CountDownLatch;
 
 import ac.robinson.mediatablet.R;
 import ac.robinson.util.BitmapUtilities;
+import ac.robinson.util.UIUtilities;
 import android.app.Activity;
 import android.content.ContentResolver;
 import android.content.Context;
@@ -32,6 +33,7 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Matrix;
 import android.graphics.Path;
+import android.graphics.Point;
 import android.graphics.PointF;
 import android.graphics.PorterDuff;
 import android.graphics.Rect;
@@ -46,11 +48,10 @@ import android.os.Handler;
 import android.os.StatFs;
 import android.util.AttributeSet;
 import android.util.Log;
-import android.view.Display;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.MenuItem.OnMenuItemClickListener;
-import android.view.MenuInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.Window;
@@ -193,9 +194,8 @@ public class CropImage extends MonitoredActivity {
 	}
 
 	private Bitmap getBitmap(String path) {
-		// return ImageUtilities.loadRotatedBitmap(path);
-		Display display = ((WindowManager) getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay();
-		return BitmapUtilities.loadAndCreateScaledBitmap(path, display.getWidth(), display.getHeight(),
+		Point screenSize = UIUtilities.getScreenSize((WindowManager) getSystemService(Context.WINDOW_SERVICE));
+		return BitmapUtilities.loadAndCreateScaledBitmap(path, screenSize.x, screenSize.y,
 				BitmapUtilities.ScalingLogic.FIT, true);
 	}
 

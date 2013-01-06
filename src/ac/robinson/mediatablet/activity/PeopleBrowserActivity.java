@@ -323,6 +323,9 @@ public class PeopleBrowserActivity extends MediaTabletActivity {
 		startActivityForResult(browseMediaIntent, R.id.intent_media_browser);
 	}
 
+	// setBackgroundDrawable is deprecated from API 16+ (Jelly Bean), but we still want to target earlier versions;
+	// since this is purely a name change, there's no real reason to do anything platform-independent
+	@SuppressWarnings("deprecation")
 	private void updatePeopleIcons(boolean fadeIn) {
 		mPendingIconsUpdate = false;
 

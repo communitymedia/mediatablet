@@ -230,6 +230,9 @@ public class MediaBrowserActivity extends MediaTabletActivity {
 		return mMediaVisibility == MediaItem.MEDIA_PRIVATE ? mParentId : PersonItem.UNKNOWN_PERSON_ID;
 	}
 
+	// setBackgroundDrawable is deprecated from API 16+ (Jelly Bean), but we still want to target earlier versions;
+	// since this is purely a name change, there's no real reason to do anything platform-independent
+	@SuppressWarnings("deprecation")
 	private void initialiseMediaGridView() {
 		// for API 11 and above, buttons are in the action bar - could use XML-v11 but maintenance is a hassle
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
@@ -506,6 +509,9 @@ public class MediaBrowserActivity extends MediaTabletActivity {
 	// }
 	// }
 
+	// setBackgroundDrawable is deprecated from API 16+ (Jelly Bean), but we still want to target earlier versions;
+	// since this is purely a name change, there's no real reason to do anything platform-independent
+	@SuppressWarnings("deprecation")
 	private void updateMediaIcons() {
 		mPendingIconsUpdate = false;
 

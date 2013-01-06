@@ -145,6 +145,9 @@ public class PersonAdapter extends CursorAdapter implements FilterQueryProvider 
 		return view;
 	}
 
+	// setBackgroundDrawable is deprecated from API 16+ (Jelly Bean), but we still want to target earlier versions;
+	// since this is purely a name change, there's no real reason to do anything platform-independent
+	@SuppressWarnings("deprecation")
 	public void bindView(View view, Context context, Cursor c) {
 		PersonViewHolder holder = (PersonViewHolder) view.getTag();
 

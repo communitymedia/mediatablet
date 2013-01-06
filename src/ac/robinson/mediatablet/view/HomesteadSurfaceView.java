@@ -195,7 +195,7 @@ public class HomesteadSurfaceView extends SurfaceView implements SurfaceHolder.C
 
 		mDrawThread = new SurfaceDrawThread(this);
 		mLoadThread = new SurfaceLoadThread(this);
-		mGestureDetector = new GestureDetector(new HomesteadViewGestureDetector());
+		mGestureDetector = new GestureDetector(context, new HomesteadViewGestureDetector());
 
 		setOnTouchListener(this);
 		getHolder().addCallback(this);

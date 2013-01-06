@@ -274,8 +274,8 @@ public class AddUserActivity extends MediaTabletActivity {
 		ContentResolver contentResolver = getContentResolver();
 		HomesteadItem parentHomestead = HomesteadManager.findHomesteadByInternalId(contentResolver, parentId);
 		int pictureSize = getPictureSize(resources, R.id.button_select_profile_homestead);
-		BitmapDrawable cachedIcon = new BitmapDrawable(parentHomestead.loadIcon(resources, contentResolver,
-				new CacheTypeContainer(MediaTablet.ICON_CACHE_TYPE), pictureSize));
+		BitmapDrawable cachedIcon = new BitmapDrawable(getResources(), parentHomestead.loadIcon(resources,
+				contentResolver, new CacheTypeContainer(MediaTablet.ICON_CACHE_TYPE), pictureSize));
 		if (parentHomestead.getColour() != 0) {
 			cachedIcon.setColorFilter(new LightingColorFilter(parentHomestead.getColour(), 1));
 		}
