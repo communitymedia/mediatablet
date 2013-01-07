@@ -99,7 +99,7 @@
     <string name="title_add_user">Add user</string>
     <string name="title_edit_user">Edit user</string>
     <string name="title_crop_image">Crop this picture – select your face</string>
-    <string name="title_preferences">Preferences</string>
+    <string name="title_preferences">Settings</string>
     <string name="title_select_directory">Select the panorama image</string>
 
     <!-- preferences -->
@@ -112,7 +112,7 @@
     <string name="preferences_bluetooth_directory_error">Error: unable to read directory; reverting to old location</string>
     <string name="preferences_about">About</string>
     <string name="preferences_about_app_title">%1$s version %2$s</string>
-    <string name="preferences_about_app_summary">Build %1$d (%2$s)</string>
+    <string name="preferences_about_app_summary">Build %1$d (%2$s); %3$s</string>
     <string name="preferences_get_source_code_title">Get the source code</string>
     <string name="preferences_get_source_code_summary">Browse, fork or report issues on GitHub</string>
     <string name="preferences_get_source_code_link">https://github.com/communitymedia/mediatablet</string>
@@ -127,6 +127,6 @@
     <string name="menu_share">Share</string>
     <string name="menu_view_public_media">Public media</string>
     <string name="menu_people_change_colour">Change colour</string>
-    <string name="menu_preferences">Preferences</string>
+    <string name="menu_preferences">@string/title_preferences</string>
 
 </resources>

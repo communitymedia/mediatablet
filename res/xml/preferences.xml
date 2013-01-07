@@ -17,7 +17,9 @@
             android:summary="@string/preferences_bluetooth_directory_summary"
             android:title="@string/preferences_bluetooth_directory_title" />
     </PreferenceCategory>
-    <PreferenceCategory android:title="@string/preferences_about" >
+    <PreferenceCategory
+        android:key="@string/key_about_category"
+        android:title="@string/preferences_about" >
         <PreferenceScreen
             android:key="@string/key_about_application"
             android:title="@string/app_name" />

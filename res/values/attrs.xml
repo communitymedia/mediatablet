@@ -91,6 +91,7 @@
     <!-- preference keys -->
     <string name="key_watch_for_files">watch_for_files</string>
     <string name="key_bluetooth_directory">bluetooth_directory</string>
+    <string name="key_about_category">about_category</string>
     <string name="key_about_application">about_application</string>
 
     <!-- keys for hidden "preferences" -->
