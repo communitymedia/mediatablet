@@ -333,7 +333,7 @@ public class NarrativeViewerActivity extends MediaViewerActivity {
 		// load the text
 		AutoResizeTextView textView = (AutoResizeTextView) findViewById(R.id.text_playback);
 		if (!TextUtils.isEmpty(container.mTextContent)) {
-			textView.setTextSize(TypedValue.COMPLEX_UNIT_PX, res.getDimensionPixelSize(R.dimen.playback_text));
+			textView.setTextSize(TypedValue.COMPLEX_UNIT_PX, res.getDimensionPixelSize(R.dimen.playback_text_size));
 			textView.setText(container.mTextContent);
 			RelativeLayout.LayoutParams textLayout = new RelativeLayout.LayoutParams(
 					RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);

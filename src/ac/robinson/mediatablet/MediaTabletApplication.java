@@ -112,10 +112,10 @@ public class MediaTabletApplication extends Application {
 				false); // don't clear
 
 		// temporary directory must be world readable to be able to send files
+		String tempName = MediaTablet.APPLICATION_NAME + "_temp";
 		if (IOUtilities.mustCreateTempDirectory(this)) {
 			if (IOUtilities.externalStorageIsWritable()) {
-				MediaTablet.DIRECTORY_TEMP = new File(Environment.getExternalStorageDirectory(),
-						MediaTablet.APPLICATION_NAME + "_temp");
+				MediaTablet.DIRECTORY_TEMP = new File(Environment.getExternalStorageDirectory(), tempName);
 				MediaTablet.DIRECTORY_TEMP.mkdirs();
 				if (!MediaTablet.DIRECTORY_TEMP.exists()) {
 					MediaTablet.DIRECTORY_TEMP = null;
@@ -129,16 +129,12 @@ public class MediaTabletApplication extends Application {
 				MediaTablet.DIRECTORY_TEMP = null;
 			}
 		} else {
-			MediaTablet.DIRECTORY_TEMP = IOUtilities
-					.getNewCachePath(this, MediaTablet.APPLICATION_NAME + "_temp", true); // delete existing
+			MediaTablet.DIRECTORY_TEMP = IOUtilities.getNewCachePath(this, tempName, true); // delete existing
 
 			// delete any leftovers
 			if (IOUtilities.externalStorageIsWritable()) {
-				File oldTempDirectory = new File(Environment.getExternalStorageDirectory(),
-						MediaTablet.APPLICATION_NAME + "_temp");
-				if (oldTempDirectory.exists()) {
-					oldTempDirectory.delete();
-				}
+				File oldTempDirectory = new File(Environment.getExternalStorageDirectory(), tempName);
+				IOUtilities.deleteRecursive(oldTempDirectory);
 			}
 		}
 	}

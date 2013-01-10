@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
+    <!-- TODO: remember to update values-v11 at the same time -->
+
     <string name="app_name">Com-Tablet</string>
     <string name="html_feature_coming_soon">Coming soon — HTML import</string>
     <string name="button_delete">Delete</string>

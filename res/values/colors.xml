@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
+    <!-- TODO: remember to update values-v11 at the same time -->
+
+
     <!-- icons -->
     <color name="default_highlight_blue">#ff33b5e5</color> <!-- @android:color/holo_blue_light -->
 

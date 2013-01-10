@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
+    <!-- TODO: remember to update normal values at the same time -->
+
+
     <!-- icons -->
     <dimen name="homestead_icon_total_size">100dp</dimen> <!-- including all person icons -->
     <dimen name="homestead_icon_size">70dp</dimen> <!-- of the actual homestead icon -->

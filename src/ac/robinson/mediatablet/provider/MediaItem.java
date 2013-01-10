@@ -166,7 +166,7 @@ public class MediaItem implements BaseColumns {
 				+ mediaFileExtension);
 		return filePath;
 	}
-	
+
 	public static String getInternalId(String mediaFilePath) {
 		return IOUtilities.removeExtension(mediaFilePath);
 	}
@@ -276,8 +276,8 @@ public class MediaItem implements BaseColumns {
 				case MediaTabletProvider.TYPE_TEXT:
 					BitmapUtilities.drawScaledText(mMediaExtra, mediaCanvas, mediaPaint,
 							resources.getColor(R.color.icon_text_no_image), 0,
-							resources.getDimensionPixelSize(R.dimen.icon_text_padding), 0, false, 0, iconWidth,
-							iconHeight, resources.getDimensionPixelSize(R.dimen.icon_maximum_text_size),
+							resources.getDimensionPixelSize(R.dimen.icon_text_padding), 0, false, 0, false, iconHeight,
+							resources.getDimensionPixelSize(R.dimen.icon_maximum_text_size),
 							resources.getInteger(R.integer.icon_maximum_text_characters_per_line));
 					break;
 
@@ -303,8 +303,7 @@ public class MediaItem implements BaseColumns {
 						boolean hasText = !TextUtils.isEmpty(firstFrame.mTextContent);
 						if (hasText) {
 							int textSpacing = resources.getDimensionPixelSize(R.dimen.icon_text_padding);
-							resources.getValue(R.attr.icon_text_corner_radius, resourceValue, true);
-							float textCornerRadius = resourceValue.getFloat();
+							int textCornerRadius = resources.getDimensionPixelSize(R.dimen.icon_text_corner_radius);
 							BitmapUtilities.drawScaledText(
 									firstFrame.mTextContent,
 									mediaCanvas,
@@ -314,8 +313,9 @@ public class MediaItem implements BaseColumns {
 									(hasImage ? resources.getColor(R.color.icon_text_background) : 0),
 									resources.getDimensionPixelSize(R.dimen.icon_text_padding),
 									textCornerRadius,
-									hasImage, 0,
-									iconWidth - textSpacing,
+									hasImage,
+									0,
+									false,
 									(hasImage ? resources
 											.getDimensionPixelSize(R.dimen.icon_maximum_text_height_with_image)
 											- textSpacing : iconHeight - textSpacing), resources
@@ -410,7 +410,7 @@ public class MediaItem implements BaseColumns {
 		if ((noMediaIcon || mType == MediaTabletProvider.TYPE_AUDIO) && getOriginalFileName() != null) {
 			BitmapUtilities.drawScaledText(getOriginalFileName(), mediaCanvas, mediaPaint,
 					resources.getColor(R.color.icon_text_with_image), resources.getColor(R.color.icon_text_background),
-					resources.getDimensionPixelSize(R.dimen.icon_text_padding), 0, true, 0, iconWidth, iconHeight / 3,
+					resources.getDimensionPixelSize(R.dimen.icon_text_padding), 0, true, 0, false, iconHeight / 3,
 					resources.getDimensionPixelSize(R.dimen.icon_maximum_text_size),
 					resources.getInteger(R.integer.icon_maximum_text_characters_per_line));
 		}

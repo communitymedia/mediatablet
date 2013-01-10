@@ -35,7 +35,8 @@ public class TextViewerActivity extends MediaViewerActivity {
 
 		String mediaPath = getCurrentMediaFile().getAbsolutePath(); // guaranteed to exist and not to be null
 		AutoResizeTextView textView = (AutoResizeTextView) findViewById(R.id.media_text);
-		textView.setTextSize(TypedValue.COMPLEX_UNIT_PX, getResources().getDimensionPixelSize(R.dimen.playback_text));
+		textView.setTextSize(TypedValue.COMPLEX_UNIT_PX,
+				getResources().getDimensionPixelSize(R.dimen.playback_text_size));
 		textView.setText(IOUtilities.getFileContents(mediaPath));
 	}
 }

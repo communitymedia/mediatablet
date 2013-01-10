@@ -28,17 +28,17 @@
 
     <!-- icon shared properties -->
     <dimen name="icon_grid_spacing">20dp</dimen>
-    <dimen name="icon_maximum_text_size">50dp</dimen>
+    <dimen name="icon_maximum_text_size">30sp</dimen>
     <dimen name="icon_border_width">2dp</dimen>
     <dimen name="icon_border_right_width">3dp</dimen> <!-- must be icon_border_width + 1 to fix 1px gap on some devices -->
-    <dimen name="icon_text_padding">4dp</dimen>
+    <dimen name="icon_text_padding">6dp</dimen>
+    <dimen name="icon_text_corner_radius">4dp</dimen>
 
     <item name="icon_main_svg_scale_factor" format="float" type="attr">0.9</item>
     <item name="icon_overlay_svg_scale_factor" format="float" type="attr">0.22</item>
     <item name="icon_overlay_spacing_factor" format="float" type="attr">0.02</item>
-    <item name="icon_text_corner_radius" format="float" type="attr">0.165</item>
 
-    <dimen name="icon_maximum_text_height_with_image">80dp</dimen>
+    <dimen name="icon_maximum_text_height_with_image">60dp</dimen>
 
     <integer name="icon_maximum_text_characters_per_line">26</integer>
 
@@ -46,9 +46,9 @@
     <integer name="frame_narrative_sequence_increment">10</integer>
 
     <!-- playback and export settings TODO: combine both versions (mediaphone and mediatablet) -->
-    <dimen name="playback_text">32sp</dimen>
-    <dimen name="playback_text_corner_radius">4dp</dimen>
+    <dimen name="playback_text_size">32sp</dimen>
     <dimen name="playback_text_padding">@dimen/icon_text_padding</dimen>
+    <dimen name="playback_text_corner_radius">@dimen/icon_text_corner_radius</dimen>
     <dimen name="playback_maximum_text_height_with_image">@dimen/icon_maximum_text_height_with_image</dimen>
 
     <integer name="export_smil_width">640</integer>
@@ -56,11 +56,10 @@
     <integer name="export_smil_player_bar_adjustment">16</integer>
     <integer name="export_maximum_text_characters_per_line">@integer/icon_maximum_text_characters_per_line</integer>
 
-    <dimen name="export_icon_text_padding">@dimen/icon_text_padding</dimen>
     <dimen name="export_maximum_text_size">@dimen/icon_maximum_text_size</dimen>
+    <dimen name="export_icon_text_padding">@dimen/icon_text_padding</dimen>
+    <dimen name="export_icon_text_corner_radius">@dimen/icon_text_corner_radius</dimen>
     <dimen name="export_maximum_text_height_with_image">@dimen/icon_maximum_text_height_with_image</dimen>
-
-    <item name="export_icon_text_corner_radius" format="float" type="attr">0.165</item>
 
     <!-- intent extras -->
     <string name="extra_internal_id">internal_id</string>
