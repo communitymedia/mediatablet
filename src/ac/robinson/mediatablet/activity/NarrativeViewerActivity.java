@@ -519,6 +519,10 @@ public class NarrativeViewerActivity extends MediaViewerActivity {
 		public boolean canSeekForward() {
 			return true;
 		}
+
+		@Override
+		public void onControllerVisibilityChange(boolean visible) {
+		}
 	};
 
 	private void startPlayers() {

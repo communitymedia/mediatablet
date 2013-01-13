@@ -239,7 +239,7 @@ public class HomesteadSurfaceView extends SurfaceView implements SurfaceHolder.C
 			SharedPreferences.Editor prefsEditor = panoramaSettings.edit();
 			prefsEditor.putInt(context.getString(R.string.key_panorama_width), panoramaWidth);
 			prefsEditor.putInt(context.getString(R.string.key_panorama_height), panoramaHeight);
-			prefsEditor.commit(); // apply is better, but only in API > 8
+			prefsEditor.apply();
 		}
 
 		mPanoramaImageCount = (panoramaWidth / panoramaHeight) + 1;
@@ -338,7 +338,7 @@ public class HomesteadSurfaceView extends SurfaceView implements SurfaceHolder.C
 				Context.MODE_PRIVATE);
 		SharedPreferences.Editor prefsEditor = panoramaSettings.edit();
 		prefsEditor.putFloat(context.getString(R.string.key_panorama_position), mX);
-		prefsEditor.commit(); // apply is better, but only in API > 8
+		prefsEditor.apply();
 
 		mDrawThread.setRunning(false);
 		mLoadThread.setRunning(false);

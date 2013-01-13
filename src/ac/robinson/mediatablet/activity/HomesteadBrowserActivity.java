@@ -127,7 +127,7 @@ public class HomesteadBrowserActivity extends MediaTabletActivity {
 					SharedPreferences.Editor prefsEditor = panoramaSettings.edit();
 					prefsEditor.putString(getString(R.string.key_administrator_password), passwordHash);
 					prefsEditor.putString(getString(R.string.key_administrator_password_temp), existingPassword);
-					prefsEditor.commit(); // apply is better, but only in API > 8; plaintext will be deleted later
+					prefsEditor.apply(); // plaintext will be deleted after registration is completed
 				}
 
 				AlertDialog.Builder builder = new AlertDialog.Builder(HomesteadBrowserActivity.this);
@@ -319,7 +319,7 @@ public class HomesteadBrowserActivity extends MediaTabletActivity {
 				SharedPreferences.Editor prefsEditor = panoramaSettings.edit();
 				prefsEditor.putString(getString(R.string.key_panorama_file), panoramaPath);
 				prefsEditor.putString(getString(R.string.key_administrator_password_temp), "");
-				prefsEditor.commit(); // apply is better, but only in API > 8
+				prefsEditor.apply();
 				UIUtilities.showToast(HomesteadBrowserActivity.this, R.string.panorama_found);
 				return true;
 			}

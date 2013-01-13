@@ -104,7 +104,7 @@ public class MediaTabletApplication extends Application {
 
 			SharedPreferences.Editor prefsEditor = mediaPhoneSettings.edit();
 			prefsEditor.putBoolean(MediaTablet.KEY_USE_EXTERNAL_STORAGE, useSDCard);
-			prefsEditor.commit(); // apply is better, but only in API > 8
+			prefsEditor.apply();
 		}
 
 		// use cache directories for thumbnails and temp (outgoing) files

@@ -351,7 +351,7 @@ public class LockPatternActivity extends Activity {
 				mBtnConfirm.setEnabled(false);
 			} else {
 				if (mAutoSave)
-					mPrefs.edit().putString(_PaternSha1, LockPatternUtils.patternToSha1(mLastPattern)).commit();
+					mPrefs.edit().putString(_PaternSha1, LockPatternUtils.patternToSha1(mLastPattern)).apply();
 
 				Intent i = new Intent();
 				i.putExtra(_PaternSha1, LockPatternUtils.patternToSha1(mLastPattern));

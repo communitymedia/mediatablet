@@ -178,6 +178,10 @@ public class AudioVideoViewerActivity extends MediaViewerActivity {
 				public boolean canSeekForward() {
 					return true;
 				}
+				
+				@Override
+				public void onControllerVisibilityChange(boolean visible) {
+				}
 			});
 			mMediaController.show(0); // 0 for permanent visibility TODO: hide playback controls after default timeout
 		}
