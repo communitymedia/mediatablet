@@ -12,6 +12,7 @@
 
     <LinearLayout
         android:id="@+id/button_crop_image_container"
+        style="?android:attr/buttonBarStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
@@ -22,6 +23,7 @@
 
         <Button
             android:id="@+id/button_crop_image_discard"
+            style="?android:attr/buttonBarButtonStyle"
             android:layout_width="100dp"
             android:layout_height="wrap_content"
             android:text="@android:string/cancel"
@@ -29,6 +31,7 @@
 
         <Button
             android:id="@+id/button_crop_image_save"
+            style="?android:attr/buttonBarButtonStyle"
             android:layout_width="100dp"
             android:layout_height="wrap_content"
             android:text="@string/menu_save" />
