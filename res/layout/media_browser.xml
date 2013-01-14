@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent" >
 
@@ -62,7 +63,8 @@
                     android:background="@drawable/ic_filter_image"
                     android:onClick="handleFilterClicks"
                     android:textOff=""
-                    android:textOn="" />
+                    android:textOn=""
+                    tools:ignore="Suspicious0dp" />
 
                 <ToggleButton
                     android:id="@+id/button_media_filter_videos"
@@ -72,7 +74,8 @@
                     android:background="@drawable/ic_filter_video"
                     android:onClick="handleFilterClicks"
                     android:textOff=""
-                    android:textOn="" />
+                    android:textOn=""
+                    tools:ignore="Suspicious0dp" />
 
                 <ToggleButton
                     android:id="@+id/button_media_filter_audio"
@@ -82,7 +85,8 @@
                     android:background="@drawable/ic_filter_audio"
                     android:onClick="handleFilterClicks"
                     android:textOff=""
-                    android:textOn="" />
+                    android:textOn=""
+                    tools:ignore="Suspicious0dp" />
 
                 <ToggleButton
                     android:id="@+id/button_media_filter_text"
@@ -92,7 +96,8 @@
                     android:background="@drawable/ic_filter_text"
                     android:onClick="handleFilterClicks"
                     android:textOff=""
-                    android:textOn="" />
+                    android:textOn=""
+                    tools:ignore="Suspicious0dp" />
 
                 <ToggleButton
                     android:id="@+id/button_media_filter_narratives"
@@ -102,7 +107,8 @@
                     android:background="@drawable/ic_filter_narratives"
                     android:onClick="handleFilterClicks"
                     android:textOff=""
-                    android:textOn="" />
+                    android:textOn=""
+                    tools:ignore="Suspicious0dp" />
             </LinearLayout>
         </LinearLayout>
 
