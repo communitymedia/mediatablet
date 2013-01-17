@@ -184,7 +184,6 @@ public class PersonItem implements BaseColumns {
 					(iconHeight - photoBitmap.getHeight()) / 2, personPaint);
 		} else {
 			// using SVG so that we don't need resolution-specific icons
-			// TODO: may not work with hardware acceleration (fix - see: https://gist.github.com/6ebe5b818652d5ccc27c)
 			Rect drawRect = new Rect(0, 0, iconWidth, iconHeight);
 			SVG personSVG = SVGParser.getSVGFromResource(resources, UNKNOWN_PERSON_ICON);
 			personCanvas.drawPicture(personSVG.getPicture(), drawRect);

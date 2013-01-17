@@ -38,11 +38,10 @@ import android.graphics.Color;
 import android.graphics.ColorFilter;
 import android.graphics.LightingColorFilter;
 import android.graphics.Paint;
-import android.graphics.Path;
 import android.graphics.Point;
 import android.graphics.PorterDuff;
+import android.graphics.PorterDuffXfermode;
 import android.graphics.Rect;
-import android.graphics.Region;
 import android.net.Uri;
 import android.provider.BaseColumns;
 import android.util.TypedValue;
@@ -185,7 +184,6 @@ public class HomesteadItem implements BaseColumns {
 				+ requestedSizeRevised);
 
 		// using SVG so that we don't need resolution-specific icons
-		// TODO: may not work with hardware acceleration (fix - see: https://gist.github.com/6ebe5b818652d5ccc27c)
 		SVG audioSVG = SVGParser.getSVGFromResource(resources, R.raw.ic_homestead);
 		homesteadBitmapCanvas.drawPicture(audioSVG.getPicture(), drawRect);
 
@@ -198,7 +196,6 @@ public class HomesteadItem implements BaseColumns {
 			int strokeWidth = resources.getDimensionPixelSize(R.dimen.icon_border_width);
 			Paint personPaint = BitmapUtilities.getPaint(resources.getColor(R.color.icon_person_border), strokeWidth);
 			personPaint.setStyle(Paint.Style.STROKE);
-			Path clipPath = new Path();
 			Canvas clipCanvas;
 
 			// make sure we can fit all the images in
@@ -227,6 +224,15 @@ public class HomesteadItem implements BaseColumns {
 			Point drawPoint = rotatePoint(new Point(startPoint.x, startPoint.y), startPoint, centrePoint, currentAngle);
 			double angleIncrement = (Math.PI * 2) / numPeople;
 
+			// set up the clipped bitmap for outlining person icons - see: http://stackoverflow.com/a/1718738
+			Bitmap roundedBitmap = Bitmap.createBitmap(personIconSize, personIconSize,
+					ImageCacheUtilities.mBitmapFactoryOptions.inPreferredConfig);
+			Canvas roundedCanvas = new Canvas(roundedBitmap);
+			Paint clipPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+			clipPaint.setColor(Color.BLACK);
+			roundedCanvas.drawCircle(halfPersonIconSize, halfPersonIconSize, halfPersonIconSize, clipPaint);
+			clipPaint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.DST_IN));
+
 			// finally, draw the actual icons
 			// for (PersonItem person : homesteadPeople) { //instead, reverse the list to get items in better draw order
 			for (ListIterator<PersonItem> it = homesteadPeople.listIterator(homesteadPeople.size()); it.hasPrevious();) {
@@ -251,19 +257,15 @@ public class HomesteadItem implements BaseColumns {
 				currentAngle -= angleIncrement; // because we're drawing in reverse
 				drawPoint = rotatePoint(drawPoint, startPoint, centrePoint, currentAngle);
 
+				// clip the bitmap
 				clipCanvas = new Canvas(personBitmap);
-				clipPath.reset();
-				clipPath.addCircle(halfPersonIconSize, halfPersonIconSize, halfPersonIconSize, Path.Direction.CW);
-				clipCanvas.clipPath(clipPath, Region.Op.DIFFERENCE);
-				clipCanvas.drawColor(0x00000000, PorterDuff.Mode.CLEAR);
+				clipCanvas.drawBitmap(roundedBitmap, 0, 0, clipPaint);
 
+				// draw the clipped bitmap and an outline
 				homesteadBitmapCanvas.drawBitmap(personBitmap, drawPoint.x - halfPersonIconSize, drawPoint.y
 						- halfPersonIconSize, personPaint);
-
-				clipPath.reset();
-				clipPath.addCircle(drawPoint.x, drawPoint.y, halfPersonIconSize - halfStrokeWidth + 1,
-						Path.Direction.CW);
-				homesteadBitmapCanvas.drawPath(clipPath, personPaint);
+				homesteadBitmapCanvas.drawCircle(drawPoint.x, drawPoint.y, halfPersonIconSize - halfStrokeWidth + 1,
+						personPaint);
 			}
 		}
 

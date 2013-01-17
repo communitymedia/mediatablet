@@ -31,13 +31,10 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Matrix;
-import android.graphics.Path;
 import android.graphics.Point;
 import android.graphics.PointF;
-import android.graphics.PorterDuff;
 import android.graphics.Rect;
 import android.graphics.RectF;
-import android.graphics.Region;
 import android.media.FaceDetector;
 import android.net.Uri;
 import android.os.Build;
@@ -259,17 +256,18 @@ public class CropImage extends MonitoredActivity {
 		}
 
 		if (mCircleCrop) {
+			// TODO: removed as it is incompatible with hardware acceleration
 			// OK, so what's all this about?
 			// Bitmaps are inherently rectangular but we want to return
 			// something that's basically a circle. So we fill in the
 			// area around the circle with alpha. Note the all important
 			// PortDuff.Mode.CLEAR.
-			Canvas c = new Canvas(croppedImage);
-			Path p = new Path();
-			p.addCircle(width / 2F, height / 2F, width / 2F, Path.Direction.CW);
-			c.clipPath(p, Region.Op.DIFFERENCE);
-			c.drawColor(0x00000000, PorterDuff.Mode.CLEAR);
-			c = null;
+			// Canvas c = new Canvas(croppedImage);
+			// Path p = new Path();
+			// p.addCircle(width / 2F, height / 2F, width / 2F, Path.Direction.CW);
+			// c.clipPath(p, Region.Op.DIFFERENCE);
+			// c.drawColor(0x00000000, PorterDuff.Mode.CLEAR);
+			// c = null;
 		}
 
 		/* If the output is required to a specific size then scale or fill */

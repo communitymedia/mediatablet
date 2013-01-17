@@ -20,6 +20,7 @@
 
 package ac.robinson.mediatablet.view;
 
+import android.annotation.SuppressLint;
 import android.graphics.Canvas;
 
 public class SurfaceDrawThread extends Thread {
@@ -38,6 +39,8 @@ public class SurfaceDrawThread extends Thread {
 		return mRunning;
 	}
 
+	// @SuppressLint("WrongCall") is for onDraw() - onDraw is the right call here
+	@SuppressLint("WrongCall")
 	@Override
 	public void run() {
 		Canvas c;

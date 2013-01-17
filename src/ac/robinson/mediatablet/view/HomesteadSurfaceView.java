@@ -295,7 +295,6 @@ public class HomesteadSurfaceView extends SurfaceView implements SurfaceHolder.C
 			Rect drawRect = new Rect(iconStart, iconStart, iconStart + iconSize, iconStart + iconSize);
 
 			// using SVG so that we don't need resolution-specific icons
-			// TODO: may not work with hardware acceleration (fix - see: https://gist.github.com/6ebe5b818652d5ccc27c)
 			SVG audioSVG = SVGParser.getSVGFromResource(resources, R.raw.ic_homestead);
 			iconBitmapCanvas.drawPicture(audioSVG.getPicture(), drawRect);
 			saveCachedImage(iconBitmap, HOMESTEAD_DEFAULT_NAME, Bitmap.CompressFormat.PNG);

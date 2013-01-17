@@ -344,8 +344,6 @@ public class MediaItem implements BaseColumns {
 										- iconSpacingVertical);
 							}
 							// using SVG so that we don't need resolution-specific icons
-							// TODO: may not work with hardware acceleration (fix - see:
-							// https://gist.github.com/6ebe5b818652d5ccc27c)
 							SVG audioSVG = SVGParser.getSVGFromResource(resources, resourceId);
 							mediaCanvas.drawPicture(audioSVG.getPicture(), drawRect);
 						}
@@ -356,8 +354,6 @@ public class MediaItem implements BaseColumns {
 									iconSpacingVertical, iconWidth - iconSpacingHorizontal, iconSpacingVertical
 											+ Math.round(iconHeight * scaleFactor));
 							// using SVG so that we don't need resolution-specific icons
-							// TODO: may not work with hardware acceleration (fix - see:
-							// https://gist.github.com/6ebe5b818652d5ccc27c)
 							SVG narrativeSVG = SVGParser.getSVGFromResource(resources, R.raw.ic_narrative);
 							mediaCanvas.drawPicture(narrativeSVG.getPicture(), drawRect);
 						} else {
@@ -398,8 +394,6 @@ public class MediaItem implements BaseColumns {
 			}
 
 			// using SVG so that we don't need resolution-specific icons
-			// TODO: may not work with hardware acceleration (fix - see:
-			// https://gist.github.com/6ebe5b818652d5ccc27c)
 			Rect drawRect = new Rect(0, 0, iconWidth, iconHeight);
 			SVG noMediaSVG = SVGParser.getSVGFromResource(resources, iconId);
 			mediaCanvas.drawPicture(noMediaSVG.getPicture(), drawRect);

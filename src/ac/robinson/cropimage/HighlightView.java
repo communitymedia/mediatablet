@@ -23,7 +23,6 @@ import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.Rect;
 import android.graphics.RectF;
-import android.graphics.Region;
 import android.graphics.drawable.Drawable;
 import android.view.View;
 
@@ -90,8 +89,10 @@ class HighlightView {
 			path.addRect(new RectF(mDrawRect), Path.Direction.CW);
 			mOutlinePaint.setColor(0xFFFF8A00);
 			// }
-			canvas.clipPath(path, Region.Op.DIFFERENCE);
-			canvas.drawRect(viewDrawingRect, hasFocus() ? mFocusPaint : mNoFocusPaint);
+
+			// TODO: removed highlighting - clipPath is incompatible with hardware acceleration
+			// canvas.clipPath(path, Region.Op.DIFFERENCE);
+			// canvas.drawRect(viewDrawingRect, hasFocus() ? mFocusPaint : mNoFocusPaint);
 
 			canvas.restore();
 			canvas.drawPath(path, mOutlinePaint);

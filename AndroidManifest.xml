@@ -3,8 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="ac.robinson.mediatablet"
     android:installLocation="preferExternal"
-    android:versionCode="7"
-    android:versionName="1.1.1" >
+    android:versionCode="8"
+    android:versionName="1.1.2" >
 
     <uses-sdk
         android:minSdkVersion="9"
@@ -13,6 +13,7 @@
     <!-- internet permission is for Hierarchy Viewer debugging only, and should be disabled for release -->
     <!-- <uses-permission android:name="android.permission.INTERNET" /> -->
     <uses-permission android:name="android.permission.BLUETOOTH" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
     <uses-feature android:name="android.hardware.screen.landscape" />
