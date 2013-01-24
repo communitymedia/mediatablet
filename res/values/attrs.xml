@@ -94,11 +94,18 @@
     <string name="key_about_application">about_application</string>
 
     <!-- keys for hidden "preferences" -->
+    <string name="key_use_external_storage">key_use_external_storage</string> <!-- key_ prefix for legacy reasons -->
     <string name="key_panorama_width">panorama_width</string>
     <string name="key_panorama_height">panorama_height</string>
     <string name="key_panorama_position">panorama_position</string>
     <string name="key_panorama_file">panorama_file</string>
     <string name="key_administrator_password">administrator_password</string>
     <string name="key_administrator_password_temp">administrator_password_temp</string> <!-- the plaintext version of the password - only stored on first use in case the setup process is paused; cleared on completion -->
+
+
+    <!-- file/folder names - *do not change* -->
+    <string name="name_storage_directory">_storage</string>
+    <string name="name_temp_directory">_temp</string>
+    <string name="name_thumbs_directory">_thumbs</string>
 
 </resources>

@@ -50,10 +50,6 @@ public class MediaTablet {
 		}
 	}
 
-	// to record whether we're on the external storage or not, and track when we're moved to the internal storage
-	// NOTE: other preference keys are in strings.xml
-	public static final String KEY_USE_EXTERNAL_STORAGE = "key_use_external_storage";
-
 	public static final String[] TYPE_IMAGE_EXTENSIONS = { "jpg", "jpeg", "gif", "png", "bmp" };
 	public static final String[] TYPE_VIDEO_EXTENSIONS = { "mp4", "mpg", "mov", "avi" };
 	public static final String[] TYPE_AUDIO_EXTENSIONS = { "m4a", "3gp", "mp3", "aac", "ogg", "amr" };

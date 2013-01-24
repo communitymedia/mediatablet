@@ -86,12 +86,12 @@ public class MediaTabletApplication extends Application {
 		// SD card and phone.
 		// we check for missing files in each activity, so no need to do so here
 		boolean useSDCard;
-		String storageDirectoryName = MediaTablet.APPLICATION_NAME + "_storage";
+		final String storageKey = getString(R.string.key_use_external_storage);
+		String storageDirectoryName = MediaTablet.APPLICATION_NAME + getString(R.string.name_storage_directory);
 		SharedPreferences mediaPhoneSettings = getSharedPreferences(MediaTablet.APPLICATION_NAME, Context.MODE_PRIVATE);
-		if (mediaPhoneSettings.contains(MediaTablet.KEY_USE_EXTERNAL_STORAGE)) {
+		if (mediaPhoneSettings.contains(storageKey)) {
 			// setting has previously been saved
-			useSDCard = mediaPhoneSettings.getBoolean(MediaTablet.KEY_USE_EXTERNAL_STORAGE,
-					IOUtilities.isInstalledOnSdCard(this));
+			useSDCard = mediaPhoneSettings.getBoolean(storageKey, IOUtilities.isInstalledOnSdCard(this));
 			if (useSDCard) {
 				MediaTablet.DIRECTORY_STORAGE = IOUtilities.getExternalStoragePath(this, storageDirectoryName);
 			} else {
@@ -103,16 +103,16 @@ public class MediaTabletApplication extends Application {
 			MediaTablet.DIRECTORY_STORAGE = IOUtilities.getNewStoragePath(this, storageDirectoryName, useSDCard);
 
 			SharedPreferences.Editor prefsEditor = mediaPhoneSettings.edit();
-			prefsEditor.putBoolean(MediaTablet.KEY_USE_EXTERNAL_STORAGE, useSDCard);
+			prefsEditor.putBoolean(storageKey, useSDCard);
 			prefsEditor.apply();
 		}
 
 		// use cache directories for thumbnails and temp (outgoing) files
-		MediaTablet.DIRECTORY_THUMBS = IOUtilities.getNewCachePath(this, MediaTablet.APPLICATION_NAME + "_thumbs",
-				false); // don't clear
+		MediaTablet.DIRECTORY_THUMBS = IOUtilities.getNewCachePath(this, MediaTablet.APPLICATION_NAME
+				+ getString(R.string.name_thumbs_directory), false); // don't clear
 
 		// temporary directory must be world readable to be able to send files
-		String tempName = MediaTablet.APPLICATION_NAME + "_temp";
+		String tempName = MediaTablet.APPLICATION_NAME + getString(R.string.name_temp_directory);
 		if (IOUtilities.mustCreateTempDirectory(this)) {
 			if (IOUtilities.externalStorageIsWritable()) {
 				MediaTablet.DIRECTORY_TEMP = new File(Environment.getExternalStorageDirectory(), tempName);

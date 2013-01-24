@@ -173,12 +173,10 @@ public abstract class MediaTabletActivity extends Activity {
 					Context.MODE_PRIVATE);
 
 			// TODO: add a way of moving content to internal locations
-			if (mediaTabletSettings.contains(MediaTablet.KEY_USE_EXTERNAL_STORAGE)) {
-				if (mediaTabletSettings.getBoolean(MediaTablet.KEY_USE_EXTERNAL_STORAGE,
-						IOUtilities.isInstalledOnSdCard(this))) {
-
+			final String storageKey = getString(R.string.key_use_external_storage);
+			if (mediaTabletSettings.contains(storageKey)) {
+				if (mediaTabletSettings.getBoolean(storageKey, IOUtilities.isInstalledOnSdCard(this))) {
 					UIUtilities.showToast(MediaTabletActivity.this, R.string.error_opening_media_content_sd, true);
-
 					finish();
 					return;
 				}
