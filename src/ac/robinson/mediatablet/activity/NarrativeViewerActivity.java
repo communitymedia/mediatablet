@@ -208,7 +208,7 @@ public class NarrativeViewerActivity extends MediaViewerActivity {
 			// make sure the text view is visible above the playback bar
 			Resources res = getResources();
 			int mediaControllerHeight = res.getDimensionPixelSize(R.dimen.media_controller_height);
-			boolean hasImage = mCurrentFrameContainer.mImagePath != null;
+			boolean hasImage = mCurrentFrameContainer != null && mCurrentFrameContainer.mImagePath != null;
 			AutoResizeTextView textView = (AutoResizeTextView) findViewById(R.id.text_playback);
 			if (textView.getVisibility() == View.VISIBLE) {
 				if (hasImage) {
@@ -409,11 +409,17 @@ public class NarrativeViewerActivity extends MediaViewerActivity {
 				mCurrentFrameContainer = getMediaContainer(mPlaybackPosition, true);
 				prepareMediaItems(mCurrentFrameContainer);
 			} else {
-				mMediaPlayer.setOnCompletionListener(mMediaPlayerCompletionListener);
-				mPlaybackStartTime = System.currentTimeMillis() - mMediaPlayer.getCurrentPosition();
-				mMediaPlayer.start();
-				mSoundPool.autoResume(); // TODO: check this works
-				showMediaController(CustomMediaController.DEFAULT_VISIBILITY_TIMEOUT);
+				if (mMediaPlayer != null && mSoundPool != null) {
+					mMediaPlayer.setOnCompletionListener(mMediaPlayerCompletionListener);
+					mPlaybackStartTime = System.currentTimeMillis() - mMediaPlayer.getCurrentPosition();
+					mMediaPlayer.start();
+					mSoundPool.autoResume(); // TODO: check this works
+					showMediaController(CustomMediaController.DEFAULT_VISIBILITY_TIMEOUT);
+				} else {
+					UIUtilities.showToast(NarrativeViewerActivity.this, R.string.error_loading_narrative_player);
+					finish();
+					return;
+				}
 			}
 			UIUtilities.acquireKeepScreenOn(getWindow());
 		}
@@ -421,9 +427,13 @@ public class NarrativeViewerActivity extends MediaViewerActivity {
 		@Override
 		public void pause() {
 			mIsLoading = false;
-			mMediaPlayer.setOnCompletionListener(null); // make sure we don't continue accidentally
-			mMediaPlayer.pause();
-			mSoundPool.autoPause(); // TODO: check this works
+			if (mMediaPlayer != null) {
+				mMediaPlayer.setOnCompletionListener(null); // make sure we don't continue accidentally
+				mMediaPlayer.pause();
+			}
+			if (mSoundPool != null) {
+				mSoundPool.autoPause(); // TODO: check this works
+			}
 			UIUtilities.releaseKeepScreenOn(getWindow());
 		}
 
@@ -439,8 +449,8 @@ public class NarrativeViewerActivity extends MediaViewerActivity {
 			} else {
 				return mPlaybackPosition
 						+ mNonAudioOffset
-						+ (mSilenceFilePlaying ? (int) (System.currentTimeMillis() - mPlaybackStartTime) : mMediaPlayer
-								.getCurrentPosition());
+						+ (mSilenceFilePlaying ? (int) (System.currentTimeMillis() - mPlaybackStartTime)
+								: (mMediaPlayer != null ? mMediaPlayer.getCurrentPosition() : 0));
 			}
 		}
 
@@ -492,7 +502,7 @@ public class NarrativeViewerActivity extends MediaViewerActivity {
 
 		@Override
 		public boolean isPlaying() {
-			return mMediaPlayer.isPlaying();
+			return mMediaPlayer == null ? false : mMediaPlayer.isPlaying();
 		}
 
 		@Override
