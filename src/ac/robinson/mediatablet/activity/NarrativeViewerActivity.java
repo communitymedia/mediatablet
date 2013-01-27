@@ -67,6 +67,7 @@ public class NarrativeViewerActivity extends MediaViewerActivity {
 	private AssetFileDescriptor mSilenceFileDescriptor = null;
 	private boolean mSilenceFilePlaying;
 	private long mPlaybackStartTime;
+	private long mPlaybackPauseTime;
 
 	private MediaPlayer mMediaPlayer;
 	private boolean mMediaPlayerError;
@@ -112,10 +113,12 @@ public class NarrativeViewerActivity extends MediaViewerActivity {
 	@Override
 	public void onWindowFocusChanged(boolean hasFocus) {
 		super.onWindowFocusChanged(hasFocus);
-		if (hasFocus && !mHasPlayed) {
-			preparePlayback();
-		} else {
-			showMediaController(CustomMediaController.DEFAULT_VISIBILITY_TIMEOUT);
+		if (hasFocus) {
+			if (!mHasPlayed) {
+				preparePlayback();
+			} else {
+				showMediaController(CustomMediaController.DEFAULT_VISIBILITY_TIMEOUT);
+			}
 		}
 	}
 
@@ -401,8 +404,8 @@ public class NarrativeViewerActivity extends MediaViewerActivity {
 	private CustomMediaController.MediaPlayerControl mMediaPlayerController = new CustomMediaController.MediaPlayerControl() {
 		@Override
 		public void start() {
-			// so we return to the start when playing from the end
-			if (mPlaybackPosition < 0) {
+			mPlaybackPauseTime = -1;
+			if (mPlaybackPosition < 0) { // so we return to the start when playing from the end
 				mPlaybackPosition = 0;
 				mInitialPlaybackOffset = 0;
 				mNonAudioOffset = 0;
@@ -427,6 +430,9 @@ public class NarrativeViewerActivity extends MediaViewerActivity {
 		@Override
 		public void pause() {
 			mIsLoading = false;
+			if (mPlaybackPauseTime < 0) { // save the time paused, but don't overwrite if we call pause multiple times
+				mPlaybackPauseTime = System.currentTimeMillis();
+			}
 			if (mMediaPlayer != null) {
 				mMediaPlayer.setOnCompletionListener(null); // make sure we don't continue accidentally
 				mMediaPlayer.pause();
@@ -447,10 +453,18 @@ public class NarrativeViewerActivity extends MediaViewerActivity {
 			if (mPlaybackPosition < 0) {
 				return mNarrativeDuration;
 			} else {
-				return mPlaybackPosition
-						+ mNonAudioOffset
-						+ (mSilenceFilePlaying ? (int) (System.currentTimeMillis() - mPlaybackStartTime)
-								: (mMediaPlayer != null ? mMediaPlayer.getCurrentPosition() : 0));
+				int rootPlaybackPosition = mPlaybackPosition + mNonAudioOffset;
+				if (mSilenceFilePlaying) {
+					// must calculate the actual time at the point of pausing, rather than the current time
+					if (mPlaybackPauseTime > 0) {
+						rootPlaybackPosition += (int) (mPlaybackPauseTime - mPlaybackStartTime);
+					} else {
+						rootPlaybackPosition += (int) (System.currentTimeMillis() - mPlaybackStartTime);
+					}
+				} else {
+					rootPlaybackPosition += (mMediaPlayer != null ? mMediaPlayer.getCurrentPosition() : 0);
+				}
+				return rootPlaybackPosition;
 			}
 		}
 
@@ -461,6 +475,7 @@ public class NarrativeViewerActivity extends MediaViewerActivity {
 			if (mPlaybackPosition < 0) { // so we allow seeking from the end
 				mPlaybackPosition = mNarrativeDuration - mCurrentFrameContainer.mFrameMaxDuration;
 			}
+			mPlaybackPauseTime = -1; // we'll be playing after this call
 			if (actualPos >= 0 && actualPos < mCurrentFrameContainer.mFrameMaxDuration) {
 				if (mIsLoading
 						|| (actualPos < mMediaPlayer.getDuration() && mCurrentFrameContainer.mAudioPaths.size() > 0)) {
