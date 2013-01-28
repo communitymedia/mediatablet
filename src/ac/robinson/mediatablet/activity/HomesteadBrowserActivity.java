@@ -46,6 +46,7 @@ import android.graphics.BitmapFactory.Options;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.preference.PreferenceManager;
 import android.text.SpannableString;
 import android.text.method.LinkMovementMethod;
 import android.text.util.Linkify;
@@ -77,6 +78,9 @@ public class HomesteadBrowserActivity extends MediaTabletActivity {
 		if (savedInstanceState != null) {
 			mEditMode = savedInstanceState.getBoolean(getString(R.string.extra_edit_mode));
 		} else {
+			// initialise preferences on first run
+			PreferenceManager.setDefaultValues(this, R.xml.preferences, true);
+
 			final Intent intent = getIntent();
 			if (intent != null) {
 				mEditMode = intent.getBooleanExtra(getString(R.string.extra_edit_mode), false);
