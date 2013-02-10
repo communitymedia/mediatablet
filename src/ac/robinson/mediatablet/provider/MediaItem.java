@@ -430,14 +430,8 @@ public class MediaItem implements BaseColumns {
 					SVG personSVG = SVGParser.getSVGFromResource(resources, PersonItem.UNKNOWN_PERSON_ICON);
 					personCanvas.drawPicture(personSVG.getPicture(), drawRect);
 
-					FileOutputStream out = null;
-					try {
-						out = new FileOutputStream(personFile);
-						personBitmap.compress(Bitmap.CompressFormat.PNG, 100, out);
-					} catch (FileNotFoundException e) {
-					} finally {
-						IOUtilities.closeStream(out);
-					}
+					BitmapUtilities.saveBitmap(personBitmap, Bitmap.CompressFormat.PNG, 100, personFile);
+					personCanvas = null;
 				} else {
 					PersonManager.reloadPersonIcon(resources, contentResolver, parentOverlayId);
 				}

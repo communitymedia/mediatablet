@@ -319,15 +319,14 @@ public class HomesteadSurfaceView extends SurfaceView implements SurfaceHolder.C
 
 	public void saveCachedImage(Bitmap bitmap, String fileName, Bitmap.CompressFormat fileFormat) {
 		File outputImageFile = new File(MediaTablet.DIRECTORY_THUMBS, fileName);
-		FileOutputStream outputImageStream = null;
-		try {
-			outputImageStream = new FileOutputStream(outputImageFile);
-			bitmap.compress(fileFormat, MediaTablet.ICON_CACHE_QUALITY, outputImageStream);
-		} catch (FileNotFoundException e) {
-			if (MediaTablet.DEBUG)
+		boolean success = false;
+		if (bitmap != null) {
+			success = BitmapUtilities.saveBitmap(bitmap, fileFormat, MediaTablet.ICON_CACHE_QUALITY, outputImageFile);
+		}
+		if (MediaTablet.DEBUG) {
+			if (bitmap == null || !success) {
 				Log.e(DebugUtilities.getLogTag(this), "Failed to save cache image " + outputImageFile);
-		} finally {
-			IOUtilities.closeStream(outputImageStream);
+			}
 		}
 	}
 
