@@ -16,6 +16,9 @@
     <color name="icon_text_background">#85ffffff</color>
     <color name="icon_selected">#40a9a9a9</color>
 
+    <!-- playback -->
+    <color name="playback_background">@color/icon_background</color>
+
     <!-- coloured buttons -->
     <color name="button_blue_default">#ff82d5fe</color>
     <color name="button_blue_touched">#ff82d5fe</color>

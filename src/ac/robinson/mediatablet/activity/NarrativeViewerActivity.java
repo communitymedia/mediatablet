@@ -219,19 +219,10 @@ public class NarrativeViewerActivity extends MediaViewerActivity {
 	}
 
 	private void makeMediaItemsVisible(boolean mediaControllerIsShowing) {
+		// make sure the text view is visible above the playback bar
 		Resources res = getResources();
 		int mediaControllerHeight = res.getDimensionPixelSize(R.dimen.media_controller_height);
-		boolean hasContainer = mCurrentFrameContainer != null;
-		boolean hasImage = hasContainer && mCurrentFrameContainer.mImagePath != null;
-
-		// re-pad the audio icon
-		if (hasContainer && !hasImage && TextUtils.isEmpty(mCurrentFrameContainer.mTextContent)) {
-			((ImageView) findViewById(R.id.image_playback)).setPadding(0, 0, 0,
-					(mediaControllerIsShowing ? mediaControllerHeight : 0));
-		}
-
-		// make sure the text view is visible above the playback bar
-		if (hasImage) {
+		if (mCurrentFrameContainer != null && mCurrentFrameContainer.mImagePath != null) {
 			AutoResizeTextView textView = (AutoResizeTextView) findViewById(R.id.text_playback);
 			RelativeLayout.LayoutParams textLayout = (RelativeLayout.LayoutParams) textView.getLayoutParams();
 			int textPadding = res.getDimensionPixelSize(R.dimen.playback_text_padding);
@@ -291,33 +282,49 @@ public class NarrativeViewerActivity extends MediaViewerActivity {
 
 		FileInputStream playerInputStream = null;
 		mSilenceFilePlaying = false;
-		try {
-			mMediaPlayer.reset();
-			mMediaPlayer.setLooping(false);
-			if (currentAudioItem == null || (!(new File(currentAudioItem).exists()))) {
-				mSilenceFilePlaying = true;
-				if (mSilenceFileDescriptor == null) {
-					mSilenceFileDescriptor = res.openRawResourceFd(R.raw.silence_100ms);
+		boolean dataLoaded = false;
+		int dataLoadingErrorCount = 0;
+		while (!dataLoaded && dataLoadingErrorCount <= 2) {
+			try {
+				mMediaPlayer.reset();
+				if (currentAudioItem == null || (!(new File(currentAudioItem).exists()))) {
+					mSilenceFilePlaying = true;
+					if (mSilenceFileDescriptor == null) {
+						mSilenceFileDescriptor = res.openRawResourceFd(R.raw.silence_100ms);
+					}
+					mMediaPlayer.setDataSource(mSilenceFileDescriptor.getFileDescriptor(),
+							mSilenceFileDescriptor.getStartOffset(), mSilenceFileDescriptor.getDeclaredLength());
+				} else {
+					// can't play from data directory (they're private; permissions don't work), must use an input
+					// stream - original was: mMediaPlayer.setDataSource(currentAudioItem);
+					playerInputStream = new FileInputStream(new File(currentAudioItem));
+					mMediaPlayer.setDataSource(playerInputStream.getFD());
 				}
-				mMediaPlayer.setDataSource(mSilenceFileDescriptor.getFileDescriptor(),
-						mSilenceFileDescriptor.getStartOffset(), mSilenceFileDescriptor.getDeclaredLength());
-			} else {
-				// can't play from data directory (they're private; permissions don't work), must use an input stream
-				// mMediaPlayer.setDataSource(currentAudioItem);
-				playerInputStream = new FileInputStream(new File(currentAudioItem));
-				mMediaPlayer.setDataSource(playerInputStream.getFD());
+				dataLoaded = true;
+			} catch (Throwable t) {
+				// sometimes setDataSource fails for mysterious reasons - loop to open it, rather than failing
+				dataLoaded = false;
+				dataLoadingErrorCount += 1;
+			} finally {
+				IOUtilities.closeStream(playerInputStream);
 			}
-			mMediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
-			mMediaPlayer.setOnPreparedListener(mMediaPlayerPreparedListener);
-			// mMediaPlayer.setOnCompletionListener(mMediaPlayerCompletionListener); // now done later - better pausing
-			mMediaPlayer.setOnErrorListener(mMediaPlayerErrorListener);
-			mMediaPlayer.prepareAsync();
+		}
+
+		try {
+			if (dataLoaded) {
+				mMediaPlayer.setLooping(false);
+				mMediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
+				mMediaPlayer.setOnPreparedListener(mMediaPlayerPreparedListener);
+				// mMediaPlayer.setOnCompletionListener(mMediaPlayerCompletionListener); // done later - better pausing
+				mMediaPlayer.setOnErrorListener(mMediaPlayerErrorListener);
+				mMediaPlayer.prepareAsync();
+			} else {
+				throw new IllegalStateException();
+			}
 		} catch (Throwable t) {
 			UIUtilities.showToast(NarrativeViewerActivity.this, R.string.error_loading_narrative_player);
 			finish();
 			return;
-		} finally {
-			IOUtilities.closeStream(playerInputStream);
 		}
 
 		// load the image
@@ -326,7 +333,6 @@ public class NarrativeViewerActivity extends MediaViewerActivity {
 			Bitmap scaledBitmap = BitmapUtilities.loadAndCreateScaledBitmap(container.mImagePath,
 					photoDisplay.getWidth(), photoDisplay.getHeight(), BitmapUtilities.ScalingLogic.FIT, true);
 			photoDisplay.setImageBitmap(scaledBitmap);
-			photoDisplay.setPadding(0, 0, 0, 0);
 			photoDisplay.setScaleType(ScaleType.CENTER_INSIDE);
 		} else if (TextUtils.isEmpty(container.mTextContent)) { // no text and no image: audio icon
 			if (mAudioPictureBitmap == null) {
@@ -334,12 +340,9 @@ public class NarrativeViewerActivity extends MediaViewerActivity {
 						photoDisplay.getWidth(), photoDisplay.getHeight());
 			}
 			photoDisplay.setImageBitmap(mAudioPictureBitmap);
-			photoDisplay.setPadding(0, 0, 0,
-					(mMediaController.isShowing() ? res.getDimensionPixelSize(R.dimen.media_controller_height) : 0));
 			photoDisplay.setScaleType(ScaleType.FIT_CENTER);
 		} else {
 			photoDisplay.setImageDrawable(null);
-			photoDisplay.setBackgroundColor(res.getColor(R.color.icon_background));
 		}
 
 		// load the text
