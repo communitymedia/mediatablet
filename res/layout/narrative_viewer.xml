@@ -4,13 +4,13 @@
     android:id="@+id/narrative_playback_container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/playback_background"
     tools:ignore="MissingRegistered" >
 
     <ImageView
         android:id="@+id/image_playback"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:background="@color/playback_background"
         android:contentDescription="@string/frame_image_description"
         android:onClick="handleNarrativeClicks"
         android:src="@null" />

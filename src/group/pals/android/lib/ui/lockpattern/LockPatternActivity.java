@@ -25,6 +25,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import ac.robinson.mediatablet.R;
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -115,6 +116,7 @@ public class LockPatternActivity extends Activity {
 	private Button mBtnConfirm;
 
 	/** Called when the activity is first created. */
+	@TargetApi(Build.VERSION_CODES.HONEYCOMB)
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		/*
