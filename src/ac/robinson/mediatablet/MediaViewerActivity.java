@@ -332,7 +332,7 @@ public abstract class MediaViewerActivity extends MediaTabletActivity {
 					res.getInteger(R.integer.export_smil_player_bar_adjustment));
 
 			filesToSend = SMILUtilities.generateNarrativeSMIL(getResources(), new File(MediaTablet.DIRECTORY_TEMP,
-					String.format("%s%s", exportName, MediaUtilities.SMIL_FILE_EXTENSION)), smilContents, settings);
+					exportName + MediaUtilities.SMIL_FILE_EXTENSION), smilContents, settings);
 		}
 
 		sendFiles(filesToSend, mimeType);
