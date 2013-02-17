@@ -117,7 +117,9 @@ public class NarrativeViewerActivity extends MediaViewerActivity {
 			if (!mHasPlayed) {
 				preparePlayback();
 			} else {
-				showMediaController(CustomMediaController.DEFAULT_VISIBILITY_TIMEOUT);
+				if (mMediaPlayer != null && mMediaPlayer.isPlaying()) { // don't hide the controller if we're paused
+					showMediaController(CustomMediaController.DEFAULT_VISIBILITY_TIMEOUT);
+				}
 			}
 		} else {
 			showMediaController(-1); // so if we're interacting with an overlay we don't constantly hide/show
