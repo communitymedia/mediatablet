@@ -301,7 +301,7 @@ public abstract class MediaViewerActivity extends MediaTabletActivity {
 					false);
 
 			// random name to counter repeat sending name issues
-			final String exportName = String.format("%s-%s",
+			final String exportName = String.format(Locale.ENGLISH, "%s-%s",
 					getString(R.string.app_name).replaceAll("[^a-zA-Z0-9]+", "-").toLowerCase(Locale.ENGLISH),
 					MediaTabletProvider.getNewInternalId().substring(0, 8));
 
