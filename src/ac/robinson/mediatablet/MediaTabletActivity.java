@@ -31,7 +31,7 @@ import ac.robinson.mediatablet.provider.MediaItem;
 import ac.robinson.mediatablet.provider.PersonItem;
 import ac.robinson.mediautilities.FrameMediaContainer;
 import ac.robinson.mediautilities.MediaUtilities;
-import ac.robinson.util.IOUtilities;
+import ac.robinson.util.DebugUtilities;
 import ac.robinson.util.UIUtilities;
 import ac.robinson.util.ViewServer;
 import android.app.Activity;
@@ -44,12 +44,12 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Message;
 import android.preference.PreferenceManager;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.Window;
 
 public abstract class MediaTabletActivity extends Activity {
-	private boolean mCanSendFiles;
 
 	abstract protected void loadPreferences(SharedPreferences mediaTabletSettings);
 
@@ -164,50 +164,64 @@ public abstract class MediaTabletActivity extends Activity {
 		}
 	}
 
-	private void checkDirectoriesExist() {
+	public void checkDirectoriesExist() {
 
 		// nothing will work, and previously saved files will not load
 		if (MediaTablet.DIRECTORY_STORAGE == null) {
 
+			// if we're not in the main activity, quit everything else and launch the homestead browser to exit
+			boolean clearTop = false;
+			if (!((Object) MediaTabletActivity.this instanceof HomesteadBrowserActivity)) {
+				clearTop = true;
+			} else if (((HomesteadBrowserActivity) MediaTabletActivity.this).isInEditMode()) {
+				clearTop = true;
+			}
+			if (clearTop) {
+				Intent homeIntent = new Intent(this, HomesteadBrowserActivity.class);
+				homeIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+				startActivity(homeIntent);
+				Log.d(DebugUtilities.getLogTag(this), "Couldn't open storage directory - clearing top to exit");
+				return;
+			}
+
 			SharedPreferences mediaTabletSettings = getSharedPreferences(MediaTablet.APPLICATION_NAME,
 					Context.MODE_PRIVATE);
-
-			// TODO: add a way of moving content to internal locations
 			final String storageKey = getString(R.string.key_use_external_storage);
 			if (mediaTabletSettings.contains(storageKey)) {
-				if (mediaTabletSettings.getBoolean(storageKey, IOUtilities.isInstalledOnSdCard(this))) {
-					UIUtilities.showToast(MediaTabletActivity.this, R.string.error_opening_media_content_sd, true);
+				if (mediaTabletSettings.getBoolean(storageKey, true)) { // defValue is irrelevant, we know value exists
+					if (!isFinishing()) {
+						UIUtilities.showToast(MediaTabletActivity.this, R.string.error_opening_media_content_sd, true);
+					}
+					Log.d(DebugUtilities.getLogTag(this), "Couldn't open storage directory (SD card) - exiting");
 					finish();
 					return;
 				}
 			}
 
-			UIUtilities.showToast(MediaTabletActivity.this, R.string.error_opening_media_content, true);
-
+			if (!isFinishing()) {
+				UIUtilities.showToast(MediaTabletActivity.this, R.string.error_opening_media_content, true);
+			}
+			Log.d(DebugUtilities.getLogTag(this), "Couldn't open storage directory - exiting");
 			finish();
 			return;
 		} else {
-			// this directory is where all public media is transferred to - it must exist
+			// the UNKNOWN_PERSON_ID directory is where all public media is transferred to - it must exist
 			if (!PersonItem.getStorageDirectory(PersonItem.UNKNOWN_PERSON_ID).exists()) {
 				if (!PersonItem.getStorageDirectory(PersonItem.UNKNOWN_PERSON_ID).mkdirs()) {
-					UIUtilities.showToast(MediaTabletActivity.this, R.string.error_opening_public_content, true);
+					Log.d(DebugUtilities.getLogTag(this), "Unable to create public directory");
 				}
 			}
 		}
 
-		// thumbnails and sending narratives won't work, but not really fatal
-		if (MediaTablet.DIRECTORY_THUMBS == null || MediaTablet.DIRECTORY_TEMP == null) {
-			UIUtilities.showToast(MediaTabletActivity.this, R.string.error_opening_cache_content);
+		// thumbnail cache won't work, but not really fatal (thumbnails will be loaded into memory on demand)
+		if (MediaTablet.DIRECTORY_THUMBS == null) {
+			Log.d(DebugUtilities.getLogTag(this), "Thumbnail directory not found");
 		}
 
-		mCanSendFiles = true;
+		// external narrative sending (Bluetooth etc) may not work, but not really fatal (will warn on export)
 		if (MediaTablet.DIRECTORY_TEMP == null) {
-			mCanSendFiles = false;
+			Log.d(DebugUtilities.getLogTag(this), "Temporary directory not found - will warn before export");
 		}
-	}
-
-	protected boolean canSendFiles() {
-		return mCanSendFiles;
 	}
 
 	public void processIncomingFiles(Message msg) {

@@ -292,7 +292,7 @@ public class MediaBrowserActivity extends MediaTabletActivity {
 	}
 
 	private void updateOwnerPicture() {
-		if (mParentId != null) {
+		if (mParentId != null && MediaTablet.DIRECTORY_THUMBS != null) {
 			Resources resources = getResources();
 			int iconWidth = resources.getDimensionPixelSize(R.dimen.media_owner_icon_width);
 			int iconHeight = resources.getDimensionPixelSize(R.dimen.media_owner_icon_width);

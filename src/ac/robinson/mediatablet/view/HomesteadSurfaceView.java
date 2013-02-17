@@ -21,8 +21,6 @@
 package ac.robinson.mediatablet.view;
 
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.ListIterator;
@@ -36,8 +34,8 @@ import ac.robinson.mediatablet.provider.HomesteadItem;
 import ac.robinson.mediatablet.provider.HomesteadManager;
 import ac.robinson.util.BitmapUtilities;
 import ac.robinson.util.DebugUtilities;
-import ac.robinson.util.IOUtilities;
 import ac.robinson.util.ImageCacheUtilities;
+import ac.robinson.util.UIUtilities;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
@@ -256,31 +254,40 @@ public class HomesteadSurfaceView extends SurfaceView implements SurfaceHolder.C
 				Log.d(DebugUtilities.getLogTag(this), "Panorama images not found - regenerating cache");
 			}
 			// TODO: move everything from here to a background thread?
-			Drawable panoramaDrawable = Drawable.createFromPath(panoramaPath);
-			Bitmap tiledBitmap = null;
-			Canvas tiledBitmapCanvas = null;
-			for (int i = 0, n = panoramaWidth; i < n; i += panoramaHeight) {
-				if (tiledBitmap == null) {
-					tiledBitmap = Bitmap.createBitmap(mBitmapWidth, mBitmapHeight,
-							ImageCacheUtilities.mBitmapFactoryOptions.inPreferredConfig);
-					tiledBitmapCanvas = new Canvas(tiledBitmap);
-					if (panoramaHeight != mBitmapHeight) {
-						tiledBitmapCanvas.scale(mBitmapWidth / (float) panoramaHeight, mBitmapHeight
-								/ (float) panoramaHeight, 0, 0);
+			Drawable panoramaDrawable = null;
+			boolean panoramaFailed = false;
+			try {
+				panoramaDrawable = Drawable.createFromPath(panoramaPath);
+			} catch (Throwable t) {
+				UIUtilities.showToast(getContext(), R.string.error_loading_panorama);
+				panoramaFailed = true;
+			}
+			if (!panoramaFailed && panoramaDrawable != null) {
+				Bitmap tiledBitmap = null;
+				Canvas tiledBitmapCanvas = null;
+				for (int i = 0, n = panoramaWidth; i < n; i += panoramaHeight) {
+					if (tiledBitmap == null) {
+						tiledBitmap = Bitmap.createBitmap(mBitmapWidth, mBitmapHeight,
+								ImageCacheUtilities.mBitmapFactoryOptions.inPreferredConfig);
+						tiledBitmapCanvas = new Canvas(tiledBitmap);
+						if (panoramaHeight != mBitmapHeight) {
+							tiledBitmapCanvas.scale(mBitmapWidth / (float) panoramaHeight, mBitmapHeight
+									/ (float) panoramaHeight, 0, 0);
+						}
 					}
+					tiledBitmapCanvas.drawColor(Color.BLACK);
+					panoramaDrawable.setBounds(-i, 0, panoramaWidth - i, panoramaHeight);
+					panoramaDrawable.draw(tiledBitmapCanvas); // see: http://stackoverflow.com/a/3705169
+					saveCachedImage(tiledBitmap, getBackgroundCacheFileName(i / panoramaHeight),
+							MediaTablet.ICON_CACHE_TYPE);
 				}
-				tiledBitmapCanvas.drawColor(Color.BLACK);
-				panoramaDrawable.setBounds(-i, 0, panoramaWidth - i, panoramaHeight);
-				panoramaDrawable.draw(tiledBitmapCanvas); // see: http://stackoverflow.com/a/3705169
-				saveCachedImage(tiledBitmap, getBackgroundCacheFileName(i / panoramaHeight),
-						MediaTablet.ICON_CACHE_TYPE);
+				tiledBitmapCanvas = null;
+				if (tiledBitmap != null) {
+					tiledBitmap.recycle();
+				}
+				tiledBitmap = null;
+				panoramaDrawable = null;
 			}
-			tiledBitmapCanvas = null;
-			if (tiledBitmap != null) {
-				tiledBitmap.recycle();
-			}
-			tiledBitmap = null;
-			panoramaDrawable = null;
 		}
 
 		Resources resources = getResources();
@@ -320,7 +327,7 @@ public class HomesteadSurfaceView extends SurfaceView implements SurfaceHolder.C
 	public void saveCachedImage(Bitmap bitmap, String fileName, Bitmap.CompressFormat fileFormat) {
 		File outputImageFile = new File(MediaTablet.DIRECTORY_THUMBS, fileName);
 		boolean success = false;
-		if (bitmap != null) {
+		if (bitmap != null && MediaTablet.DIRECTORY_THUMBS != null) {
 			success = BitmapUtilities.saveBitmap(bitmap, fileFormat, MediaTablet.ICON_CACHE_QUALITY, outputImageFile);
 		}
 		if (MediaTablet.DEBUG) {

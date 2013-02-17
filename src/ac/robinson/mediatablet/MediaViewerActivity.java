@@ -172,9 +172,7 @@ public abstract class MediaViewerActivity extends MediaTabletActivity {
 		if (mOwnerMode) {
 			inflater.inflate(R.menu.share, menu);
 		}
-		if (canSendFiles()) {
-			inflater.inflate(R.menu.send, menu);
-		}
+		inflater.inflate(R.menu.send, menu);
 		if (mMediaParentId != null) {
 			inflater.inflate(R.menu.public_media, menu);
 		}
@@ -229,6 +227,10 @@ public abstract class MediaViewerActivity extends MediaTabletActivity {
 	}
 
 	private void sendFiles(ArrayList<Uri> filesToSend, String mimeType) {
+		if (filesToSend == null || filesToSend.size() <= 0) {
+			// TODO: show error (but remember it's from a background task, so we can't show a Toast)
+			return;
+		}
 		// also see: http://stackoverflow.com/questions/2344768/
 		final Intent sendIntent = new Intent(Intent.ACTION_SEND_MULTIPLE);
 		sendIntent.setType(mimeType); // application/smil+xml (or html), or video/quicktime, but then no bluetooth opt
@@ -238,8 +240,18 @@ public abstract class MediaViewerActivity extends MediaTabletActivity {
 	}
 
 	private void sendMedia() {
-		// released this when pausing; important to keep awake to export because we only have one chance to display the
-		// export options after creating mov or smil file (will be cancelled on screen unlock; Android is weird)
+		if (MediaTablet.DIRECTORY_TEMP == null) {
+			UIUtilities.showToast(MediaViewerActivity.this, R.string.export_missing_directory, true);
+			return;
+		}
+		boolean canCopyToExternal = true;
+		if (IOUtilities.isInternalPath(MediaTablet.DIRECTORY_TEMP.getAbsolutePath())) {
+			canCopyToExternal = false;
+			UIUtilities.showToast(MediaViewerActivity.this, R.string.export_potential_problem, true);
+		}
+
+		// important to keep awake to export because we only have one chance to display the export options
+		// after creating mov or smil file (will be cancelled on screen unlock; Android is weird)
 		// TODO: move to a better (e.g. notification bar) method of exporting?
 		UIUtilities.acquireKeepScreenOn(getWindow());
 
@@ -251,7 +263,8 @@ public abstract class MediaViewerActivity extends MediaTabletActivity {
 			filesToSend = new ArrayList<Uri>();
 			File currentFile = currentMediaItem.getFile();
 			File publicFile = currentFile;
-			if (IOUtilities.mustCreateTempDirectory(this)) { // can't send from private data directory
+			// can't send from private data directory
+			if (IOUtilities.isInternalPath(currentFile.getAbsolutePath()) && canCopyToExternal) {
 				try {
 					publicFile = new File(MediaTablet.DIRECTORY_TEMP, currentFile.getName());
 					IOUtilities.copyFile(currentFile, publicFile);
@@ -312,10 +325,6 @@ public abstract class MediaViewerActivity extends MediaTabletActivity {
 					res.getInteger(R.integer.export_maximum_text_characters_per_line));
 			settings.put(MediaUtilities.KEY_MAX_TEXT_HEIGHT_WITH_IMAGE,
 					res.getDimensionPixelSize(R.dimen.export_maximum_text_height_with_image));
-
-			// output files must be in a public directory for sending (/data directory will *not* work)
-			settings.put(MediaUtilities.KEY_COPY_FILES_TO_OUTPUT,
-					IOUtilities.mustCreateTempDirectory(MediaViewerActivity.this));
 
 			settings.put(MediaUtilities.KEY_OUTPUT_WIDTH, res.getInteger(R.integer.export_smil_width));
 			settings.put(MediaUtilities.KEY_OUTPUT_HEIGHT, res.getInteger(R.integer.export_smil_height));

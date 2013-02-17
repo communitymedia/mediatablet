@@ -52,13 +52,18 @@ public class AudioVideoViewerActivity extends MediaViewerActivity {
 
 		File mediaFile = getCurrentMediaFile(); // guaranteed to exist and not to be null
 
-		// can't play from private data directory - copy to temp (this will take a *long* time)
+		// can't play from private data directory, and can't use file descriptors like we do for narratives; instead,
+		// copy to temp before playback (this will take a *long* time)
 		File publicFile = null;
-		if (IOUtilities.mustCreateTempDirectory(this)) {
+		if (IOUtilities.isInternalPath(mediaFile.getAbsolutePath())) {
 			try {
-				publicFile = new File(MediaTablet.DIRECTORY_TEMP, mediaFile.getName());
-				IOUtilities.copyFile(mediaFile, publicFile);
-				IOUtilities.setFullyPublic(publicFile);
+				if (MediaTablet.DIRECTORY_TEMP != null) {
+					publicFile = new File(MediaTablet.DIRECTORY_TEMP, mediaFile.getName());
+					IOUtilities.copyFile(mediaFile, publicFile);
+					IOUtilities.setFullyPublic(publicFile);
+				} else {
+					throw new IOException();
+				}
 			} catch (IOException e) {
 				UIUtilities.showToast(AudioVideoViewerActivity.this, R.string.error_loading_media);
 				finish();
@@ -178,7 +183,7 @@ public class AudioVideoViewerActivity extends MediaViewerActivity {
 				public boolean canSeekForward() {
 					return true;
 				}
-				
+
 				@Override
 				public void onControllerVisibilityChange(boolean visible) {
 				}

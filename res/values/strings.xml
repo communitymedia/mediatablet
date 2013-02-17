@@ -8,10 +8,11 @@
     <string name="button_delete">Delete</string>
 
     <!-- file errors -->
-    <string name="error_opening_media_content_sd">Error: unable to find media. Please check that the SD card is available</string>
-    <string name="error_opening_media_content">Error: unable to find media</string>
-    <string name="error_opening_public_content">Error: unable to find public media</string>
-    <string name="error_opening_cache_content">Error: unable to find temporary files</string>
+    <string name="error_opening_media_content_sd">Error: unable to find your media. Please check that the SD card is available</string>
+    <string name="error_opening_media_content">Error: unable to find your media</string>
+    <string name="export_missing_directory">Error: unable to find a temporary directory – please ensure your device or SD card has free space available</string>
+    <string name="export_potential_problem">Warning: unable to create some of the required files for export – you may encounter problems with the exported file</string>
+    <string name="error_loading_panorama">Error: unable to load the panorama image – out of memory. Please exit any other running applications and try again</string>
 
     <!-- first launch -->
     <string name="panorama_name">panorama.jpg</string>

@@ -416,7 +416,7 @@ public class MediaItem implements BaseColumns {
 			int personHeight = Math.round(iconHeight * scaleFactor);
 
 			File personFile = new File(MediaTablet.DIRECTORY_THUMBS, PersonItem.getCacheId(parentOverlayId));
-			if (!personFile.exists()) {
+			if (!personFile.exists() && MediaTablet.DIRECTORY_THUMBS != null) {
 				// create unknown person icon for unknown public media (bad place, but not many other places are better)
 				if (PersonItem.UNKNOWN_PERSON_ID.equals(parentOverlayId)) {
 					Bitmap personBitmap = Bitmap.createBitmap(personWidth, personHeight,

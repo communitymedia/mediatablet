@@ -46,6 +46,7 @@ import android.graphics.BitmapFactory.Options;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.text.SpannableString;
 import android.text.method.LinkMovementMethod;
@@ -114,9 +115,20 @@ public class HomesteadBrowserActivity extends MediaTabletActivity {
 			// do this here so that we can create a dialog
 			if (!mHomesteadSurfaceView.imagesLoaded()) {
 
-				// so that they can press back to exit
+				// so that they can press back to exit (but we can't call finish() here without leaking the dialog)
 				if (mDialogShown) {
-					finish();
+					Handler handler = new Handler();
+					handler.postDelayed(new Runnable() {
+						@Override
+						public void run() {
+							// need to check whether we're returning from the download (handled in the browser) or back
+							// was pressed to exit - the system automatically restores the dialog on resume from the
+							// download, so if we (activity) have focus then the dialog is gone, and we should finish
+							if (hasWindowFocus()) {
+								finish();
+							}
+						}
+					}, 250);
 					return;
 				}
 				mDialogShown = true;
@@ -244,6 +256,10 @@ public class HomesteadBrowserActivity extends MediaTabletActivity {
 	@Override
 	protected String getCurrentPersonId() {
 		return PersonItem.UNKNOWN_PERSON_ID;
+	}
+
+	public boolean isInEditMode() {
+		return mEditMode;
 	}
 
 	private void initialiseHomesteadsView() {

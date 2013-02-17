@@ -29,15 +29,17 @@ import java.util.List;
 import ac.robinson.mediatablet.provider.PersonManager;
 import ac.robinson.mediautilities.MediaUtilities;
 import ac.robinson.service.ImportingService;
+import ac.robinson.util.DebugUtilities;
 import ac.robinson.util.IOUtilities;
 import android.app.Application;
+import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.os.Environment;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
@@ -45,8 +47,12 @@ import android.os.Messenger;
 import android.os.RemoteException;
 import android.os.StrictMode;
 import android.preference.PreferenceManager;
+import android.util.Log;
 
 public class MediaTabletApplication extends Application {
+
+	// for watching SD card state
+	private BroadcastReceiver mExternalStorageReceiver;
 
 	// for communicating with the importing service
 	private Messenger mImportingService = null;
@@ -77,65 +83,81 @@ public class MediaTabletApplication extends Application {
 		} catch (Throwable t) {
 		}
 		initialiseDirectories();
+		startWatchingExternalStorage();
 	}
 
 	private void initialiseDirectories() {
 
-		// make sure we use the right storage location regardless of whether the user has moved the application between
-		// SD card and phone.
-		// we check for missing files in each activity, so no need to do so here
-		boolean useSDCard;
+		// make sure we use the right storage location regardless of whether the application has been moved between
+		// SD card and tablet; we check for missing files in each activity, so no need to do so here
+		// TODO: add a way of moving content to/from internal/external locations (e.g., in prefs, select device/SD)
+		boolean useSDCard = true;
 		final String storageKey = getString(R.string.key_use_external_storage);
-		String storageDirectoryName = MediaTablet.APPLICATION_NAME + getString(R.string.name_storage_directory);
-		SharedPreferences mediaPhoneSettings = getSharedPreferences(MediaTablet.APPLICATION_NAME, Context.MODE_PRIVATE);
-		if (mediaPhoneSettings.contains(storageKey)) {
+		final String storageDirectoryName = MediaTablet.APPLICATION_NAME + getString(R.string.name_storage_directory);
+		SharedPreferences mediaTabletSettings = getSharedPreferences(MediaTablet.APPLICATION_NAME, Context.MODE_PRIVATE);
+		if (mediaTabletSettings.contains(storageKey)) {
 			// setting has previously been saved
-			useSDCard = mediaPhoneSettings.getBoolean(storageKey, IOUtilities.isInstalledOnSdCard(this));
-			if (useSDCard) {
-				MediaTablet.DIRECTORY_STORAGE = IOUtilities.getExternalStoragePath(this, storageDirectoryName);
-			} else {
-				MediaTablet.DIRECTORY_STORAGE = IOUtilities.getNewStoragePath(this, storageDirectoryName, false);
+			useSDCard = mediaTabletSettings.getBoolean(storageKey, true); // defValue is irrelevant; know value exists
+			MediaTablet.DIRECTORY_STORAGE = IOUtilities.getNewStoragePath(this, storageDirectoryName, useSDCard);
+			if (useSDCard && MediaTablet.DIRECTORY_STORAGE != null) {
+				// we needed the SD card but couldn't get it; our files will be missing - null shows warning and exits
+				if (IOUtilities.isInternalPath(MediaTablet.DIRECTORY_STORAGE.getAbsolutePath())) {
+					MediaTablet.DIRECTORY_STORAGE = null;
+				}
 			}
 		} else {
-			// first run
-			useSDCard = IOUtilities.isInstalledOnSdCard(this) || IOUtilities.externalStorageIsWritable();
-			MediaTablet.DIRECTORY_STORAGE = IOUtilities.getNewStoragePath(this, storageDirectoryName, useSDCard);
-
-			SharedPreferences.Editor prefsEditor = mediaPhoneSettings.edit();
-			prefsEditor.putBoolean(storageKey, useSDCard);
-			prefsEditor.apply();
+			// first run - prefer SD card for storage
+			MediaTablet.DIRECTORY_STORAGE = IOUtilities.getNewStoragePath(this, storageDirectoryName, true);
+			if (MediaTablet.DIRECTORY_STORAGE != null) {
+				useSDCard = !IOUtilities.isInternalPath(MediaTablet.DIRECTORY_STORAGE.getAbsolutePath());
+				SharedPreferences.Editor prefsEditor = mediaTabletSettings.edit();
+				prefsEditor.putBoolean(storageKey, useSDCard);
+				prefsEditor.apply();
+			}
 		}
 
-		// use cache directories for thumbnails and temp (outgoing) files
+		// use cache directories for thumbnails and temp (outgoing) files; don't clear
 		MediaTablet.DIRECTORY_THUMBS = IOUtilities.getNewCachePath(this, MediaTablet.APPLICATION_NAME
-				+ getString(R.string.name_thumbs_directory), false); // don't clear
+				+ getString(R.string.name_thumbs_directory), useSDCard, false);
 
-		// temporary directory must be world readable to be able to send files
-		String tempName = MediaTablet.APPLICATION_NAME + getString(R.string.name_temp_directory);
-		if (IOUtilities.mustCreateTempDirectory(this)) {
-			if (IOUtilities.externalStorageIsWritable()) {
-				MediaTablet.DIRECTORY_TEMP = new File(Environment.getExternalStorageDirectory(), tempName);
-				MediaTablet.DIRECTORY_TEMP.mkdirs();
-				if (!MediaTablet.DIRECTORY_TEMP.exists()) {
-					MediaTablet.DIRECTORY_TEMP = null;
-				} else {
-					IOUtilities.setFullyPublic(MediaTablet.DIRECTORY_TEMP);
-					for (File child : MediaTablet.DIRECTORY_TEMP.listFiles()) {
-						IOUtilities.deleteRecursive(child);
+		// temp directory must be world readable to be able to send files, so always prefer external (checked on export)
+		MediaTablet.DIRECTORY_TEMP = IOUtilities.getNewCachePath(this, MediaTablet.APPLICATION_NAME
+				+ getString(R.string.name_temp_directory), true, true);
+	}
+
+	private void startWatchingExternalStorage() {
+		mExternalStorageReceiver = new BroadcastReceiver() {
+			@Override
+			public void onReceive(Context context, Intent intent) {
+				if (MediaTablet.DEBUG) {
+					Log.d(DebugUtilities.getLogTag(this), "SD card state changed to: " + intent.getAction());
+				}
+				initialiseDirectories(); // check storage still present; switch to external temp directory if possible
+				if (mCurrentActivity != null) {
+					MediaTabletActivity currentActivity = mCurrentActivity.get();
+					if (currentActivity != null) {
+						currentActivity.checkDirectoriesExist(); // validate directories; finish() on error
 					}
 				}
-			} else {
-				MediaTablet.DIRECTORY_TEMP = null;
 			}
-		} else {
-			MediaTablet.DIRECTORY_TEMP = IOUtilities.getNewCachePath(this, tempName, true); // delete existing
+		};
+		IntentFilter filter = new IntentFilter();
+		// filter.addAction(Intent.ACTION_MEDIA_EJECT); //TODO: deal with this event?
+		filter.addAction(Intent.ACTION_MEDIA_BAD_REMOVAL);
+		filter.addAction(Intent.ACTION_MEDIA_MOUNTED);
+		filter.addAction(Intent.ACTION_MEDIA_NOFS);
+		filter.addAction(Intent.ACTION_MEDIA_REMOVED);
+		filter.addAction(Intent.ACTION_MEDIA_SHARED);
+		filter.addAction(Intent.ACTION_MEDIA_UNMOUNTED);
+		filter.addAction(Intent.ACTION_MEDIA_UNMOUNTABLE);
+		filter.addDataScheme("file"); // nowhere do the API docs mention this requirement...
+		registerReceiver(mExternalStorageReceiver, filter);
+	}
 
-			// delete any leftovers
-			if (IOUtilities.externalStorageIsWritable()) {
-				File oldTempDirectory = new File(Environment.getExternalStorageDirectory(), tempName);
-				IOUtilities.deleteRecursive(oldTempDirectory);
-			}
-		}
+	@SuppressWarnings("unused")
+	private void stopWatchingExternalStorage() {
+		// TODO: call this on application exit if possible
+		unregisterReceiver(mExternalStorageReceiver);
 	}
 
 	public void registerActivityHandle(MediaTabletActivity activity) {
@@ -202,14 +224,14 @@ public class MediaTabletApplication extends Application {
 	};
 
 	public void startWatchingBluetooth() {
-		SharedPreferences mediaPhoneSettings = PreferenceManager
+		SharedPreferences mediaTabletSettings = PreferenceManager
 				.getDefaultSharedPreferences(MediaTabletApplication.this);
 		String watchedDirectory = getString(R.string.default_bluetooth_directory);
 		if (!(new File(watchedDirectory).exists())) {
 			watchedDirectory = getString(R.string.default_bluetooth_directory_alternative);
 		}
 		try {
-			String settingsDirectory = mediaPhoneSettings.getString(getString(R.string.key_bluetooth_directory),
+			String settingsDirectory = mediaTabletSettings.getString(getString(R.string.key_bluetooth_directory),
 					watchedDirectory);
 			watchedDirectory = settingsDirectory;
 		} catch (Exception e) {

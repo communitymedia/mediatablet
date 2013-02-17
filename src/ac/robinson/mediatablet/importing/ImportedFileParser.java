@@ -88,7 +88,11 @@ public class ImportedFileParser {
 				+ MediaUtilities.SYNC_FILE_EXTENSION);
 		try {
 			// so we don't delete (sync file is a non-media item in getSMILFrameList)
-			IOUtilities.copyFile(smilFile, tempSMILFile);
+			if (MediaTablet.DIRECTORY_TEMP != null) {
+				IOUtilities.copyFile(smilFile, tempSMILFile);
+			} else {
+				throw new IOException();
+			}
 		} catch (IOException e) {
 			if (MediaTablet.DEBUG)
 				Log.e(DebugUtilities.getLogTag(smilFile), "Unable to copy SMIL file");

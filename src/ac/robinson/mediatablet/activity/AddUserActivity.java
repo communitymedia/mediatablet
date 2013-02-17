@@ -322,8 +322,12 @@ public class AddUserActivity extends MediaTabletActivity {
 					File photoFile = new File(MediaTablet.DIRECTORY_TEMP, personItem.getInternalId() + ".jpg");
 					if (!photoFile.exists()) {
 						try {
-							photoFile.createNewFile();
-							IOUtilities.setFullyPublic(photoFile);
+							if (MediaTablet.DIRECTORY_TEMP != null) {
+								photoFile.createNewFile();
+								IOUtilities.setFullyPublic(photoFile);
+							} else {
+								throw new IOException();
+							}
 						} catch (IOException e) {
 							if (MediaTablet.DEBUG)
 								Log.d(DebugUtilities.getLogTag(this),
