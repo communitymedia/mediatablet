@@ -17,6 +17,7 @@
 package ac.robinson.cropimage;
 
 import java.io.Closeable;
+import java.util.Locale;
 
 import ac.robinson.util.ImageCacheUtilities;
 import android.app.ProgressDialog;
@@ -224,8 +225,8 @@ public class Util {
 		// skip first 3 element, they are not related to the caller
 		for (int i = 3, n = elements.length; i < n; ++i) {
 			StackTraceElement st = elements[i];
-			String message = String.format("    at %s.%s(%s:%s)", st.getClassName(), st.getMethodName(),
-					st.getFileName(), st.getLineNumber());
+			String message = String.format(Locale.ENGLISH, "    at %s.%s(%s:%s)", st.getClassName(),
+					st.getMethodName(), st.getFileName(), st.getLineNumber());
 			Log.d(tag, message);
 		}
 		Log.d(tag, msg + " --- stack trace ends.");

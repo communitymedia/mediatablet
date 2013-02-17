@@ -117,10 +117,10 @@ public abstract class MediaViewerActivity extends MediaTabletActivity {
 
 			String personName = currentPersonItem == null ? null : currentPersonItem.getName();
 			String mediaTitle = currentPersonItem == null || personName == null ? getString(R.string.title_media_browser)
-					: String.format(getString(mOwnerMode ? R.string.title_media_browser_private_personalised
-							: R.string.title_media_browser_public_personalised), personName);
+					: getString(mOwnerMode ? R.string.title_media_browser_private_personalised
+							: R.string.title_media_browser_public_personalised, personName);
 			String peopleTitle = currentPersonItem == null || personName == null ? getString(R.string.title_people_browser)
-					: String.format(getString(R.string.title_people_browser_personalised), personName);
+					: getString(R.string.title_people_browser_personalised, personName);
 			UIUtilities.addActionBarTabs(this, new ReflectionTab[] {
 					new ReflectionTab(R.id.intent_homestead_browser, R.drawable.ic_menu_homesteads,
 							getString(R.string.title_homestead_browser)),
@@ -563,12 +563,11 @@ public abstract class MediaViewerActivity extends MediaTabletActivity {
 							numPeopleShared -= 1;
 						}
 					}
+					// can't use UIUtilities for formatted Toast strings
 					Toast.makeText(
 							MediaViewerActivity.this,
-							String.format(
-									numPeopleShared == 1 ? getString(R.string.share_media_choose_completed_singular)
-											: getString(R.string.share_media_choose_completed_plural), numPeopleShared),
-							Toast.LENGTH_SHORT).show();
+							getResources().getQuantityString(R.plurals.share_media_choose_completed, numPeopleShared,
+									numPeopleShared), Toast.LENGTH_SHORT).show();
 				}
 				break;
 

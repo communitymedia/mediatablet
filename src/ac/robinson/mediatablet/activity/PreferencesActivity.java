@@ -88,14 +88,13 @@ public class PreferencesActivity extends PreferenceActivity {
 			PackageManager manager = this.getPackageManager();
 			PackageInfo info = manager.getPackageInfo(this.getPackageName(), 0);
 
-			aboutPreference.setTitle(String.format(getString(R.string.preferences_about_app_title),
-					getString(R.string.app_name), info.versionName));
+			aboutPreference.setTitle(getString(R.string.preferences_about_app_title, getString(R.string.app_name),
+					info.versionName));
 			Point screenSize = UIUtilities.getScreenSize(getWindowManager());
 			String debugString = Build.MODEL + ", v" + Build.VERSION.SDK_INT + " (" + Build.VERSION.RELEASE + "), "
 					+ screenSize.x + "x" + screenSize.y;
-			aboutPreference.setSummary(String.format(getString(R.string.preferences_about_app_summary),
-					info.versionCode, DebugUtilities.getApplicationBuildTime(getPackageManager(), getPackageName()),
-					debugString));
+			aboutPreference.setSummary(getString(R.string.preferences_about_app_summary, info.versionCode,
+					DebugUtilities.getApplicationBuildTime(getPackageManager(), getPackageName()), debugString));
 
 		} catch (Exception e) {
 			PreferenceCategory aboutCategory = (PreferenceCategory) preferenceScreen

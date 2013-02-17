@@ -60,8 +60,12 @@
     <string name="share_media_title">Share this media item</string>
     <string name="share_media_public">Share this file with everyone</string>
     <string name="share_media_choose">Choose people to share with</string>
-    <string name="share_media_choose_completed_singular">The media has been sent to %1$d person</string>
-    <string name="share_media_choose_completed_plural">The media has been sent to %1$d people</string>
+
+    <plurals name="share_media_choose_completed">
+        <item quantity="one">The media has been sent to one person</item>
+        <item quantity="other">The media has been sent to %1$d people</item>
+    </plurals>
+
     <string name="share_media_private">Keep this file private</string>
     <string name="delete_media_deleted">The media item has been deleted</string>
     <string name="delete_media_password_prompt">Please enter the password to delete this media item</string>

@@ -277,10 +277,9 @@ public class MediaBrowserActivity extends MediaTabletActivity {
 		UIUtilities.removeActionBarTabs(this);
 		PersonItem person = PersonManager.findPersonByInternalId(getContentResolver(), mParentId);
 		String personName = person == null ? null : person.getName();
-		String mediaTitle = person == null || personName == null ? getString(R.string.title_media_browser)
-				: String.format(
-						getString(mMediaVisibility == MediaItem.MEDIA_PUBLIC ? R.string.title_media_browser_public_personalised
-								: R.string.title_media_browser_private_personalised), personName);
+		String mediaTitle = person == null || personName == null ? getString(R.string.title_media_browser) : getString(
+				mMediaVisibility == MediaItem.MEDIA_PUBLIC ? R.string.title_media_browser_public_personalised
+						: R.string.title_media_browser_private_personalised, personName);
 		String peopleTitle = person == null || personName == null ? getString(R.string.title_people_browser) : String
 				.format(getString(R.string.title_people_browser_personalised), personName);
 		UIUtilities.addActionBarTabs(this, new ReflectionTab[] {

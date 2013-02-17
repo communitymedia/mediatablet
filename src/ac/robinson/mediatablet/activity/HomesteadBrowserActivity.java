@@ -150,9 +150,8 @@ public class HomesteadBrowserActivity extends MediaTabletActivity {
 				builder.setTitle(R.string.first_launch_prompt);
 
 				// make sure the panorama is linked
-				final SpannableString message = new SpannableString(String.format(
-						getString(R.string.first_launch_hint), getString(R.string.app_name), existingPassword,
-						getString(R.string.panorama_name)));
+				final SpannableString message = new SpannableString(getString(R.string.first_launch_hint,
+						getString(R.string.app_name), existingPassword, getString(R.string.panorama_name)));
 				Linkify.addLinks(message, Linkify.WEB_URLS);
 				builder.setMessage(message);
 				builder.setIcon(android.R.drawable.ic_dialog_info);
