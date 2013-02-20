@@ -21,6 +21,7 @@
 package ac.robinson.mediatablet.activity;
 
 import java.io.File;
+import java.text.SimpleDateFormat;
 
 import ac.robinson.mediatablet.R;
 import ac.robinson.mediautilities.SelectDirectoryActivity;
@@ -28,6 +29,7 @@ import ac.robinson.util.DebugUtilities;
 import ac.robinson.util.UIUtilities;
 import ac.robinson.util.UIUtilities.ReflectionTab;
 import android.app.Activity;
+import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
@@ -81,8 +83,35 @@ public class PreferencesActivity extends PreferenceActivity {
 			}
 		});
 
-		// add version and build information
+		// add the contact us button
 		PreferenceScreen preferenceScreen = getPreferenceScreen();
+		Preference contactUsPreference = preferenceScreen.findPreference(getString(R.string.key_contact_us));
+		contactUsPreference.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+			@Override
+			public boolean onPreferenceClick(Preference preference) {
+				Intent emailIntent = new Intent(android.content.Intent.ACTION_SEND);
+				emailIntent.setType("plain/text");
+				emailIntent.putExtra(android.content.Intent.EXTRA_EMAIL,
+						new String[] { getString(R.string.preferences_contact_us_email_address) });
+				emailIntent.putExtra(
+						android.content.Intent.EXTRA_SUBJECT,
+						getString(R.string.preferences_contact_us_email_subject, getString(R.string.app_name),
+								SimpleDateFormat.getDateTimeInstance().format(new java.util.Date())));
+				Preference aboutPreference = findPreference(getString(R.string.key_about_application));
+				emailIntent.putExtra(android.content.Intent.EXTRA_TEXT,
+						getString(R.string.preferences_contact_us_email_body, aboutPreference.getSummary()));
+				try {
+					startActivity(Intent.createChooser(emailIntent, getString(R.string.preferences_contact_us_title)));
+				} catch (ActivityNotFoundException e) {
+					UIUtilities.showFormattedToast(PreferencesActivity.this,
+							R.string.preferences_contact_us_email_error,
+							getString(R.string.preferences_contact_us_email_address));
+				}
+				return true;
+			}
+		});
+
+		// add version and build information
 		Preference aboutPreference = preferenceScreen.findPreference(getString(R.string.key_about_application));
 		try {
 			PackageManager manager = this.getPackageManager();
@@ -91,8 +120,8 @@ public class PreferencesActivity extends PreferenceActivity {
 			aboutPreference.setTitle(getString(R.string.preferences_about_app_title, getString(R.string.app_name),
 					info.versionName));
 			Point screenSize = UIUtilities.getScreenSize(getWindowManager());
-			String debugString = Build.MODEL + ", v" + Build.VERSION.SDK_INT + " (" + Build.VERSION.RELEASE + "), "
-					+ screenSize.x + "x" + screenSize.y;
+			String debugString = Build.MODEL + ", " + DebugUtilities.getDeviceBrandProduct() + ", v"
+					+ Build.VERSION.SDK_INT + " (" + Build.VERSION.RELEASE + "), " + screenSize.x + "x" + screenSize.y;
 			aboutPreference.setSummary(getString(R.string.preferences_about_app_summary, info.versionCode,
 					DebugUtilities.getApplicationBuildTime(getPackageManager(), getPackageName()), debugString));
 
