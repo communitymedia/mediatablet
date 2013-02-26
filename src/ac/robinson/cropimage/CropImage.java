@@ -134,6 +134,7 @@ public class CropImage extends MonitoredActivity {
 		}
 
 		findViewById(R.id.button_crop_image_discard).setOnClickListener(new View.OnClickListener() {
+			@Override
 			public void onClick(View v) {
 				setResult(RESULT_CANCELED);
 				finish();
@@ -141,6 +142,7 @@ public class CropImage extends MonitoredActivity {
 		});
 
 		findViewById(R.id.button_crop_image_save).setOnClickListener(new View.OnClickListener() {
+			@Override
 			public void onClick(View v) {
 				onSaveClicked();
 			}
@@ -205,6 +207,7 @@ public class CropImage extends MonitoredActivity {
 				final CountDownLatch latch = new CountDownLatch(1);
 				final Bitmap b = (mImage != null) ? mImage.fullSizeBitmap(IImage.UNCONSTRAINED, 1024 * 1024) : mBitmap;
 				mHandler.post(new Runnable() {
+					@Override
 					public void run() {
 						if (b != mBitmap && b != null) {
 							mImageView.setImageBitmapResetBase(b, true);
@@ -472,6 +475,7 @@ public class CropImage extends MonitoredActivity {
 			}
 
 			mHandler.post(new Runnable() {
+				@Override
 				public void run() {
 					mWaitingToPick = mNumFaces > 1;
 					if (mNumFaces > 0) {

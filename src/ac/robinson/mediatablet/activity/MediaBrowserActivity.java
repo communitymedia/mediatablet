@@ -181,6 +181,7 @@ public class MediaBrowserActivity extends MediaTabletActivity {
 				AlertDialog.Builder builder = new AlertDialog.Builder(MediaBrowserActivity.this);
 				builder.setMessage(R.string.delete_person_password_prompt).setCancelable(false).setView(textEntryView)
 						.setPositiveButton(R.string.button_delete, new DialogInterface.OnClickListener() {
+							@Override
 							public void onClick(DialogInterface dialog, int id) {
 								if (MediaTablet.ADMINISTRATOR_PASSWORD.equals(StringUtilities
 										.sha1Hash(((EditText) textEntryView.findViewById(R.id.text_password_entry))
@@ -207,6 +208,7 @@ public class MediaBrowserActivity extends MediaTabletActivity {
 								}
 							}
 						}).setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
+							@Override
 							public void onClick(DialogInterface dialog, int id) {
 								dialog.cancel();
 							}

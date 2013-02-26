@@ -349,6 +349,7 @@ public abstract class MediaViewerActivity extends MediaTabletActivity {
 		builder.setNegativeButton(android.R.string.cancel, null);
 		builder.setSingleChoiceItems(publicMediaOptions, (currentMediaItem.isPubliclyShared() ? 2 : 0),
 				new DialogInterface.OnClickListener() {
+					@Override
 					public void onClick(DialogInterface dialog, int item) {
 						if (item == 0 || item == 2) {
 
@@ -409,6 +410,7 @@ public abstract class MediaViewerActivity extends MediaTabletActivity {
 			builder.setIcon(android.R.drawable.ic_dialog_info);
 			builder.setNegativeButton(android.R.string.cancel, null);
 			builder.setItems(sendShareOptions, new DialogInterface.OnClickListener() {
+				@Override
 				public void onClick(DialogInterface dialog, int item) {
 					switch (item) {
 						case 0:
@@ -436,6 +438,7 @@ public abstract class MediaViewerActivity extends MediaTabletActivity {
 			builder.setIcon(android.R.drawable.ic_dialog_alert);
 			builder.setNegativeButton(android.R.string.cancel, null);
 			builder.setPositiveButton(R.string.button_delete, new DialogInterface.OnClickListener() {
+				@Override
 				public void onClick(DialogInterface dialog, int whichButton) {
 					deleteMedia();
 				}
@@ -448,6 +451,7 @@ public abstract class MediaViewerActivity extends MediaTabletActivity {
 			AlertDialog.Builder builder = new AlertDialog.Builder(MediaViewerActivity.this);
 			builder.setMessage(R.string.delete_media_password_prompt).setCancelable(false).setView(textEntryView)
 					.setPositiveButton(R.string.button_delete, new DialogInterface.OnClickListener() {
+						@Override
 						public void onClick(DialogInterface dialog, int id) {
 							if (MediaTablet.ADMINISTRATOR_PASSWORD.equals(StringUtilities
 									.sha1Hash(((EditText) textEntryView.findViewById(R.id.text_password_entry))
@@ -459,6 +463,7 @@ public abstract class MediaViewerActivity extends MediaTabletActivity {
 							}
 						}
 					}).setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
+						@Override
 						public void onClick(DialogInterface dialog, int id) {
 							dialog.cancel();
 						}

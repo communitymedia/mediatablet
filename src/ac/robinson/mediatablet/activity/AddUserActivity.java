@@ -128,6 +128,7 @@ public class AddUserActivity extends MediaTabletActivity {
 		builder.setIcon(android.R.drawable.ic_dialog_alert);
 		builder.setNegativeButton(R.string.cancel_add_continue, null);
 		builder.setPositiveButton(R.string.cancel_add_delete, new DialogInterface.OnClickListener() {
+			@Override
 			public void onClick(DialogInterface dialog, int whichButton) {
 				ContentResolver contentResolver = getContentResolver();
 				Resources resources = getResources();

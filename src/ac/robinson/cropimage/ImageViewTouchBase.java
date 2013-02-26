@@ -331,6 +331,7 @@ abstract class ImageViewTouchBase extends ImageView {
 		final long startTime = System.currentTimeMillis();
 
 		mHandler.post(new Runnable() {
+			@Override
 			public void run() {
 				long now = System.currentTimeMillis();
 				float currentMs = Math.min(durationMs, now - startTime);

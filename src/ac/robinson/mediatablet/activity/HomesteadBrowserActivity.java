@@ -157,6 +157,7 @@ public class HomesteadBrowserActivity extends MediaTabletActivity {
 				builder.setIcon(android.R.drawable.ic_dialog_info);
 				// builder.setCancelable(false);
 				builder.setPositiveButton(R.string.first_launch_select, new DialogInterface.OnClickListener() {
+					@Override
 					public void onClick(DialogInterface dialog, int whichButton) {
 						if (validatePanorama(
 								new File(
