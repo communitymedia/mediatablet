@@ -3,8 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="ac.robinson.mediatablet"
     android:installLocation="auto"
-    android:versionCode="9"
-    android:versionName="1.1.3" >
+    android:versionCode="10"
+    android:versionName="1.1.4" >
 
     <uses-sdk
         android:minSdkVersion="9"

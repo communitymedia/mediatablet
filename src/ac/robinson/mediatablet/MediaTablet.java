@@ -29,15 +29,27 @@ public class MediaTablet {
 	public static final String APPLICATION_NAME = "mediatablet"; // *must* match provider in AndroidManifest.xml
 	public static final boolean DEBUG = false; // note: must add android.permission.INTERNET for ViewServer debugging
 
+	// file extensions to help with sorting media items
+	public static final String[] TYPE_IMAGE_EXTENSIONS = { "jpg", "jpeg", "gif", "png", "bmp" };
+	public static final String[] TYPE_VIDEO_EXTENSIONS = { "mp4", "mpg", "mpeg", "mov", "avi" };
+	public static final String[] TYPE_AUDIO_EXTENSIONS = { "m4a", "aac", "mp3", "wav", "3gp", "3gpp", "amr", "ogg" };
+	public static final String[] TYPE_TEXT_EXTENSIONS = { "txt" }; // TODO: pdf, doc etc?
+
+	// default to jpeg for smaller file sizes (will be overridden for frames that do not contain image media)
+	public static final Bitmap.CompressFormat ICON_CACHE_TYPE = Bitmap.CompressFormat.JPEG;
+	public static final int ICON_CACHE_QUALITY = 80;
+
+	// -----------------------------------------------------------------------------------------------------------------
+	// The following are globals for cases where we can't get a context (or it's not worth it) - all of these are
+	// overridden at startup with values that are either detected automatically (e.g., paths), or loaded from attrs.xml
+	// -----------------------------------------------------------------------------------------------------------------
+
 	// storage, cache and temp directories
-	// TODO: check (ie. if (Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState())) {) each time we r/w
-	// NOTE: automatically initialised on application start
 	public static File DIRECTORY_STORAGE; // to store user content
 	public static File DIRECTORY_THUMBS; // for the frame thumbnails
 	public static File DIRECTORY_TEMP; // currently used for outgoing files - must be world readable
 
 	// the directory to watch for bluetooth imports - devices vary (see: http://stackoverflow.com/questions/6125993)
-	// NOTE: overridden with values loaded from attrs.xml at startup
 	public static String IMPORT_DIRECTORY;
 	static {
 		String possibleImportDirectory = File.separator + "mnt" + File.separator + "sdcard" + File.separator
@@ -50,21 +62,13 @@ public class MediaTablet {
 		}
 	}
 
-	public static final String[] TYPE_IMAGE_EXTENSIONS = { "jpg", "jpeg", "gif", "png", "bmp" };
-	public static final String[] TYPE_VIDEO_EXTENSIONS = { "mp4", "mpg", "mov", "avi" };
-	public static final String[] TYPE_AUDIO_EXTENSIONS = { "m4a", "3gp", "mp3", "aac", "ogg", "amr" };
-	public static final String[] TYPE_TEXT_EXTENSIONS = { "txt" }; // TODO: pdf, doc etc?
-
-	public static final int NARRATIVE_DEFAULT_FRAME_DURATION = 2500; // milliseconds
-
-	// this is generated on first use (when prompting for panorama image) and overwritten here
+	// this is generated on first use (when prompting for the panorama image) and overwritten here thereafter
 	public static String ADMINISTRATOR_PASSWORD = "";
 
-	// default to jpeg for smaller file sizes (will be overridden for frames that do not contain image media)
-	public static final Bitmap.CompressFormat ICON_CACHE_TYPE = Bitmap.CompressFormat.JPEG;
-	public static final int ICON_CACHE_QUALITY = 80;
-
-	// TODO: attrs
+	// -----------------------------------------------------------------------------------------------------------------
+	// The following are globals that should eventually be moved to preferences, detected, or overridden at startup
+	// -----------------------------------------------------------------------------------------------------------------
+	public static final int NARRATIVE_DEFAULT_FRAME_DURATION = 2500; // milliseconds
 	public static final int MAXIMUM_PERSON_TEXT_LENGTH = 18;
 	public static final int TIME_UNLOCKED_AFTER_SYNC = 600000; // in milliseconds (10 minutes currently)
 	public static final int ANIMATION_FADE_TRANSITION_DURATION = 175;
