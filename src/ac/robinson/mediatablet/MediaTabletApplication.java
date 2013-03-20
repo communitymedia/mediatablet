@@ -233,12 +233,16 @@ public class MediaTabletApplication extends Application {
 		try {
 			String settingsDirectory = mediaTabletSettings.getString(getString(R.string.key_bluetooth_directory),
 					watchedDirectory);
-			watchedDirectory = settingsDirectory;
+			watchedDirectory = settingsDirectory; // could check exists, but don't, to ensure setting overrides default
 		} catch (Exception e) {
 		}
-		if (!watchedDirectory.equals(MediaTablet.IMPORT_DIRECTORY)) {
+		boolean directoryExists = (new File(watchedDirectory)).exists();
+		if (!watchedDirectory.equals(MediaTablet.IMPORT_DIRECTORY) || !directoryExists) {
 			stopWatchingBluetooth();
 			MediaTablet.IMPORT_DIRECTORY = watchedDirectory;
+		}
+		if (!directoryExists) {
+			return; // can't watch if the directory doesn't exist
 		}
 		if (!mImportingServiceIsBound) {
 			final Intent bindIntent = new Intent(MediaTabletApplication.this, ImportingService.class);

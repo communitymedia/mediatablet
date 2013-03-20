@@ -222,6 +222,10 @@ public abstract class MediaTabletActivity extends Activity {
 		if (MediaTablet.DIRECTORY_TEMP == null) {
 			Log.d(DebugUtilities.getLogTag(this), "Temporary directory not found - will warn before export");
 		}
+
+		// bluetooth directory availability may have changed if we're calling from an SD card availability notification
+		configureBluetoothObserver(PreferenceManager.getDefaultSharedPreferences(MediaTabletActivity.this),
+				getResources());
 	}
 
 	public void processIncomingFiles(Message msg) {
