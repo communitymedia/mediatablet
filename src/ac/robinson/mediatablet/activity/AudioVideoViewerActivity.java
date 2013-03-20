@@ -54,7 +54,7 @@ public class AudioVideoViewerActivity extends MediaViewerActivity {
 
 		// can't play from private data directory, and can't use file descriptors like we do for narratives; instead,
 		// copy to temp before playback (this will take a *long* time)
-		File publicFile = null;
+		File publicFile = mediaFile;
 		if (IOUtilities.isInternalPath(mediaFile.getAbsolutePath())) {
 			try {
 				if (MediaTablet.DIRECTORY_TEMP != null) {
