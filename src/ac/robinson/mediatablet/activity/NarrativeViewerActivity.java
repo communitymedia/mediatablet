@@ -557,6 +557,7 @@ public class NarrativeViewerActivity extends MediaViewerActivity {
 		@Override
 		public void onControllerVisibilityChange(boolean visible) {
 			makeMediaItemsVisible(visible);
+			findViewById(R.id.panel_media_viewer).setVisibility(visible ? View.VISIBLE : View.GONE);
 		}
 	};
 
