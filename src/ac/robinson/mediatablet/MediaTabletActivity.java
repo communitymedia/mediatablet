@@ -260,8 +260,8 @@ public abstract class MediaTabletActivity extends Activity {
 
 			case MediaUtilities.MSG_RECEIVED_SMIL_FILE:
 				FrameMediaContainer currentSmilFile = new FrameMediaContainer(importedFile.getAbsolutePath(),
-						mediaVisibility); // hacky, but it works
-				currentSmilFile.mParentId = mediaParent;
+						mediaVisibility); // hacky - using frameId for filename and frameSequenceId for visibility
+				currentSmilFile.mParentId = mediaParent; // again, hacky, but it works
 				new ImportSmilTask().execute(new FrameMediaContainer[] { currentSmilFile });
 				break;
 
@@ -278,8 +278,10 @@ public abstract class MediaTabletActivity extends Activity {
 		protected Void doInBackground(FrameMediaContainer... smilParents) {
 			for (int i = 0, n = smilParents.length; i < n; i++) {
 				final FrameMediaContainer currentSmilFile = smilParents[i];
-				ImportedFileParser.importSMILNarrative(getContentResolver(), new File(currentSmilFile.mFrameId),
-						currentSmilFile.mParentId, currentSmilFile.mFrameSequenceId);
+				final File smilFile = new File(currentSmilFile.mFrameId);
+				ImportedFileParser.importSMILNarrative(getContentResolver(), smilFile, currentSmilFile.mParentId,
+						currentSmilFile.mFrameSequenceId);
+				smilFile.delete();
 				publishProgress();
 			}
 			return null;

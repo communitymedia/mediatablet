@@ -101,7 +101,8 @@ public class ImportedFileParser {
 		ArrayList<FrameMediaContainer> smilFrames = SMILUtilities.getSMILFrameList(smilFile, 1, true);
 		duplicateSMILElements(contentResolver, smilFrames, tempSMILFile, parentId, visibility, true);
 
-		new File(smilFile.getParent(), IOUtilities.removeExtension(smilFile.getName())
+		// delete all the temporary files that could be remaining (sync file will be deleted automatically)
+		new File(smilFile.getParent(), smilFile.getName().replace(MediaUtilities.SYNC_FILE_EXTENSION, "")
 				+ MediaUtilities.SMIL_FILE_EXTENSION).delete();
 		tempSMILFile.delete();
 	}
