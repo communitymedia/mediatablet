@@ -285,7 +285,7 @@ public class MediaItem implements BaseColumns {
 					ArrayList<FrameMediaContainer> narrativeFirstFrame = SMILUtilities.getSMILFrameList(getFile(), 1,
 							false, 1, false);
 					TypedValue resourceValue = new TypedValue();
-					if (narrativeFirstFrame.size() == 1) {
+					if (narrativeFirstFrame != null && narrativeFirstFrame.size() == 1) {
 						FrameMediaContainer firstFrame = narrativeFirstFrame.get(0);
 						boolean hasImage = false;
 						if (firstFrame.mImagePath != null) {
