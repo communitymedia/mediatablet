@@ -142,6 +142,10 @@ public class BluetoothObserver extends FileObserver {
 
 	@Override
 	public void onEvent(int event, String path) {
+		if (path == null) {
+			return;
+		}
+
 		// see: http://developer.android.com/reference/android/os/FileObserver.html
 		switch (event) {
 			case CLOSE_WRITE:
@@ -218,7 +222,7 @@ public class BluetoothObserver extends FileObserver {
 
 						if (smilUnparsedContents != null) {
 							for (String mediaFile : smilUnparsedContents) {
-								File smilMediaFile = new File(mBluetoothDirectoryPath, mediaFile);
+								File smilMediaFile = new File(receivedFile.getParent(), mediaFile);
 								String smilMediaPath = smilMediaFile.getAbsolutePath();
 
 								// in case the file has already been received
