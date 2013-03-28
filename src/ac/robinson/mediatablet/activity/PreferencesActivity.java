@@ -26,6 +26,7 @@ import java.text.SimpleDateFormat;
 import ac.robinson.mediatablet.R;
 import ac.robinson.mediautilities.SelectDirectoryActivity;
 import ac.robinson.util.DebugUtilities;
+import ac.robinson.util.IOUtilities;
 import ac.robinson.util.UIUtilities;
 import ac.robinson.util.UIUtilities.ReflectionTab;
 import android.app.Activity;
@@ -37,6 +38,7 @@ import android.content.pm.PackageManager;
 import android.graphics.Point;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceCategory;
@@ -74,6 +76,11 @@ public class PreferencesActivity extends PreferenceActivity {
 					currentDirectory = getString(R.string.default_bluetooth_directory);
 					if (!new File(currentDirectory).exists()) {
 						currentDirectory = getString(R.string.default_bluetooth_directory_alternative);
+						if (!new File(currentDirectory).exists() && IOUtilities.externalStorageIsReadable()) {
+							currentDirectory = Environment.getExternalStorageDirectory().getAbsolutePath();
+						} else {
+							currentDirectory = "/"; //default to storage root
+						}
 					}
 				}
 				final Intent intent = new Intent(getBaseContext(), SelectDirectoryActivity.class);
