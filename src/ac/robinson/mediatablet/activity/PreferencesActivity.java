@@ -23,14 +23,20 @@ package ac.robinson.mediatablet.activity;
 import java.io.File;
 import java.text.SimpleDateFormat;
 
+import ac.robinson.mediatablet.MediaTablet;
 import ac.robinson.mediatablet.R;
+import ac.robinson.mediatablet.view.HomesteadSurfaceView;
 import ac.robinson.mediautilities.SelectDirectoryActivity;
 import ac.robinson.util.DebugUtilities;
 import ac.robinson.util.IOUtilities;
+import ac.robinson.util.StringUtilities;
 import ac.robinson.util.UIUtilities;
 import ac.robinson.util.UIUtilities.ReflectionTab;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.ActivityNotFoundException;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
@@ -42,8 +48,11 @@ import android.preference.PreferenceActivity;
 import android.preference.PreferenceCategory;
 import android.preference.PreferenceManager;
 import android.preference.PreferenceScreen;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.EditText;
 
 public class PreferencesActivity extends PreferenceActivity {
 
@@ -84,6 +93,54 @@ public class PreferencesActivity extends PreferenceActivity {
 				final Intent intent = new Intent(getBaseContext(), SelectDirectoryActivity.class);
 				intent.putExtra(SelectDirectoryActivity.START_PATH, currentDirectory);
 				startActivityForResult(intent, R.id.intent_directory_chooser);
+				return true;
+			}
+		});
+
+		// set up the change panorama option
+		Preference panoramaButton = (Preference) findPreference(getString(R.string.key_change_panorama_image));
+		panoramaButton.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+			@Override
+			public boolean onPreferenceClick(Preference preference) {
+				LayoutInflater inflater = LayoutInflater.from(PreferencesActivity.this);
+				final View textEntryView = inflater.inflate(R.layout.password_input, null);
+				AlertDialog.Builder builder = new AlertDialog.Builder(PreferencesActivity.this);
+				builder.setMessage(R.string.panorama_change_password_prompt).setCancelable(false)
+						.setView(textEntryView)
+						.setPositiveButton(R.string.panorama_change_prompt, new DialogInterface.OnClickListener() {
+							@Override
+							public void onClick(DialogInterface dialog, int id) {
+								if (MediaTablet.ADMINISTRATOR_PASSWORD.equals(StringUtilities
+										.sha1Hash(((EditText) textEntryView.findViewById(R.id.text_password_entry))
+												.getText().toString()))) {
+									// remove the existing panorama image
+									SharedPreferences panoramaSettings = getSharedPreferences(
+											MediaTablet.APPLICATION_NAME, Context.MODE_PRIVATE);
+									SharedPreferences.Editor prefsEditor = panoramaSettings.edit();
+									prefsEditor.putString(getString(R.string.key_panorama_file), null);
+									prefsEditor.apply();
+
+									// remove existing cached images just in case
+									HomesteadSurfaceView.forceImageReload();
+
+									// clear all activities and reload the homestead browser
+									Intent reloadIntent = new Intent(PreferencesActivity.this,
+											HomesteadBrowserActivity.class);
+									reloadIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+									startActivity(reloadIntent);
+									finish();
+								} else {
+									UIUtilities.showToast(PreferencesActivity.this,
+											R.string.panorama_change_password_incorrect);
+								}
+							}
+						}).setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
+							@Override
+							public void onClick(DialogInterface dialog, int id) {
+								dialog.cancel();
+							}
+						});
+				builder.show();
 				return true;
 			}
 		});

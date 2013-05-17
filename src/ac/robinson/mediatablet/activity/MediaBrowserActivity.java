@@ -213,7 +213,6 @@ public class MediaBrowserActivity extends MediaTabletActivity {
 								dialog.cancel();
 							}
 						});
-				builder.create();
 				builder.show();
 				return true;
 

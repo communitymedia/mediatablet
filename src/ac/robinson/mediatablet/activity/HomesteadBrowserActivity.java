@@ -48,9 +48,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.preference.PreferenceManager;
-import android.text.SpannableString;
 import android.text.method.LinkMovementMethod;
-import android.text.util.Linkify;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -137,6 +135,7 @@ public class HomesteadBrowserActivity extends MediaTabletActivity {
 						Context.MODE_PRIVATE);
 				String existingPassword = panoramaSettings.getString(
 						getString(R.string.key_administrator_password_temp), null);
+				boolean changeMode = false;
 				if (existingPassword == null) {
 					existingPassword = Long.toHexString(Double.doubleToLongBits(Math.random())).substring(3, 10);
 					String passwordHash = StringUtilities.sha1Hash(existingPassword);
@@ -144,35 +143,43 @@ public class HomesteadBrowserActivity extends MediaTabletActivity {
 					prefsEditor.putString(getString(R.string.key_administrator_password), passwordHash);
 					prefsEditor.putString(getString(R.string.key_administrator_password_temp), existingPassword);
 					prefsEditor.apply(); // plaintext will be deleted after registration is completed
+				} else if ("".equals(existingPassword)) {
+					changeMode = true;
 				}
 
 				AlertDialog.Builder builder = new AlertDialog.Builder(HomesteadBrowserActivity.this);
-				builder.setTitle(R.string.first_launch_prompt);
+				builder.setTitle(changeMode ? R.string.panorama_change_prompt : R.string.first_launch_prompt);
 
 				// make sure the panorama is linked
-				final SpannableString message = new SpannableString(getString(R.string.first_launch_hint,
-						getString(R.string.app_name), existingPassword, getString(R.string.panorama_name)));
-				Linkify.addLinks(message, Linkify.WEB_URLS);
-				builder.setMessage(message);
+				if (changeMode) {
+					builder.setMessage(getString(R.string.panorama_change_hint,
+							getString(R.string.panorama_selection_hint, getString(R.string.panorama_name))));
+				} else {
+					builder.setMessage(getString(R.string.first_launch_hint, getString(R.string.app_name),
+							existingPassword,
+							getString(R.string.panorama_selection_hint, getString(R.string.panorama_name))));
+
+				}
 				builder.setIcon(android.R.drawable.ic_dialog_info);
 				// builder.setCancelable(false);
+				builder.setNegativeButton(R.string.first_launch_sample, new DialogInterface.OnClickListener() {
+					@Override
+					public void onClick(DialogInterface dialog, int whichButton) {
+						savePanoramaFilePath(getString(R.string.sample_panorama_identifier));
+						mHomesteadSurfaceView.requestLoadImages();
+						dialog.dismiss();
+					}
+				});
 				builder.setPositiveButton(R.string.first_launch_select, new DialogInterface.OnClickListener() {
 					@Override
 					public void onClick(DialogInterface dialog, int whichButton) {
-						if (validatePanorama(
-								new File(
-										Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS),
-										getString(R.string.panorama_name)), false)) {
-							mHomesteadSurfaceView.requestLoadImages();
-						} else {
-							Intent intent = new Intent(getBaseContext(), SelectDirectoryActivity.class);
-							if (Environment.getExternalStorageDirectory().canRead()) {
-								intent.putExtra(SelectDirectoryActivity.START_PATH, Environment
-										.getExternalStorageDirectory().getAbsolutePath());
-							}
-							startActivityForResult(intent, R.id.intent_directory_chooser);
-							mDialogShown = false;
+						Intent intent = new Intent(getBaseContext(), SelectDirectoryActivity.class);
+						if (Environment.getExternalStorageDirectory().canRead()) {
+							intent.putExtra(SelectDirectoryActivity.START_PATH, Environment
+									.getExternalStorageDirectory().getAbsolutePath());
 						}
+						startActivityForResult(intent, R.id.intent_directory_chooser);
+						mDialogShown = false;
 						dialog.dismiss();
 					}
 				});
@@ -334,13 +341,7 @@ public class HomesteadBrowserActivity extends MediaTabletActivity {
 			String panoramaPath = newPath.getAbsolutePath();
 			Options imageDimensions = BitmapUtilities.getImageDimensions(panoramaPath);
 			if (imageDimensions != null && imageDimensions.outWidth > imageDimensions.outHeight) {
-				SharedPreferences panoramaSettings = getSharedPreferences(MediaTablet.APPLICATION_NAME,
-						Context.MODE_PRIVATE);
-				SharedPreferences.Editor prefsEditor = panoramaSettings.edit();
-				prefsEditor.putString(getString(R.string.key_panorama_file), panoramaPath);
-				prefsEditor.putString(getString(R.string.key_administrator_password_temp), "");
-				prefsEditor.apply();
-				UIUtilities.showToast(HomesteadBrowserActivity.this, R.string.panorama_found);
+				savePanoramaFilePath(panoramaPath);
 				return true;
 			}
 		}
@@ -349,6 +350,15 @@ public class HomesteadBrowserActivity extends MediaTabletActivity {
 					getString(R.string.panorama_name));
 		}
 		return false;
+	}
+
+	private void savePanoramaFilePath(String panoramaPath) {
+		SharedPreferences panoramaSettings = getSharedPreferences(MediaTablet.APPLICATION_NAME, Context.MODE_PRIVATE);
+		SharedPreferences.Editor prefsEditor = panoramaSettings.edit();
+		prefsEditor.putString(getString(R.string.key_panorama_file), panoramaPath);
+		prefsEditor.putString(getString(R.string.key_administrator_password_temp), "");
+		prefsEditor.apply();
+		UIUtilities.showToast(HomesteadBrowserActivity.this, R.string.panorama_found);
 	}
 
 	@Override

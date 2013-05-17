@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent" >
 
-    <LinearLayout style="@style/default_horizontal_linear_layout" >
+    <LinearLayout style="@style/default_horizontal_linear_layout" android:id="@+id/media_browser_interface" >
 
         <LinearLayout
             style="@style/default_vertical_linear_layout"
@@ -138,7 +138,7 @@
         android:id="@+id/panel_media"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignTop="@id/grid_media" >
+        android:layout_alignTop="@id/media_browser_interface" >
 
         <LinearLayout
             style="@style/default_horizontal_linear_layout"

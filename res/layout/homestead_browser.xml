@@ -43,7 +43,8 @@
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
         android:background="@android:color/transparent"
-        android:gravity="left" >
+        android:gravity="left"
+        android:orientation="horizontal" >
     </LinearLayout>
 
     <LinearLayout
@@ -52,7 +53,8 @@
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
         android:background="@android:color/transparent"
-        android:gravity="right" >
+        android:gravity="right"
+        android:orientation="horizontal" >
     </LinearLayout>
 
 </RelativeLayout>

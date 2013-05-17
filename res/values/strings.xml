@@ -14,13 +14,19 @@
     <string name="export_potential_problem">Warning: unable to create some of the required files for export – you may encounter problems with the exported file</string>
     <string name="error_loading_panorama">Error: unable to load the panorama image – out of memory. Please exit any other running applications and try again</string>
 
-    <!-- first launch -->
+    <!-- first launch / panorama change -->
     <string name="panorama_name">panorama.jpg</string>
     <string name="panorama_found">Panorama image found – now loading&#8230;</string>
     <string name="panorama_not_found">Panorama image not found – please make sure it is present in the chosen directory, and named %1$s</string>
+    <string name="panorama_selection_hint">select a panorama image file that you\'d like to use for the background of the media browser. This can be either your own community image or our sample.\n\nIf you\'d like to use your own image, it should be a standard JPEG image file, named \'%1$s\' that is at least six times wider than it is tall.</string>
     <string name="first_launch_prompt">First launch setup</string>
-    <string name="first_launch_hint">As this is the first time you\'ve used %1$s, there\'s some setup to be done. Please make sure you read all of these instructions (you may need to scroll down).\n\nFirst, please write down this password: %2$s\n\nAs the administrator of the media repository, you\'ll need this password to delete any unwanted media that is uploaded, so it\'s important not to lose it.\n\nNext, you also need to select a panorama image file that you\'d like to use for the background of the media browser. This should be a standard JPEG image file, named \'%3$s\' that is at least six times wider than it is tall.\n\nIf you don\'t have a suitable image, or want to just experiment with the application, you can download one of ours from http://digitaleconomytoolkit.org/com-tablet/panorama – save this to your device, and then select your downloads folder on the next screen (we\'ll try to select it automatically if we can).</string>
-    <string name="first_launch_select">Select panorama image</string>
+    <string name="first_launch_hint">As this is the first time you\'ve used %1$s, there\'s some setup to be done. Please make sure you read all of these instructions (you may need to scroll down).\n\nFirst, please write down this password: %2$s\n\nAs the administrator of the media repository, you\'ll need this password to delete any unwanted media that is uploaded (or to change the panorama image), so it\'s important not to lose it.\n\nNext, you also need to %3$s</string>
+    <string name="first_launch_sample">Use a sample panorama</string>
+    <string name="first_launch_select">Select your own image</string>
+    <string name="panorama_change_password_prompt">Please enter the password to change the panorama image.\n\nWarning! If the new image is a different size or ratio your homestead locations will be different or incorrect after this change</string>
+    <string name="panorama_change_password_incorrect">Sorry, the password was incorrect – not changing the panorama image</string>
+    <string name="panorama_change_prompt">Change panorama image</string>
+    <string name="panorama_change_hint">Please %1$s</string>
 
     <!-- add user -->
     <string name="add_user_select_homestead">Please select your homestead, or double tap anywhere to add a new homestead</string>
@@ -50,7 +56,7 @@
     <string name="icon_image_description">This media item\'s icon</string>
     <string name="delete_person_deleted">The person has been deleted</string>
     <string name="delete_person_password_prompt">Please enter the password to delete this person</string>
-    <string name="delete_person_password_incorrect">Sorry, the password was incorrect - not deleting the person</string>
+    <string name="delete_person_password_incorrect">Sorry, the password was incorrect – not deleting the person</string>
 
     <!-- media viewer -->
     <string name="error_loading_media">Error: unable to load this media item</string>
@@ -71,7 +77,7 @@
     <string name="delete_media_password_prompt">Please enter the password to delete this media item</string>
     <string name="delete_media_confirmation">Delete this media item?</string>
     <string name="delete_media_hint">This media item will be permanently deleted</string>
-    <string name="delete_media_password_incorrect">Sorry, the password was incorrect - not deleting the media</string>
+    <string name="delete_media_password_incorrect">Sorry, the password was incorrect – not deleting the media</string>
     <string name="media_icon_description">An image representing this media item</string>
     <string name="frame_image_description">The image for this frame</string>
     <string name="error_loading_narrative_player">Error: couldn\'t open the narrative — please try again</string>
@@ -117,6 +123,9 @@
     <string name="preferences_bluetooth_directory_title">Bluetooth directory</string>
     <string name="preferences_bluetooth_directory_summary">Set the directory to watch for incoming files</string>
     <string name="preferences_bluetooth_directory_error">Error: unable to read directory; reverting to old location</string>
+    <string name="preferences_administration">Administration</string>
+    <string name="preferences_change_panorama_image_title">Change panorama image</string>
+    <string name="preferences_change_panorama_image_summary">Choose a different panorama image as a background. Please be aware that if the new image is a different size or ratio, homestead locations may be incorrect after this change</string>
     <string name="preferences_about">About</string>
     <string name="preferences_contact_us_title">Get in touch</string>
     <string name="preferences_contact_us_summary">Email us your feedback, or report a problem</string>

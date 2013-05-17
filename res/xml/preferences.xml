@@ -17,6 +17,12 @@
             android:summary="@string/preferences_bluetooth_directory_summary"
             android:title="@string/preferences_bluetooth_directory_title" />
     </PreferenceCategory>
+    <PreferenceCategory android:title="@string/preferences_administration" >
+        <PreferenceScreen
+            android:key="@string/key_change_panorama_image"
+            android:summary="@string/preferences_change_panorama_image_summary"
+            android:title="@string/preferences_change_panorama_image_title" />
+    </PreferenceCategory>
     <PreferenceCategory
         android:key="@string/key_about_category"
         android:title="@string/preferences_about" >

@@ -209,12 +209,23 @@ public class HomesteadSurfaceView extends SurfaceView implements SurfaceHolder.C
 		loadImages();
 	}
 
+	public static void forceImageReload() {
+		// TODO: delete only those images that exist; this is a hack
+		for (int i = 0; i < 100; i++) {
+			File imageFile = new File(MediaTablet.DIRECTORY_THUMBS, getBackgroundCacheFileName(i));
+			if ((imageFile).exists()) {
+				imageFile.delete();
+			}
+		}
+	}
+
 	private void loadImages() {
 		Context context = getContext();
 		SharedPreferences panoramaSettings = context.getSharedPreferences(MediaTablet.APPLICATION_NAME,
 				Context.MODE_PRIVATE);
 		String panoramaPath = panoramaSettings.getString(context.getString(R.string.key_panorama_file), null);
-		if (panoramaPath == null) {
+		boolean useSample = context.getString(R.string.sample_panorama_identifier).equals(panoramaPath);
+		if (panoramaPath == null || (!useSample && !new File(panoramaPath).exists())) {
 			mPanoramaLoaded = false;
 			return;
 		}
@@ -231,7 +242,12 @@ public class HomesteadSurfaceView extends SurfaceView implements SurfaceHolder.C
 		mBitmapHeight = mScreenHeight;
 
 		if (createCachedImages) {
-			Options imageDimensions = BitmapUtilities.getImageDimensions(panoramaPath);
+			Options imageDimensions;
+			if (useSample) {
+				imageDimensions = BitmapUtilities.getImageDimensions(getResources(), R.drawable.sample_panorama);
+			} else {
+				imageDimensions = BitmapUtilities.getImageDimensions(panoramaPath);
+			}
 			panoramaWidth = imageDimensions.outWidth;
 			panoramaHeight = imageDimensions.outHeight;
 			SharedPreferences.Editor prefsEditor = panoramaSettings.edit();
@@ -257,7 +273,11 @@ public class HomesteadSurfaceView extends SurfaceView implements SurfaceHolder.C
 			Drawable panoramaDrawable = null;
 			boolean panoramaFailed = false;
 			try {
-				panoramaDrawable = Drawable.createFromPath(panoramaPath);
+				if (useSample) {
+					panoramaDrawable = getResources().getDrawable(R.drawable.sample_panorama);
+				} else {
+					panoramaDrawable = Drawable.createFromPath(panoramaPath);
+				}
 			} catch (Throwable t) {
 				UIUtilities.showToast(getContext(), R.string.error_loading_panorama);
 				panoramaFailed = true;
