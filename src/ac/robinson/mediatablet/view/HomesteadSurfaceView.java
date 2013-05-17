@@ -224,8 +224,7 @@ public class HomesteadSurfaceView extends SurfaceView implements SurfaceHolder.C
 		SharedPreferences panoramaSettings = context.getSharedPreferences(MediaTablet.APPLICATION_NAME,
 				Context.MODE_PRIVATE);
 		String panoramaPath = panoramaSettings.getString(context.getString(R.string.key_panorama_file), null);
-		boolean useSample = context.getString(R.string.sample_panorama_identifier).equals(panoramaPath);
-		if (panoramaPath == null || (!useSample && !new File(panoramaPath).exists())) {
+		if (panoramaPath == null) {
 			mPanoramaLoaded = false;
 			return;
 		}
@@ -234,6 +233,11 @@ public class HomesteadSurfaceView extends SurfaceView implements SurfaceHolder.C
 		int panoramaHeight = panoramaSettings.getInt(context.getString(R.string.key_panorama_height), -1);
 		boolean createCachedImages = panoramaWidth <= 0 || panoramaHeight <= 0
 				|| !(new File(MediaTablet.DIRECTORY_THUMBS, getBackgroundCacheFileName(0))).exists(); // TODO: test all?
+		boolean useSample = context.getString(R.string.sample_panorama_identifier).equals(panoramaPath);
+		if (createCachedImages && !useSample && !new File(panoramaPath).exists()) {
+			mPanoramaLoaded = false;
+			return;
+		}
 
 		mScreenWidth = getWidth();
 		mScreenHeight = getHeight();
