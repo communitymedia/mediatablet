@@ -134,7 +134,7 @@ public class PreferencesActivity extends PreferenceActivity {
 											R.string.panorama_change_password_incorrect);
 								}
 							}
-						}).setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
+						}).setNegativeButton(R.string.button_cancel, new DialogInterface.OnClickListener() {
 							@Override
 							public void onClick(DialogInterface dialog, int id) {
 								dialog.cancel();

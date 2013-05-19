@@ -5,6 +5,7 @@
 
     <string name="app_name">Com-Tablet</string>
     <string name="html_feature_coming_soon">Coming soon — HTML import</string>
+    <string name="button_cancel">Cancel</string>
     <string name="button_delete">Delete</string>
 
     <!-- file errors -->

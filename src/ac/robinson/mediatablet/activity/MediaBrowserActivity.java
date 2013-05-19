@@ -207,7 +207,7 @@ public class MediaBrowserActivity extends MediaTabletActivity {
 											R.string.delete_person_password_incorrect);
 								}
 							}
-						}).setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
+						}).setNegativeButton(R.string.button_cancel, new DialogInterface.OnClickListener() {
 							@Override
 							public void onClick(DialogInterface dialog, int id) {
 								dialog.cancel();

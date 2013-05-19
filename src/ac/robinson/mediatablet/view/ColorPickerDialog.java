@@ -270,7 +270,7 @@ public class ColorPickerDialog extends Dialog {
 		mainPanel.addView(new ColorPickerView(getContext(), l, mInitialColor));
 
 		// Button cancelButton = new Button(getContext());
-		// cancelButton.setText(getContext().getString(android.R.string.cancel));
+		// cancelButton.setText(getContext().getString(R.string.button_cancel));
 		// cancelButton.setOnClickListener(new View.OnClickListener() {
 		// @Override
 		// public void onClick(View v) {

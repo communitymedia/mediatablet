@@ -346,7 +346,7 @@ public abstract class MediaViewerActivity extends MediaTabletActivity {
 		builder.setTitle(R.string.share_media_title);
 		// builder.setMessage(R.string.share_media_hint); // breaks the dialog
 		builder.setIcon(android.R.drawable.ic_dialog_info);
-		builder.setNegativeButton(android.R.string.cancel, null);
+		builder.setNegativeButton(R.string.button_cancel, null);
 		builder.setSingleChoiceItems(publicMediaOptions, (currentMediaItem.isPubliclyShared() ? 2 : 0),
 				new DialogInterface.OnClickListener() {
 					@Override
@@ -408,7 +408,7 @@ public abstract class MediaViewerActivity extends MediaTabletActivity {
 			builder.setTitle(R.string.edit_media_title);
 			// builder.setMessage(R.string.edit_media_hint); // breaks the dialog
 			builder.setIcon(android.R.drawable.ic_dialog_info);
-			builder.setNegativeButton(android.R.string.cancel, null);
+			builder.setNegativeButton(R.string.button_cancel, null);
 			builder.setItems(sendShareOptions, new DialogInterface.OnClickListener() {
 				@Override
 				public void onClick(DialogInterface dialog, int item) {
@@ -436,7 +436,7 @@ public abstract class MediaViewerActivity extends MediaTabletActivity {
 			builder.setTitle(R.string.delete_media_confirmation);
 			builder.setMessage(R.string.delete_media_hint);
 			builder.setIcon(android.R.drawable.ic_dialog_alert);
-			builder.setNegativeButton(android.R.string.cancel, null);
+			builder.setNegativeButton(R.string.button_cancel, null);
 			builder.setPositiveButton(R.string.button_delete, new DialogInterface.OnClickListener() {
 				@Override
 				public void onClick(DialogInterface dialog, int whichButton) {
@@ -462,7 +462,7 @@ public abstract class MediaViewerActivity extends MediaTabletActivity {
 										R.string.delete_media_password_incorrect);
 							}
 						}
-					}).setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
+					}).setNegativeButton(R.string.button_cancel, new DialogInterface.OnClickListener() {
 						@Override
 						public void onClick(DialogInterface dialog, int id) {
 							dialog.cancel();
